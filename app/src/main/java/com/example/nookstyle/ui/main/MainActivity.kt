@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             Item("제목 16", "설명 16"),
             Item("제목 17", "설명 17"),
         )
+        
 
         adapter = ItemAdapter(itemList)
         recyclerView.adapter = adapter

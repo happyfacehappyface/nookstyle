@@ -52,44 +52,12 @@
 
     </LinearLayout>
 
-    <!-- 오른쪽 콘텐츠 영역 -->
+    <!-- 오른쪽 콘텐츠 영역 (Fragment가 여기에 표시됨) -->
     <FrameLayout
         android:id="@+id/contentArea"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/white">
-
-        <!-- 기본 콘텐츠 (탭 1) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:visibility="visible"/>
-
-        <!-- 탭 2 콘텐츠 -->
-        <TextView
-            android:id="@+id/tab2Content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="탭 2 콘텐츠"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:background="@android:color/holo_green_light"
-            android:visibility="gone"/>
-
-        <!-- 탭 3 콘텐츠 -->
-        <TextView
-            android:id="@+id/tab3Content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="탭 3 콘텐츠"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:background="@android:color/holo_orange_light"
-            android:visibility="gone"/>
-
-    </FrameLayout>
+        android:background="@android:color/white"/>
 
 </LinearLayout>

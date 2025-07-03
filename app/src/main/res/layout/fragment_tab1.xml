@@ -1,7 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerView"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp"/> 
+    android:layout_height="match_parent">
+
+    <!-- 왼쪽 영역 - 겹쳐진 이미지들 -->
+    <FrameLayout
+        android:id="@+id/leftSpace"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/recyclerView"
+        app:layout_constraintWidth_percent="0.5">
+
+        <!-- 맨 아래 이미지 -->
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="이미지 1"
+            android:elevation="1dp"
+            android:padding="8dp"
+            android:scaleType="centerCrop" />
+
+        <!-- 중간 이미지 -->
+
+        <!-- 맨 위 이미지 -->
+        <ImageView
+            android:id="@+id/image2"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="이미지 2"
+            android:elevation="2dp"
+            android:padding="6dp"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/image3"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="이미지 3"
+            android:elevation="3dp"
+            android:padding="4dp"
+            android:scaleType="centerCrop" />
+
+    </FrameLayout>
+
+    <!-- 오른쪽 절반 - RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/leftSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

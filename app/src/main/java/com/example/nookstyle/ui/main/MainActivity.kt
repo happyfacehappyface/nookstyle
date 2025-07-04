@@ -9,6 +9,9 @@ import com.example.nookstyle.ui.fragments.Tab1Fragment
 import com.example.nookstyle.ui.fragments.Tab2Fragment
 import com.example.nookstyle.ui.fragments.Tab3Fragment
 import android.content.Intent
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
+        // 시스템 UI 설정 - 상태바는 유지하되 전체화면 모드 사용
+        setupSystemUI()
+        
         // 뷰 초기화
         tab1 = findViewById(R.id.tab1)
         tab2 = findViewById(R.id.tab2)
@@ -31,6 +37,19 @@ class MainActivity : AppCompatActivity() {
         
         // 기본적으로 첫 번째 탭 표시
         showTab1()
+    }
+    
+    private fun setupSystemUI() {
+        // 상태바는 유지하되 시스템 UI와 겹치지 않도록 설정
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        )
+        
+        // Android 11+ (API 30+) 에서는 WindowInsetsController 사용
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
     }
 
     private fun setupTabClickListeners() {

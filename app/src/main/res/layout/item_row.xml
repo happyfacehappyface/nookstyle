@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
@@ -9,45 +10,99 @@
     android:elevation="2dp"
     android:layout_margin="4dp">
 
-    <!-- 상단 이미지 -->
-    <ImageView
-        android:id="@+id/imageViewItem"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:background="@android:color/darker_gray"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <!-- 왼쪽: 이미지 + 좌우 버튼 -->
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp">
 
-    <!-- 제목 -->
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="8dp"
-        android:maxLines="2"
-        android:ellipsize="end"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewItem"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <ImageView
+            android:id="@+id/imageViewItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray"
+            android:src="@android:drawable/ic_menu_gallery" />
 
-    <!-- 설명 -->
-    <TextView
-        android:id="@+id/textViewDesc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginTop="4dp"
-        android:maxLines="3"
-        android:ellipsize="end"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <ImageButton
+            android:id="@+id/buttonPrev"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_chevron_left"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/buttonNext"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_chevron_right"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <!-- 오른쪽: 텍스트 정보 -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="개구리 모자" />
+
+        <TextView
+            android:id="@+id/textViewDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="8dp"
+            android:text="그린 / 블루 / 레드 / 옐로 \n1120벨 \n280 마일" />
+
+    </LinearLayout>
+
+</LinearLayout>
+
+<!--    &lt;!&ndash; 제목 &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/textViewTitle"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textSize="16sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:maxLines="2"-->
+<!--        android:ellipsize="end"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/imageViewItem"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+
+<!--    &lt;!&ndash; 설명 &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/textViewDesc"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textSize="14sp"-->
+<!--        android:textColor="@android:color/darker_gray"-->
+<!--        android:layout_marginTop="4dp"-->
+<!--        android:maxLines="3"-->
+<!--        android:ellipsize="end"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

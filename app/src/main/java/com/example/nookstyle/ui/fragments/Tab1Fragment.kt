@@ -1,6 +1,7 @@
 package com.example.nookstyle.ui.fragments
 
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,16 +16,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.Item
 import com.example.nookstyle.model.ItemTag
+import com.example.nookstyle.model.Villager
+import com.example.nookstyle.model.ClothingPosition
 import com.example.nookstyle.ui.adapter.ItemAdapter
 import java.io.IOException
+import android.util.Log
 
 class Tab1Fragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ItemAdapter
-    private lateinit var image1: ImageView
-    private lateinit var image2: ImageView
-    private lateinit var image3: ImageView
+    private lateinit var imageVillager: ImageView
+    private lateinit var imageShoes: ImageView
+    private lateinit var imageBottom: ImageView
+    private lateinit var imageTop: ImageView
+    private lateinit var imageHat: ImageView
     
     // 태그 버튼들
     private lateinit var btnAll: Button
@@ -36,6 +42,9 @@ class Tab1Fragment : Fragment() {
     // 전체 아이템 리스트 (필터링용)
     private var allItems = listOf<Item>()
     private var currentFilter: ItemTag? = null
+    
+    // 현재 빌라저
+    private var currentVillager: Villager? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +59,11 @@ class Tab1Fragment : Fragment() {
         
         // 뷰 초기화
         recyclerView = view.findViewById(R.id.recyclerView)
-        image1 = view.findViewById(R.id.image1)
-        image2 = view.findViewById(R.id.image2)
-        image3 = view.findViewById(R.id.image3)
+        imageVillager = view.findViewById(R.id.imageVillager)
+        imageShoes = view.findViewById(R.id.imageShoes)
+        imageBottom = view.findViewById(R.id.imageBottom)
+        imageTop = view.findViewById(R.id.imageTop)
+        imageHat = view.findViewById(R.id.imageHat)
         
         // 태그 버튼 초기화
         btnAll = view.findViewById(R.id.btnAll)
@@ -84,8 +95,16 @@ class Tab1Fragment : Fragment() {
         // 태그 버튼 클릭 리스너 설정
         setupTagButtons()
         
+        // 빌라저 초기화
+        setupVillager()
+        
         // 겹쳐진 이미지 설정
         setupOverlappingImages()
+        
+        // 뷰가 완전히 그려진 후 이미지 스타일 설정
+        view.post {
+            setupImageStyles()
+        }
     }
     
     // 태그 버튼 설정
@@ -157,48 +176,71 @@ class Tab1Fragment : Fragment() {
         }
     }
     
+    // 빌라저 설정
+    private fun setupVillager() {
+        currentVillager = Villager(
+            name = "Joey",
+            imagePath = "images/villagers/Joey.png",
+            hatPosition = ClothingPosition(
+                x = 0.5f,
+                y = 0.25f,
+                scaleX = 2.0f,
+                scaleY = 2.0f,
+                rotation = 0f
+            ),
+            topPosition = ClothingPosition(
+                x = 0.5f,
+                y = 0.58f,
+                scaleX = 1.0f,
+                scaleY = 1.0f,
+                rotation = 0f
+            ),
+            bottomPosition = ClothingPosition(
+                x = 0.5f,
+                y = 0.65f,
+                scaleX = 0.8f,
+                scaleY = 0.4f,
+                rotation = 0f
+            ),
+            shoesPosition = ClothingPosition(
+                x = 0.5f,
+                y = 0.72f,
+                scaleX = 0.4f,
+                scaleY = 0.3f,
+                rotation = 0f
+            )
+        )
+    }
+    
     private fun setupOverlappingImages() {
-        // 방법 1: res/drawable에서 불러오기 (권장)
-        // 이미지 파일을 res/drawable 폴더에 넣고 사용
-        // image1.setImageResource(R.drawable.my_image1)
-        // image2.setImageResource(R.drawable.my_image2)
-        // image3.setImageResource(R.drawable.my_image3)
-
-        loadImageFromAssets("images/villagers/Joey.png", image1)
-        loadImageFromAssets("images/cloths/TopsTexTopTshirtsHNumberball2.webp", image2)
-        loadImageFromAssets("images/cloths/BottomsTexPantsNormalLeather0.webp", image3)
+        // 빌라저 기본 이미지 로드
+        loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
-        // 이미지 스타일 설정
-        setupImageStyles()
-
-        /*
-        // 현재는 시스템 아이콘 사용
-        image1.setImageResource(android.R.drawable.ic_menu_gallery)
-        image1.scaleType = ImageView.ScaleType.CENTER_CROP
-        
-        image2.setImageResource(android.R.drawable.ic_menu_camera)
-        image2.scaleType = ImageView.ScaleType.CENTER_CROP
-        
-        image3.setImageResource(android.R.drawable.ic_menu_view)
-        image3.scaleType = ImageView.ScaleType.CENTER_CROP
-        */
-        
-        // 다른 시스템 이미지 옵션들:
-        // image1.setImageResource(android.R.drawable.ic_menu_compass)
-        // image2.setImageResource(android.R.drawable.ic_menu_help)
-        // image3.setImageResource(android.R.drawable.ic_menu_info_details)
+        // 의류 이미지들 로드
+        loadImageFromAssets("images/cloths/TopsTexTopTshirtsHNumberball2.webp", imageTop)
+        loadImageFromAssets("images/cloths/BottomsTexPantsNormalLeather0.webp", imageBottom)
+        loadImageFromAssets("images/cloths/CapHatMario0.webp", imageHat)
+        loadImageFromAssets("images/cloths/ShoesLowcutEggleaf0.webp", imageShoes)
     }
     
     // 이미지 스타일 설정
     private fun setupImageStyles() {
-        // 이미지 1 스타일 설정 (투명 배경)
-        setupImageStyle(image1, 140, 140, 0, 0, android.R.color.transparent)
-        
-        // 이미지 2 스타일 설정 (투명 배경)
-        setupImageStyle(image2, 110, 110, 25, 25, android.R.color.transparent)
-        
-        // 이미지 3 스타일 설정 (투명 배경)
-        setupImageStyle(image3, 80, 80, 50, 50, android.R.color.transparent)
+        currentVillager?.let { villager ->
+            // 빌라저 기본 이미지 (맨 아래) - 더 큰 크기로 설정
+            setupImageStyle(imageVillager, 200, 200, 0, 0, android.R.color.transparent)
+            
+            // 신발 이미지 - villager 위치 정보 사용
+            setupClothingImageStyle(imageShoes, villager.shoesPosition, 120, 120)
+            
+            // 하의 이미지 - villager 위치 정보 사용
+            setupClothingImageStyle(imageBottom, villager.bottomPosition, 100, 100)
+            
+            // 상의 이미지 - villager 위치 정보 사용
+            setupClothingImageStyle(imageTop, villager.topPosition, 80, 80)
+            
+            // 모자 이미지 - villager 위치 정보 사용
+            setupClothingImageStyle(imageHat, villager.hatPosition, 60, 60)
+        }
     }
     
     // 개별 이미지 스타일 설정
@@ -222,8 +264,12 @@ class Tab1Fragment : Fragment() {
         // 배경 설정
         imageView.setBackgroundColor(ContextCompat.getColor(requireContext(), backgroundColor))
         
-        // 스케일 타입 설정
-        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        // 스케일 타입 설정 - 빌라저는 FIT_CENTER로 설정하여 잘리지 않도록
+        if (imageView == imageVillager) {
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+        } else {
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        }
         
         // 패딩 설정
         val padding = (8 * resources.displayMetrics.density).toInt()
@@ -231,6 +277,38 @@ class Tab1Fragment : Fragment() {
         
         // 레이아웃 파라미터 적용
         imageView.layoutParams = layoutParams
+    }
+    
+    // 의류 이미지 스타일 설정 (ClothingPosition 사용)
+    private fun setupClothingImageStyle(
+        imageView: ImageView,
+        position: ClothingPosition,
+        baseWidth: Int,
+        baseHeight: Int
+    ) {
+        val scaledWidth = (baseWidth * position.scaleX * resources.displayMetrics.density).toInt()
+        val scaledHeight = (baseHeight * position.scaleY * resources.displayMetrics.density).toInt()
+
+        val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
+        layoutParams.width = scaledWidth
+        layoutParams.height = scaledHeight
+
+        // 중심 위치로 이동 (부모 FrameLayout 기준)
+        val parent = imageView.parent as View
+        val parentWidth = parent.width
+        val parentHeight = parent.height
+        if (parentWidth > 0 && parentHeight > 0) {
+            layoutParams.leftMargin = (parentWidth * position.x - scaledWidth / 2).toInt()
+            layoutParams.topMargin = (parentHeight * position.y - scaledHeight / 2).toInt()
+        }
+
+        layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
+        imageView.layoutParams = layoutParams
+
+        // 스케일, 회전 적용
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
+        imageView.rotation = position.rotation
+        imageView.setPadding(0, 0, 0, 0)
     }
     
     // assets 폴더에서 이미지 불러오기

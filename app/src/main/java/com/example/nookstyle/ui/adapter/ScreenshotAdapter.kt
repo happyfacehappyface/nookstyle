@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
@@ -28,6 +29,7 @@ class ScreenshotAdapter(
 
     class ScreenshotViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewScreenshot)
+        val tvFileName: TextView = view.findViewById(R.id.tvFileName)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
         val btnDelete: Button = view.findViewById(R.id.btnDelete)
     }
@@ -40,6 +42,10 @@ class ScreenshotAdapter(
 
     override fun onBindViewHolder(holder: ScreenshotViewHolder, position: Int) {
         val file = screenshotFiles[position]
+        
+        // 파일명 표시 (확장자 제외)
+        val fileName = file.nameWithoutExtension
+        holder.tvFileName.text = fileName
         
         // 이미지 로드 (메모리 최적화)
         try {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +17,7 @@ import java.io.File
 class Tab2Fragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var tvEmptyState: TextView
     private lateinit var adapter: ScreenshotAdapter
     private var screenshotFiles = mutableListOf<File>()
 
@@ -30,8 +32,11 @@ class Tab2Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // RecyclerView 초기화
+        // UI 요소 초기화
         recyclerView = view.findViewById(R.id.recyclerViewScreenshots)
+        tvEmptyState = view.findViewById(R.id.tvEmptyState)
+        
+        // RecyclerView 초기화
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         
         // 성능 최적화 설정
@@ -54,6 +59,9 @@ class Tab2Fragment : Fragment() {
             }
         )
         recyclerView.adapter = adapter
+        
+        // 빈 상태 업데이트
+        updateEmptyState()
     }
     
     override fun onResume() {
@@ -61,6 +69,7 @@ class Tab2Fragment : Fragment() {
         // 화면이 다시 보일 때마다 파일 목록 새로고침
         loadScreenshotFiles()
         adapter.updateFiles(screenshotFiles)
+        updateEmptyState()
     }
     
     private fun loadScreenshotFiles() {
@@ -101,6 +110,19 @@ class Tab2Fragment : Fragment() {
     }
     
     /**
+     * 빈 상태 업데이트
+     */
+    private fun updateEmptyState() {
+        if (screenshotFiles.isEmpty()) {
+            tvEmptyState.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            tvEmptyState.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+    
+    /**
      * 스크린샷 파일 삭제
      */
     private fun deleteScreenshot(file: File) {
@@ -110,6 +132,7 @@ class Tab2Fragment : Fragment() {
                 // 파일 목록 새로고침
                 loadScreenshotFiles()
                 adapter.updateFiles(screenshotFiles)
+                updateEmptyState()
             } else {
                 Toast.makeText(context, "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }

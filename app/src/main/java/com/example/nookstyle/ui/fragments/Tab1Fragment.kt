@@ -1,5 +1,6 @@
 package com.example.nookstyle.ui.fragments
 
+import android.app.AlertDialog
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -153,18 +155,56 @@ class Tab1Fragment : Fragment() {
     
     // 스크린샷 캡처 및 저장
     private fun captureAndSaveScreenshot() {
+        showFileNameInputDialog()
+    }
+    
+    // 파일명 입력 다이얼로그 표시
+    private fun showFileNameInputDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filename_input, null)
+        val editTextFileName = dialogView.findViewById<EditText>(R.id.editTextFileName)
+        
+        // 기본 파일명 설정 (현재 시간 기준)
+        val defaultFileName = "Villager_Outfit_${System.currentTimeMillis()}"
+        editTextFileName.setText(defaultFileName)
+        editTextFileName.selectAll() // 전체 선택하여 쉽게 수정할 수 있도록
+        
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("스크린샷 저장")
+            .setMessage("저장할 파일명을 입력하세요")
+            .setView(dialogView)
+            .setPositiveButton("저장") { _, _ ->
+                val fileName = editTextFileName.text.toString().trim()
+                if (fileName.isNotEmpty()) {
+                    captureAndSaveWithFileName(fileName)
+                } else {
+                    Toast.makeText(context, "파일명을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("취소", null)
+            .create()
+        
+        dialog.show()
+    }
+    
+    // 파일명으로 스크린샷 캡처 및 저장
+    private fun captureAndSaveWithFileName(fileName: String) {
         try {
             // 이미지 컨테이너 (빌라저와 의류가 겹쳐진 부분) 스크린샷
             val imageContainer = view?.findViewById<FrameLayout>(R.id.imageContainer)
             imageContainer?.let { container ->
                 // 뷰가 완전히 그려진 후 스크린샷 찍기
                 container.post {
-                    val fileName = "Villager_Outfit_${System.currentTimeMillis()}"
-                    ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)
+                    val savedPath = ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)
+                    if (savedPath != null) {
+                        Toast.makeText(context, "스크린샷이 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "스크린샷 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Toast.makeText(context, "스크린샷 저장 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
     

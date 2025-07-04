@@ -18,6 +18,18 @@
         android:padding="16dp"
         android:background="@android:color/holo_blue_light" />
 
+    <!-- 빈 상태 메시지 -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="저장된 이미지 없음"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+
     <!-- 스크린샷 Grid -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewScreenshots"

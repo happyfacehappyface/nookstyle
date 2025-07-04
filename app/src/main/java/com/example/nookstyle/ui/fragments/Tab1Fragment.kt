@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.Item
+import com.example.nookstyle.model.ItemTag
 import com.example.nookstyle.ui.adapter.ItemAdapter
 import java.io.IOException
 
@@ -45,16 +46,16 @@ class Tab1Fragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         val itemList = listOf(
-            Item("제목 1", "설명 1"),
-            Item("제목 2", "설명 2"),
-            Item("제목 3", "설명 3"),
-            Item("제목 4", "설명 4"),
-            Item("제목 5", "설명 5"),
-            Item("제목 6", "설명 6"),
-            Item("제목 7", "설명 7"),
-            Item("제목 8", "설명 8"),
-            Item("제목 9", "설명 9"),
-            Item("제목 10", "설명 10")
+            Item("제목 1", "설명 1", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 2", "설명 2", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 3", "설명 3", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 4", "설명 4", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 5", "설명 5", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 6", "설명 6", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 7", "설명 7", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 8", "설명 8", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 9", "설명 9", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 10", "설명 10", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp")
         )
 
         adapter = ItemAdapter(itemList)

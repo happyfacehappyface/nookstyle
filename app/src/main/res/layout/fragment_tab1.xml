@@ -152,7 +152,9 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textIsSelectable="true"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="no"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
 
         </LinearLayout>
 

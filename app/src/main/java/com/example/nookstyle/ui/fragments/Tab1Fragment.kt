@@ -392,6 +392,9 @@ class Tab1Fragment : Fragment() {
         // 한글 입력을 위한 설정
         searchEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_NORMAL
         
+        // 키보드 동작 설정
+        searchEditText.imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+        
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             
@@ -402,5 +405,16 @@ class Tab1Fragment : Fragment() {
                 applyFilters()
             }
         })
+        
+        // 검색 버튼 클릭 시 키보드 숨기기
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                searchEditText.clearFocus()
+                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
     }
 } 

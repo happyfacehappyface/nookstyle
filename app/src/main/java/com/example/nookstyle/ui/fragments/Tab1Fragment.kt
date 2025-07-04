@@ -19,6 +19,7 @@ import com.example.nookstyle.model.ItemTag
 import com.example.nookstyle.model.Villager
 import com.example.nookstyle.model.ClothingPosition
 import com.example.nookstyle.ui.adapter.ItemAdapter
+import com.example.nookstyle.util.ScreenshotUtil
 import java.io.IOException
 import android.util.Log
 
@@ -38,6 +39,9 @@ class Tab1Fragment : Fragment() {
     private lateinit var btnBottom: Button
     private lateinit var btnHat: Button
     private lateinit var btnShoes: Button
+    
+    // 저장 버튼
+    private lateinit var btnSave: Button
     
     // 전체 아이템 리스트 (필터링용)
     private var allItems = listOf<Item>()
@@ -72,6 +76,9 @@ class Tab1Fragment : Fragment() {
         btnHat = view.findViewById(R.id.btnHat)
         btnShoes = view.findViewById(R.id.btnShoes)
         
+        // 저장 버튼 초기화
+        btnSave = view.findViewById(R.id.btnSave)
+        
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
@@ -95,6 +102,9 @@ class Tab1Fragment : Fragment() {
         // 태그 버튼 클릭 리스너 설정
         setupTagButtons()
         
+        // 저장 버튼 클릭 리스너 설정
+        setupSaveButton()
+        
         // 빌라저 초기화
         setupVillager()
         
@@ -114,6 +124,30 @@ class Tab1Fragment : Fragment() {
         btnBottom.setOnClickListener { filterItems(ItemTag.BOTTOM) }
         btnHat.setOnClickListener { filterItems(ItemTag.HAT) }
         btnShoes.setOnClickListener { filterItems(ItemTag.SHOES) }
+    }
+    
+    // 저장 버튼 설정
+    private fun setupSaveButton() {
+        btnSave.setOnClickListener {
+            captureAndSaveScreenshot()
+        }
+    }
+    
+    // 스크린샷 캡처 및 저장
+    private fun captureAndSaveScreenshot() {
+        try {
+            // 이미지 컨테이너 (빌라저와 의류가 겹쳐진 부분) 스크린샷
+            val imageContainer = view?.findViewById<FrameLayout>(R.id.imageContainer)
+            imageContainer?.let { container ->
+                // 뷰가 완전히 그려진 후 스크린샷 찍기
+                container.post {
+                    val fileName = "Villager_Outfit_${System.currentTimeMillis()}"
+                    ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
     
     // 아이템 필터링

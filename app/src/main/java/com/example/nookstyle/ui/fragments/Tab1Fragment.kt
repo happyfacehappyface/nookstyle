@@ -3,10 +3,13 @@ package com.example.nookstyle.ui.fragments
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -43,9 +46,13 @@ class Tab1Fragment : Fragment() {
     // 저장 버튼
     private lateinit var btnSave: Button
     
+    // 검색창
+    private lateinit var searchEditText: EditText
+    
     // 전체 아이템 리스트 (필터링용)
     private var allItems = listOf<Item>()
     private var currentFilter: ItemTag? = null
+    private var currentSearchQuery: String = ""
     
     // 현재 빌라저
     private var currentVillager: Villager? = null
@@ -79,21 +86,29 @@ class Tab1Fragment : Fragment() {
         // 저장 버튼 초기화
         btnSave = view.findViewById(R.id.btnSave)
         
+        // 검색창 초기화
+        searchEditText = view.findViewById(R.id.searchEditText)
+        
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         // 전체 아이템 리스트 생성
         allItems = listOf(
-            Item("제목 1", "설명 1", ItemTag.TOP, "images/cloths/hat/froghat/1_green.webp"),
-            Item("제목 2", "설명 2", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 3", "설명 3", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 4", "설명 4", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 5", "설명 5", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 6", "설명 6", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 7", "설명 7", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 8", "설명 8", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 9", "설명 9", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 10", "설명 10", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp")
+            Item("파란 모자", "파란색 모자입니다", ItemTag.HAT, "images/cloths/hat/froghat/2_blue.webp"),
+            Item("빨간 모자", "빨간색 모자입니다", ItemTag.HAT, "images/cloths/hat/froghat/3_red.webp"),
+            Item("노란 모자", "노란색 모자입니다", ItemTag.HAT, "images/cloths/hat/froghat/4_yellow.webp"),
+            Item("초록 모자", "초록색 모자입니다", ItemTag.HAT, "images/cloths/hat/froghat/1_green.webp"),
+            Item("마리오 모자", "마리오 모자입니다", ItemTag.HAT, "images/cloths/CapHatMario0.webp"),
+            Item("티셔츠", "기본 티셔츠입니다", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("가죽 바지", "가죽으로 만든 바지입니다", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("운동화", "편안한 운동화입니다", ItemTag.SHOES, "images/cloths/ShoesLowcutEggleaf0.webp"),
+            Item("데님 바지", "데님 소재의 바지입니다", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("후드티", "따뜻한 후드티입니다", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("스니커즈", "스타일리시한 스니커즈입니다", ItemTag.SHOES, "images/cloths/ShoesLowcutEggleaf0.webp"),
+            Item("베레모", "클래식한 베레모입니다", ItemTag.HAT, "images/cloths/hat/froghat/1_green.webp"),
+            Item("폴로 셔츠", "정장용 폴로 셔츠입니다", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("청바지", "클래식한 청바지입니다", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("로퍼", "엘레간트한 로퍼입니다", ItemTag.SHOES, "images/cloths/ShoesLowcutEggleaf0.webp")
         )
 
         adapter = ItemAdapter(allItems)
@@ -101,6 +116,9 @@ class Tab1Fragment : Fragment() {
         
         // 태그 버튼 클릭 리스너 설정
         setupTagButtons()
+        
+        // 검색 기능 설정
+        setupSearchFunction()
         
         // 저장 버튼 클릭 리스너 설정
         setupSaveButton()
@@ -153,18 +171,30 @@ class Tab1Fragment : Fragment() {
     // 아이템 필터링
     private fun filterItems(tag: ItemTag?) {
         currentFilter = tag
+        applyFilters()
+    }
+    
+    // 필터와 검색을 모두 적용
+    private fun applyFilters() {
+        var filteredItems = allItems
         
-        val filteredItems = if (tag == null) {
-            allItems // 전체 보기
-        } else {
-            allItems.filter { it.tag == tag } // 특정 태그만 필터링
+        // 태그 필터 적용
+        if (currentFilter != null) {
+            filteredItems = filteredItems.filter { it.tag == currentFilter }
+        }
+        
+        // 검색 필터 적용
+        if (currentSearchQuery.isNotEmpty()) {
+            filteredItems = filteredItems.filter { 
+                it.title.contains(currentSearchQuery, ignoreCase = true) 
+            }
         }
         
         adapter = ItemAdapter(filteredItems)
         recyclerView.adapter = adapter
         
         // 버튼 스타일 업데이트
-        updateButtonStyles(tag)
+        updateButtonStyles(currentFilter)
     }
     
     // 버튼 스타일 업데이트
@@ -355,5 +385,22 @@ class Tab1Fragment : Fragment() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    // 검색 기능 설정
+    private fun setupSearchFunction() {
+        // 한글 입력을 위한 설정
+        searchEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_NORMAL
+        
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            
+            override fun afterTextChanged(s: Editable?) {
+                currentSearchQuery = s?.toString() ?: ""
+                applyFilters()
+            }
+        })
     }
 } 

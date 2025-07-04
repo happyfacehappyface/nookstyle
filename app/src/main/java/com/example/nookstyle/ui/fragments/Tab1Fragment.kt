@@ -77,16 +77,16 @@ class Tab1Fragment : Fragment() {
 
         // 전체 아이템 리스트 생성
         allItems = listOf(
-            Item("제목 1", "설명 1", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 2", "설명 2", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 3", "설명 3", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 4", "설명 4", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 5", "설명 5", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 6", "설명 6", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 7", "설명 7", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 8", "설명 8", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 9", "설명 9", ItemTag.TOP, "images/cloths/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 10", "설명 10", ItemTag.BOTTOM, "images/cloths/BottomsTexPantsNormalLeather0.webp")
+            Item("제목 1", "설명 1", ItemTag.TOP, "images/cloths/hat/froghat/1_green.webp"),
+            Item("제목 2", "설명 2", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 3", "설명 3", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 4", "설명 4", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 5", "설명 5", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 6", "설명 6", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 7", "설명 7", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 8", "설명 8", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
+            Item("제목 9", "설명 9", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
+            Item("제목 10", "설명 10", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp")
         )
 
         adapter = ItemAdapter(allItems)
@@ -217,8 +217,8 @@ class Tab1Fragment : Fragment() {
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
         // 의류 이미지들 로드
-        loadImageFromAssets("images/cloths/TopsTexTopTshirtsHNumberball2.webp", imageTop)
-        loadImageFromAssets("images/cloths/BottomsTexPantsNormalLeather0.webp", imageBottom)
+        loadImageFromAssets("images/cloths/top/TopsTexTopTshirtsHNumberball2.webp", imageTop)
+        loadImageFromAssets("images/cloths/bottom/BottomsTexPantsNormalLeather0.webp", imageBottom)
         loadImageFromAssets("images/cloths/CapHatMario0.webp", imageHat)
         loadImageFromAssets("images/cloths/ShoesLowcutEggleaf0.webp", imageShoes)
     }

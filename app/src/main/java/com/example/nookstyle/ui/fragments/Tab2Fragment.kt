@@ -37,7 +37,7 @@ class Tab2Fragment : Fragment() {
         tvEmptyState = view.findViewById(R.id.tvEmptyState)
         
         // RecyclerView 초기화
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = GridLayoutManager(context, 4)
         
         // 성능 최적화 설정
         recyclerView.setHasFixedSize(true)

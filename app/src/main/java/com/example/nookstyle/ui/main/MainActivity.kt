@@ -1,7 +1,7 @@
 package com.example.nookstyle.ui.main
 
 import android.os.Bundle
-import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.nookstyle.R
@@ -20,9 +20,10 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tab1: Button
-    private lateinit var tab2: Button
-    private lateinit var tab3: Button
+    private lateinit var tab1: TextView
+    private lateinit var tab2: TextView
+    private lateinit var tab3: TextView
+    private var currentSelectedTab: TextView? = null
     
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
@@ -105,9 +106,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTabClickListeners() {
-        tab1.setOnClickListener { showTab1() }
-        tab2.setOnClickListener { showTab2() }
-        tab3.setOnClickListener { showTab3() }
+        tab1.setOnClickListener { if (currentSelectedTab != tab1) showTab1() }
+        tab2.setOnClickListener { if (currentSelectedTab != tab2) showTab2() }
+        tab3.setOnClickListener { if (currentSelectedTab != tab3) showTab3() }
     }
 
     private fun showTab1() {
@@ -125,16 +126,11 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(Tab3Fragment())
     }
 
-    private fun updateTabSelection(selectedTab: Button, vararg otherTabs: Button) {
-        // 선택된 탭 활성화
-        selectedTab.setBackgroundColor(getColor(android.R.color.holo_blue_light))
-        selectedTab.setTextColor(getColor(android.R.color.white))
-        
-        // 다른 탭들 비활성화
-        otherTabs.forEach { tab ->
-            tab.setBackgroundColor(getColor(android.R.color.white))
-            tab.setTextColor(getColor(android.R.color.black))
-        }
+    private fun updateTabSelection(selectedTab: TextView, vararg otherTabs: TextView) {
+        // 선택된 탭 활성화 (selector drawable의 state_selected 사용)
+        selectedTab.isSelected = true
+        otherTabs.forEach { it.isSelected = false }
+        currentSelectedTab = selectedTab
     }
 
     private fun replaceFragment(fragment: Fragment) {

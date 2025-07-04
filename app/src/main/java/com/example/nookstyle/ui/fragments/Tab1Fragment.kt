@@ -1,13 +1,18 @@
 package com.example.nookstyle.ui.fragments
 
+import android.app.AlertDialog
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.*
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
+import com.example.nookstyle.util.ScreenshotUtil
 import java.io.IOException
 
 
@@ -38,6 +44,19 @@ class Tab1Fragment : Fragment() {
     private lateinit var btnShoes: Button
 
     private var allItemGroups = listOf<ItemGroup>()
+    
+    // 저장 버튼
+    private lateinit var btnSave: Button
+    
+    // 검색창
+    private lateinit var searchEditText: EditText
+    
+    // 전체 아이템 리스트 (필터링용)
+    private var allItems = listOf<Item>()
+    private var currentFilter: ItemTag? = null
+    private var currentSearchQuery: String = ""
+    
+    // 현재 빌라저
     private var currentVillager: Villager? = null
 
     override fun onCreateView(
@@ -66,14 +85,16 @@ class Tab1Fragment : Fragment() {
         btnHat = view.findViewById(R.id.btnHat)
         btnShoes = view.findViewById(R.id.btnShoes)
         
+        // 저장 버튼 초기화
+        btnSave = view.findViewById(R.id.btnSave)
+        
+        // 검색창 초기화
+        searchEditText = view.findViewById(R.id.searchEditText)
+        
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         setupData()
-        setupTagButtons()
-        setupVillager()
-        setupOverlappingImages()
-        view.post { setupImageStyles() }
     }
 
     // ItemGroup 데이터 세팅
@@ -94,6 +115,26 @@ class Tab1Fragment : Fragment() {
 
         adapter = ItemGroupAdapter(allItemGroups)
         recyclerView.adapter = adapter
+        
+        // 태그 버튼 클릭 리스너 설정
+        setupTagButtons()
+        
+        // 검색 기능 설정
+        setupSearchFunction()
+        
+        // 저장 버튼 클릭 리스너 설정
+        setupSaveButton()
+        
+        // 빌라저 초기화
+        setupVillager()
+        
+        // 겹쳐진 이미지 설정
+        setupOverlappingImages()
+        
+        // 뷰가 완전히 그려진 후 이미지 스타일 설정
+        view?.post {
+            setupImageStyles()
+        }
     }
     
     // 태그 버튼 설정
@@ -105,18 +146,99 @@ class Tab1Fragment : Fragment() {
         btnShoes.setOnClickListener { filterItems(ItemTag.SHOES) }
     }
     
+    // 저장 버튼 설정
+    private fun setupSaveButton() {
+        btnSave.setOnClickListener {
+            captureAndSaveScreenshot()
+        }
+    }
+    
+    // 스크린샷 캡처 및 저장
+    private fun captureAndSaveScreenshot() {
+        showFileNameInputDialog()
+    }
+    
+    // 파일명 입력 다이얼로그 표시
+    private fun showFileNameInputDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filename_input, null)
+        val editTextFileName = dialogView.findViewById<EditText>(R.id.editTextFileName)
+        
+        // 기본 파일명 설정 (현재 시간 기준)
+        val defaultFileName = "Villager_Outfit_${System.currentTimeMillis()}"
+        editTextFileName.setText(defaultFileName)
+        editTextFileName.selectAll() // 전체 선택하여 쉽게 수정할 수 있도록
+        
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("스크린샷 저장")
+            .setMessage("저장할 파일명을 입력하세요")
+            .setView(dialogView)
+            .setPositiveButton("저장") { _, _ ->
+                val fileName = editTextFileName.text.toString().trim()
+                if (fileName.isNotEmpty()) {
+                    captureAndSaveWithFileName(fileName)
+                } else {
+                    Toast.makeText(context, "파일명을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("취소", null)
+            .create()
+        
+        dialog.show()
+    }
+    
+    // 파일명으로 스크린샷 캡처 및 저장
+    private fun captureAndSaveWithFileName(fileName: String) {
+        try {
+            // 이미지 컨테이너 (빌라저와 의류가 겹쳐진 부분) 스크린샷
+            val imageContainer = view?.findViewById<FrameLayout>(R.id.imageContainer)
+            imageContainer?.let { container ->
+                // 뷰가 완전히 그려진 후 스크린샷 찍기
+                container.post {
+                    val savedPath = ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)
+                    if (savedPath != null) {
+                        Toast.makeText(context, "스크린샷이 저장되었습니다!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "스크린샷 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "스크린샷 저장 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
     // 아이템 필터링
     private fun filterItems(tag: ItemTag?) {
         val filtered = if (tag == null) {
             allItemGroups // 전체 보기
         } else {
             allItemGroups.filter { it.tag == tag } // 특정 태그만 필터링
+            currentFilter = tag
+            applyFilters()
         }
-        adapter = ItemGroupAdapter(filtered)
+    }
+    
+    // 필터와 검색을 모두 적용
+    private fun applyFilters() {
+        var filteredGroups = allItemGroups
+
+        // 태그 필터 적용
+        if (currentFilter != null) {
+            filteredGroups = filteredGroups.filter { it.tag == currentFilter }
+        }
+
+        // 검색어 필터 적용
+        if (currentSearchQuery.isNotEmpty()) {
+            filteredGroups = filteredGroups.filter { group ->
+                group.items.any { it.title.contains(currentSearchQuery, ignoreCase = true) }
+            }
+        }
+
+        adapter = ItemGroupAdapter(filteredGroups)
         recyclerView.adapter = adapter
-        
-        // 버튼 스타일 업데이트
-        updateButtonStyles(tag)
+
+        updateButtonStyles(currentFilter)
     }
     
     // 버튼 스타일 업데이트
@@ -286,6 +408,37 @@ class Tab1Fragment : Fragment() {
             inputStream.close()
         } catch (e: IOException) {
             e.printStackTrace()
+        }
+    }
+
+    // 검색 기능 설정
+    private fun setupSearchFunction() {
+        // 한글 입력을 위한 설정
+        searchEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_NORMAL
+        
+        // 키보드 동작 설정
+        searchEditText.imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+        
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            
+            override fun afterTextChanged(s: Editable?) {
+                currentSearchQuery = s?.toString() ?: ""
+                applyFilters()
+            }
+        })
+        
+        // 검색 버튼 클릭 시 키보드 숨기기
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                searchEditText.clearFocus()
+                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            false
         }
     }
 } 

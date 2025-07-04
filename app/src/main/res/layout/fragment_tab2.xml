@@ -3,24 +3,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_green_light"
-    android:gravity="center"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
+    <!-- 제목 -->
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="탭 2 콘텐츠"
-        android:textSize="24sp"
+        android:text="저장된 스크린샷"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@android:color/holo_blue_light" />
 
+    <!-- 빈 상태 메시지 -->
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tvEmptyState"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="여기에 탭 2의 실제 콘텐츠가 들어갑니다"
+        android:text="저장된 이미지 없음"
         android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"/>
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+
+    <!-- 스크린샷 Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewScreenshots"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
 </LinearLayout> 

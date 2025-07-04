@@ -9,11 +9,12 @@
     android:paddingStart="2dp"
     android:paddingEnd="2dp">
 
-    <!-- 왼쪽 영역 - 겹쳐진 이미지들 -->
-    <FrameLayout
+    <!-- 왼쪽 영역 - 겹쳐진 이미지들과 저장 버튼 -->
+    <LinearLayout
         android:id="@+id/leftSpace"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,75 +22,97 @@
         app:layout_constraintEnd_toStartOf="@+id/rightContainer"
         app:layout_constraintWidth_percent="0.4">
 
-        <!-- 맨 아래 이미지 - 빌라저 기본 이미지 -->
-        <ImageView
-            android:id="@+id/imageVillager"
-            android:layout_width="280dp"
-            android:layout_height="280dp"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:contentDescription="빌라저 이미지"
-            android:elevation="1dp"
-            android:padding="8dp"
-            android:scaleType="fitCenter" />
+        <!-- 이미지 영역 (FrameLayout) -->
+        <FrameLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent">
 
-        <!-- 신발 이미지 -->
-        <ImageView
-            android:id="@+id/imageShoes"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="신발 이미지"
-            android:elevation="2dp"
-            android:padding="6dp"
-            android:scaleType="centerCrop" />
+            <!-- 맨 아래 이미지 - 빌라저 기본 이미지 -->
+            <ImageView
+                android:id="@+id/imageVillager"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:contentDescription="빌라저 이미지"
+                android:elevation="1dp"
+                android:padding="8dp"
+                android:scaleType="fitCenter" />
 
-        <!-- 하의 이미지 -->
-        <ImageView
-            android:id="@+id/imageBottom"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="하의 이미지"
-            android:elevation="3dp"
-            android:padding="4dp"
-            android:scaleType="centerCrop" />
+            <!-- 신발 이미지 -->
+            <ImageView
+                android:id="@+id/imageShoes"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="신발 이미지"
+                android:elevation="2dp"
+                android:padding="6dp"
+                android:scaleType="centerCrop" />
 
-        <!-- 상의 이미지 -->
-        <ImageView
-            android:id="@+id/imageTop"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="상의 이미지"
-            android:elevation="4dp"
-            android:padding="2dp"
-            android:scaleType="centerCrop" />
+            <!-- 하의 이미지 -->
+            <ImageView
+                android:id="@+id/imageBottom"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="하의 이미지"
+                android:elevation="3dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop" />
 
-        <!-- 맨 위 이미지 - 모자 이미지 -->
-        <ImageView
-            android:id="@+id/imageHat"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="모자 이미지"
-            android:elevation="5dp"
-            android:padding="0dp"
-            android:scaleType="centerCrop" />
+            <!-- 상의 이미지 -->
+            <ImageView
+                android:id="@+id/imageTop"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="상의 이미지"
+                android:elevation="4dp"
+                android:padding="2dp"
+                android:scaleType="centerCrop" />
 
-    </FrameLayout>
+            <!-- 맨 위 이미지 - 모자 이미지 -->
+            <ImageView
+                android:id="@+id/imageHat"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="모자 이미지"
+                android:elevation="5dp"
+                android:padding="0dp"
+                android:scaleType="centerCrop" />
+
+        </FrameLayout>
+
+        <!-- 저장 버튼 -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="저장"
+            android:textSize="16sp"
+            android:background="@android:color/holo_green_light"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
+
+    </LinearLayout>
 
     <!-- 오른쪽 절반 - 태그 선택 버튼과 RecyclerView -->
     <LinearLayout
@@ -103,6 +126,37 @@
         app:layout_constraintStart_toEndOf="@+id/leftSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.6">
+
+        <!-- 검색창 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:hint="아이템 검색..."
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@android:color/white"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="8dp"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textIsSelectable="true"
+                android:importantForAutofill="no"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+        </LinearLayout>
 
         <!-- 태그 선택 버튼들 -->
         <LinearLayout

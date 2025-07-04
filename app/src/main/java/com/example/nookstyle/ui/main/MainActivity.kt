@@ -8,6 +8,8 @@ import com.example.nookstyle.R
 import com.example.nookstyle.ui.fragments.Tab1Fragment
 import com.example.nookstyle.ui.fragments.Tab2Fragment
 import com.example.nookstyle.ui.fragments.Tab3Fragment
+import android.content.Intent
+
 
 class MainActivity : AppCompatActivity() {
 

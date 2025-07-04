@@ -14,8 +14,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/recyclerView"
-        app:layout_constraintWidth_percent="0.5">
+        app:layout_constraintEnd_toStartOf="@+id/rightContainer"
+        app:layout_constraintWidth_percent="0.4">
 
         <!-- 맨 아래 이미지 -->
         <ImageView
@@ -60,17 +60,99 @@
 
     </FrameLayout>
 
-    <!-- 오른쪽 절반 - RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <!-- 오른쪽 절반 - 태그 선택 버튼과 RecyclerView -->
+    <LinearLayout
+        android:id="@+id/rightContainer"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:orientation="vertical"
         android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/leftSpace"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.5"/>
+        app:layout_constraintWidth_percent="0.6">
+
+        <!-- 태그 선택 버튼들 -->
+        <LinearLayout
+            android:id="@+id/tagButtonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@android:color/darker_gray">
+
+                <!-- 전체 버튼 -->
+                <Button
+                    android:id="@+id/btnAll"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="전체"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@android:color/holo_blue_light"
+                    android:textColor="@android:color/white" />
+
+                <!-- 상의 버튼 -->
+                <Button
+                    android:id="@+id/btnTop"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="상의"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@android:color/white"
+                    android:textColor="@android:color/black" />
+
+                <!-- 하의 버튼 -->
+                <Button
+                    android:id="@+id/btnBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="하의"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@android:color/white"
+                    android:textColor="@android:color/black" />
+
+                <!-- 모자 버튼 -->
+                <Button
+                    android:id="@+id/btnHat"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="모자"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@android:color/white"
+                    android:textColor="@android:color/black" />
+
+                <!-- 신발 버튼 -->
+                <Button
+                    android:id="@+id/btnShoes"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="신발"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="0dp"
+                    android:background="@android:color/white"
+                    android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

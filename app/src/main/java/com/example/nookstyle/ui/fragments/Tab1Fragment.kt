@@ -1,7 +1,6 @@
 package com.example.nookstyle.ui.fragments
 
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,18 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
-import com.example.nookstyle.model.Item
-import com.example.nookstyle.model.ItemTag
-import com.example.nookstyle.model.Villager
-import com.example.nookstyle.model.ClothingPosition
-import com.example.nookstyle.ui.adapter.ItemAdapter
+import com.example.nookstyle.model.*
+import com.example.nookstyle.ui.adapter.ItemGroupAdapter
 import java.io.IOException
-import android.util.Log
+
+
 
 class Tab1Fragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ItemAdapter
+    private lateinit var adapter: ItemGroupAdapter
+
     private lateinit var imageVillager: ImageView
     private lateinit var imageShoes: ImageView
     private lateinit var imageBottom: ImageView
@@ -38,12 +36,8 @@ class Tab1Fragment : Fragment() {
     private lateinit var btnBottom: Button
     private lateinit var btnHat: Button
     private lateinit var btnShoes: Button
-    
-    // 전체 아이템 리스트 (필터링용)
-    private var allItems = listOf<Item>()
-    private var currentFilter: ItemTag? = null
-    
-    // 현재 빌라저
+
+    private var allItemGroups = listOf<ItemGroup>()
     private var currentVillager: Villager? = null
 
     override fun onCreateView(
@@ -75,36 +69,31 @@ class Tab1Fragment : Fragment() {
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
-        // 전체 아이템 리스트 생성
-        allItems = listOf(
-            Item("제목 1", "설명 1", ItemTag.TOP, "images/cloths/hat/froghat/1_green.webp"),
-            Item("제목 2", "설명 2", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 3", "설명 3", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 4", "설명 4", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 5", "설명 5", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 6", "설명 6", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 7", "설명 7", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 8", "설명 8", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp"),
-            Item("제목 9", "설명 9", ItemTag.TOP, "images/cloths/top/TopsTexTopTshirtsHNumberball2.webp"),
-            Item("제목 10", "설명 10", ItemTag.BOTTOM, "images/cloths/bottom/BottomsTexPantsNormalLeather0.webp")
+        setupData()
+        setupTagButtons()
+        setupVillager()
+        setupOverlappingImages()
+        view.post { setupImageStyles() }
+    }
+
+    // ItemGroup 데이터 세팅
+    private fun setupData() {
+        allItemGroups = listOf(
+            ItemGroup(
+                title = "개구리 모자",
+                tag = ItemTag.HAT,
+                items = listOf(
+                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp"),
+                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp"),
+                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp"),
+                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
+                )
+            )
+            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
         )
 
-        adapter = ItemAdapter(allItems)
+        adapter = ItemGroupAdapter(allItemGroups)
         recyclerView.adapter = adapter
-        
-        // 태그 버튼 클릭 리스너 설정
-        setupTagButtons()
-        
-        // 빌라저 초기화
-        setupVillager()
-        
-        // 겹쳐진 이미지 설정
-        setupOverlappingImages()
-        
-        // 뷰가 완전히 그려진 후 이미지 스타일 설정
-        view.post {
-            setupImageStyles()
-        }
     }
     
     // 태그 버튼 설정
@@ -118,15 +107,12 @@ class Tab1Fragment : Fragment() {
     
     // 아이템 필터링
     private fun filterItems(tag: ItemTag?) {
-        currentFilter = tag
-        
-        val filteredItems = if (tag == null) {
-            allItems // 전체 보기
+        val filtered = if (tag == null) {
+            allItemGroups // 전체 보기
         } else {
-            allItems.filter { it.tag == tag } // 특정 태그만 필터링
+            allItemGroups.filter { it.tag == tag } // 특정 태그만 필터링
         }
-        
-        adapter = ItemAdapter(filteredItems)
+        adapter = ItemGroupAdapter(filtered)
         recyclerView.adapter = adapter
         
         // 버튼 스타일 업데이트
@@ -136,44 +122,24 @@ class Tab1Fragment : Fragment() {
     // 버튼 스타일 업데이트
     private fun updateButtonStyles(selectedTag: ItemTag?) {
         // 모든 버튼을 기본 스타일로 초기화
-        btnAll.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-        btnAll.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        
-        btnTop.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-        btnTop.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        
-        btnBottom.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-        btnBottom.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        
-        btnHat.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-        btnHat.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        
-        btnShoes.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-        btnShoes.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        
+        listOf(btnAll, btnTop, btnBottom, btnHat, btnShoes).forEach { button ->
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+        }
+
         // 선택된 버튼만 강조
         when (selectedTag) {
-            null -> {
-                btnAll.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
-                btnAll.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            }
-            ItemTag.TOP -> {
-                btnTop.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
-                btnTop.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            }
-            ItemTag.BOTTOM -> {
-                btnBottom.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
-                btnBottom.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            }
-            ItemTag.HAT -> {
-                btnHat.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
-                btnHat.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            }
-            ItemTag.SHOES -> {
-                btnShoes.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
-                btnShoes.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            }
+            null -> highlightButton(btnAll)
+            ItemTag.TOP -> highlightButton(btnTop)
+            ItemTag.BOTTOM -> highlightButton(btnBottom)
+            ItemTag.HAT -> highlightButton(btnHat)
+            ItemTag.SHOES -> highlightButton(btnShoes)
         }
+    }
+
+    private fun highlightButton(button: Button) {
+        button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
+        button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
     }
     
     // 빌라저 설정

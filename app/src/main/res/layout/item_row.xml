@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,19 +9,15 @@
     android:elevation="2dp"
     android:layout_margin="4dp">
 
-    <!-- 왼쪽: 이미지 + 좌우 버튼 -->
     <RelativeLayout
         android:layout_width="120dp"
         android:layout_height="120dp">
-
         <ImageView
             android:id="@+id/imageViewItem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray"
-            android:src="@android:drawable/ic_menu_gallery" />
-
+            android:background="@android:color/darker_gray"/>
         <ImageButton
             android:id="@+id/buttonPrev"
             android:layout_width="24dp"
@@ -30,8 +25,8 @@
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_chevron_left"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
-
+            android:layout_centerVertical="true"
+            android:contentDescription="Previous image"/>
         <ImageButton
             android:id="@+id/buttonNext"
             android:layout_width="24dp"
@@ -39,11 +34,10 @@
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_chevron_right"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
-
+            android:layout_centerVertical="true"
+            android:contentDescription="Next image"/>
     </RelativeLayout>
 
-    <!-- 오른쪽: 텍스트 정보 -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
@@ -57,52 +51,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:text="개구리 모자" />
-
+            android:textStyle="bold"/>
         <TextView
-            android:id="@+id/textViewDesc"
+            android:id="@+id/textViewColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="8dp"
-            android:text="그린 / 블루 / 레드 / 옐로 \n1120벨 \n280 마일" />
-
+            android:layout_marginTop="4dp"/>
+        <TextView
+            android:id="@+id/textViewPrice_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+        <TextView
+            android:id="@+id/textViewPrice_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
-
 </LinearLayout>
-
-<!--    &lt;!&ndash; 제목 &ndash;&gt;-->
-<!--    <TextView-->
-<!--        android:id="@+id/textViewTitle"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:textColor="@android:color/black"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:maxLines="2"-->
-<!--        android:ellipsize="end"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/imageViewItem"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
-
-<!--    &lt;!&ndash; 설명 &ndash;&gt;-->
-<!--    <TextView-->
-<!--        android:id="@+id/textViewDesc"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="14sp"-->
-<!--        android:textColor="@android:color/darker_gray"-->
-<!--        android:layout_marginTop="4dp"-->
-<!--        android:maxLines="3"-->
-<!--        android:ellipsize="end"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
-
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

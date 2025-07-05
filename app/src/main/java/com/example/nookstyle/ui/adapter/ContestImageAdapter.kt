@@ -11,15 +11,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.ContestImage
+import com.example.nookstyle.model.ReportData
+import com.example.nookstyle.model.ReportReason
 import com.example.nookstyle.util.LikeCountManager
+import com.example.nookstyle.util.ReportManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -40,6 +47,7 @@ class ContestImageAdapter(
         val tvLikeCount: TextView = view.findViewById(R.id.tvLikeCount)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
         val btnCancelSubmission: Button = view.findViewById(R.id.btnCancelSubmission)
+        val btnKebabMenu: ImageView = view.findViewById(R.id.btnKebabMenu)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContestImageViewHolder {
@@ -117,6 +125,11 @@ class ContestImageAdapter(
         // 출품 취소 버튼 클릭 리스너
         holder.btnCancelSubmission.setOnClickListener {
             onCancelSubmission(contestImage)
+        }
+        
+        // 케밥 메뉴 버튼 클릭 리스너
+        holder.btnKebabMenu.setOnClickListener {
+            showKebabMenu(holder.itemView.context, holder.btnKebabMenu, contestImage, position)
         }
     }
 
@@ -233,6 +246,101 @@ class ContestImageAdapter(
             e.printStackTrace()
             null
         }
+    }
+    
+    /**
+     * 케밥 메뉴 표시
+     */
+    private fun showKebabMenu(context: Context, anchorView: View, contestImage: ContestImage, position: Int) {
+        val popupMenu = PopupMenu(context, anchorView)
+        popupMenu.menuInflater.inflate(R.menu.contest_image_menu, popupMenu.menu)
+        
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_save -> {
+                    saveToGallery(context, contestImage.imageName)
+                    true
+                }
+                R.id.action_report -> {
+                    showReportDialog(context, contestImage)
+                    true
+                }
+                else -> false
+            }
+        }
+        
+        popupMenu.show()
+    }
+    
+    /**
+     * 신고 다이얼로그 표시
+     */
+    private fun showReportDialog(context: Context, contestImage: ContestImage) {
+        // ReportManager 초기화
+        ReportManager.init(context)
+        
+        // 이미 신고된 이미지인지 확인
+        if (ReportManager.isReported(contestImage.imageName)) {
+            Toast.makeText(context, "이미 신고된 이미지입니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        // 신고 사유 선택 다이얼로그 생성
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_report_reason, null)
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupReportReason)
+        val etOtherReason = dialogView.findViewById<EditText>(R.id.etOtherReason)
+        
+        // "기타" 선택 시 텍스트 입력 필드 표시
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            etOtherReason.visibility = if (checkedId == R.id.rbOther) View.VISIBLE else View.GONE
+        }
+        
+        val dialog = android.app.AlertDialog.Builder(context)
+            .setTitle("신고 사유 선택")
+            .setView(dialogView)
+            .setPositiveButton("신고") { _, _ ->
+                val selectedReason = when (radioGroup.checkedRadioButtonId) {
+                    R.id.rbInappropriate -> ReportReason.INAPPROPRIATE
+                    R.id.rbCopyright -> ReportReason.COPYRIGHT
+                    R.id.rbSpam -> ReportReason.SPAM
+                    R.id.rbViolence -> ReportReason.VIOLENCE
+                    R.id.rbOther -> ReportReason.OTHER
+                    else -> ReportReason.INAPPROPRIATE
+                }
+                
+                val otherReason = if (selectedReason == ReportReason.OTHER) {
+                    etOtherReason.text.toString().takeIf { it.isNotBlank() }
+                } else null
+                
+                // 신고 데이터 저장
+                val reportData = ReportData(
+                    imageName = contestImage.imageName,
+                    reportReason = selectedReason.displayName,
+                    otherReason = otherReason
+                )
+                
+                ReportManager.saveReport(reportData)
+                
+                val message = if (otherReason != null) {
+                    "신고가 접수되었습니다. (사유: $otherReason)"
+                } else {
+                    "신고가 접수되었습니다. (사유: ${selectedReason.displayName})"
+                }
+                
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+            .setNegativeButton("취소", null)
+            .create()
+        
+        // 다이얼로그 크기 조정
+        dialog.setOnShowListener {
+            dialog.window?.setLayout(
+                (context.resources.displayMetrics.widthPixels * 0.9).toInt(),
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+        
+        dialog.show()
     }
     
     /**

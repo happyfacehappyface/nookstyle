@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="400dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="신고 사유를 선택해주세요"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupReportReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rbInappropriate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="부적절한 콘텐츠"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rbCopyright"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="저작권 침해"
+                android:textSize="16sp"
+                android:padding="8dp" />
+
+            <RadioButton
+                android:id="@+id/rbSpam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="스팸 또는 광고"
+                android:textSize="16sp"
+                android:padding="8dp" />
+
+            <RadioButton
+                android:id="@+id/rbViolence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="폭력적이거나 위험한 콘텐츠"
+                android:textSize="16sp"
+                android:padding="8dp" />
+
+            <RadioButton
+                android:id="@+id/rbOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="기타"
+                android:textSize="16sp"
+                android:padding="8dp" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/etOtherReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="기타 사유를 입력해주세요"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:maxLines="4"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView> 

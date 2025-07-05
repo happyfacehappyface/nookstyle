@@ -58,8 +58,8 @@ class ItemGroupAdapter(
         fun updateView(item: Item) {
             holder.titleText.text = group.title
 
-            // 색상 사각형 생성
-            createColorSquares(holder.colorContainer, group.items)
+            // 색상 사각형 생성 (현재 선택된 아이템 정보 전달)
+            createColorSquares(holder.colorContainer, group.items, item)
 
             holder.priceBellText.text = "${group.price_bell} 벨"
             holder.priceMileText.text = "${group.price_mile} 마일"
@@ -173,10 +173,10 @@ class ItemGroupAdapter(
     }
     
     // 색상 사각형을 생성하는 함수
-    private fun createColorSquares(colorContainer: LinearLayout, items: List<Item>) {
+    private fun createColorSquares(colorContainer: LinearLayout, items: List<Item>, currentItem: Item) {
         colorContainer.removeAllViews()
         
-        items.forEach { item ->
+        items.forEachIndexed { index, item ->
             val colorSquare = View(colorContainer.context).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     dpToPx(colorContainer.context, 16), // 16dp
@@ -184,7 +184,60 @@ class ItemGroupAdapter(
                 ).apply {
                     marginEnd = dpToPx(colorContainer.context, 4) // 4dp 간격
                 }
-                setBackgroundColor(getColorFromName(item.color))
+                
+                // 클릭 가능함을 나타내는 테두리 추가
+                elevation = dpToPx(colorContainer.context, 2).toFloat()
+                setPadding(dpToPx(colorContainer.context, 1), dpToPx(colorContainer.context, 1), 
+                          dpToPx(colorContainer.context, 1), dpToPx(colorContainer.context, 1))
+                
+                // 현재 선택된 색상인지 확인하여 강조 표시
+                val isCurrentColor = item.color == currentItem.color
+                if (isCurrentColor) {
+                    // 선택된 색상은 더 큰 크기와 테두리로 강조
+                    layoutParams.width = dpToPx(colorContainer.context, 20)
+                    layoutParams.height = dpToPx(colorContainer.context, 20)
+                    elevation = dpToPx(colorContainer.context, 4).toFloat()
+                    setPadding(dpToPx(colorContainer.context, 2), dpToPx(colorContainer.context, 2), 
+                              dpToPx(colorContainer.context, 2), dpToPx(colorContainer.context, 2))
+                    
+                    // 선택된 색상에 검은색 테두리 추가
+                    val borderDrawable = android.graphics.drawable.GradientDrawable().apply {
+                        shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                        setColor(getColorFromName(item.color))
+                        setStroke(dpToPx(colorContainer.context, 2), android.graphics.Color.BLACK)
+                        cornerRadius = dpToPx(colorContainer.context, 2).toFloat()
+                    }
+                    background = borderDrawable
+                } else {
+                    // 선택되지 않은 색상은 기본 스타일
+                    val borderDrawable = android.graphics.drawable.GradientDrawable().apply {
+                        shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                        setColor(getColorFromName(item.color))
+                        setStroke(dpToPx(colorContainer.context, 1), android.graphics.Color.LTGRAY)
+                        cornerRadius = dpToPx(colorContainer.context, 2).toFloat()
+                    }
+                    background = borderDrawable
+                }
+                
+                // 색상 사각형 클릭 리스너 추가
+                setOnClickListener {
+                    // 클릭 효과 추가
+                    alpha = 0.7f
+                    postDelayed({ alpha = 1.0f }, 100)
+                    
+                    // 해당 색상의 아이템으로 바로 전환
+                    val group = groupList.find { group ->
+                        group.items.contains(item)
+                    }
+                    group?.let { foundGroup ->
+                        // 현재 인덱스를 해당 색상의 인덱스로 업데이트
+                        currentIndexMap[foundGroup] = index
+                        // 아이템 선택 콜백 호출
+                        onItemSelected?.invoke(item, foundGroup)
+                        // 어댑터 전체 업데이트
+                        notifyDataSetChanged()
+                    }
+                }
             }
             colorContainer.addView(colorSquare)
         }

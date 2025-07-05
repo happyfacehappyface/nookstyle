@@ -356,52 +356,28 @@ class Tab1Fragment : Fragment() {
         
         // 선택된 아이템이 없으면 기본값 설정
         if (selectedTop == null || selectedTopGroup == null) {
-            val topGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
-            val defaultTop = topGroup?.items?.firstOrNull()
-            if (defaultTop != null && topGroup != null) {
-                SelectedItemsManager.setSelectedTop(defaultTop, topGroup)
-                loadImageFromAssets(defaultTop.imagePath, imageTop)
-                loadImageFromAssets(defaultTop.imagePath, equippedTopImage)
-            }
+            setupDefaultTop()
         } else {
             loadImageFromAssets(selectedTop.imagePath, imageTop)
             loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
         }
         
         if (selectedBottom == null || selectedBottomGroup == null) {
-            val bottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
-            val defaultBottom = bottomGroup?.items?.firstOrNull()
-            if (defaultBottom != null && bottomGroup != null) {
-                SelectedItemsManager.setSelectedBottom(defaultBottom, bottomGroup)
-                loadImageFromAssets(defaultBottom.imagePath, imageBottom)
-                loadImageFromAssets(defaultBottom.imagePath, equippedBottomImage)
-            }
+            setupDefaultBottom()
         } else {
             loadImageFromAssets(selectedBottom.imagePath, imageBottom)
             loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
         }
         
         if (selectedHat == null || selectedHatGroup == null) {
-            val hatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
-            val defaultHat = hatGroup?.items?.firstOrNull()
-            if (defaultHat != null && hatGroup != null) {
-                SelectedItemsManager.setSelectedHat(defaultHat, hatGroup)
-                loadImageFromAssets(defaultHat.imagePath, imageHat)
-                loadImageFromAssets(defaultHat.imagePath, equippedHatImage)
-            }
+            setupDefaultHat()
         } else {
             loadImageFromAssets(selectedHat.imagePath, imageHat)
             loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
         }
         
         if (selectedShoes == null || selectedShoesGroup == null) {
-            val shoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
-            val defaultShoes = shoesGroup?.items?.firstOrNull()
-            if (defaultShoes != null && shoesGroup != null) {
-                SelectedItemsManager.setSelectedShoes(defaultShoes, shoesGroup)
-                loadImageFromAssets(defaultShoes.imagePath, imageShoes)
-                loadImageFromAssets(defaultShoes.imagePath, equippedShoesImage)
-            }
+            setupDefaultShoes()
         } else {
             loadImageFromAssets(selectedShoes.imagePath, imageShoes)
             loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
@@ -503,6 +479,87 @@ class Tab1Fragment : Fragment() {
         imageView.scaleType = ImageView.ScaleType.FIT_XY
         imageView.rotation = position.rotation
         imageView.setPadding(0, 0, 0, 0)
+    }
+    
+    // 기본 복장 설정 함수들
+    private fun setupDefaultTop() {
+        // 기본 상의: 2번공 옷 (파랑색)
+        val topGroup = globalItemGroups.find { it.title == "2번공 옷" }
+        val defaultTop = topGroup?.items?.find { it.color == "파랑" }
+        if (defaultTop != null && topGroup != null) {
+            SelectedItemsManager.setSelectedTop(defaultTop, topGroup)
+            loadImageFromAssets(defaultTop.imagePath, imageTop)
+            loadImageFromAssets(defaultTop.imagePath, equippedTopImage)
+        } else {
+            // 2번공 옷이 없으면 첫 번째 상의 사용
+            val fallbackTopGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
+            val fallbackTop = fallbackTopGroup?.items?.firstOrNull()
+            if (fallbackTop != null && fallbackTopGroup != null) {
+                SelectedItemsManager.setSelectedTop(fallbackTop, fallbackTopGroup)
+                loadImageFromAssets(fallbackTop.imagePath, imageTop)
+                loadImageFromAssets(fallbackTop.imagePath, equippedTopImage)
+            }
+        }
+    }
+    
+    private fun setupDefaultBottom() {
+        // 기본 하의: 가죽 바지 (검정색)
+        val bottomGroup = globalItemGroups.find { it.title == "가죽 바지" }
+        val defaultBottom = bottomGroup?.items?.find { it.color == "검정" }
+        if (defaultBottom != null && bottomGroup != null) {
+            SelectedItemsManager.setSelectedBottom(defaultBottom, bottomGroup)
+            loadImageFromAssets(defaultBottom.imagePath, imageBottom)
+            loadImageFromAssets(defaultBottom.imagePath, equippedBottomImage)
+        } else {
+            // 가죽 바지가 없으면 첫 번째 하의 사용
+            val fallbackBottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
+            val fallbackBottom = fallbackBottomGroup?.items?.firstOrNull()
+            if (fallbackBottom != null && fallbackBottomGroup != null) {
+                SelectedItemsManager.setSelectedBottom(fallbackBottom, fallbackBottomGroup)
+                loadImageFromAssets(fallbackBottom.imagePath, imageBottom)
+                loadImageFromAssets(fallbackBottom.imagePath, equippedBottomImage)
+            }
+        }
+    }
+    
+    private fun setupDefaultHat() {
+        // 기본 모자: 개구리 모자 (초록색)
+        val hatGroup = globalItemGroups.find { it.title == "마리오 모자" }
+        val defaultHat = hatGroup?.items?.find { it.color == "빨강" }
+        if (defaultHat != null && hatGroup != null) {
+            SelectedItemsManager.setSelectedHat(defaultHat, hatGroup)
+            loadImageFromAssets(defaultHat.imagePath, imageHat)
+            loadImageFromAssets(defaultHat.imagePath, equippedHatImage)
+        } else {
+            // 개구리 모자가 없으면 첫 번째 모자 사용
+            val fallbackHatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
+            val fallbackHat = fallbackHatGroup?.items?.firstOrNull()
+            if (fallbackHat != null && fallbackHatGroup != null) {
+                SelectedItemsManager.setSelectedHat(fallbackHat, fallbackHatGroup)
+                loadImageFromAssets(fallbackHat.imagePath, imageHat)
+                loadImageFromAssets(fallbackHat.imagePath, equippedHatImage)
+            }
+        }
+    }
+    
+    private fun setupDefaultShoes() {
+        // 기본 신발: 가죽 스니커 (하양색)
+        val shoesGroup = globalItemGroups.find { it.title == "가죽 스니커" }
+        val defaultShoes = shoesGroup?.items?.find { it.color == "하양" }
+        if (defaultShoes != null && shoesGroup != null) {
+            SelectedItemsManager.setSelectedShoes(defaultShoes, shoesGroup)
+            loadImageFromAssets(defaultShoes.imagePath, imageShoes)
+            loadImageFromAssets(defaultShoes.imagePath, equippedShoesImage)
+        } else {
+            // 가죽 스니커가 없으면 첫 번째 신발 사용
+            val fallbackShoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
+            val fallbackShoes = fallbackShoesGroup?.items?.firstOrNull()
+            if (fallbackShoes != null && fallbackShoesGroup != null) {
+                SelectedItemsManager.setSelectedShoes(fallbackShoes, fallbackShoesGroup)
+                loadImageFromAssets(fallbackShoes.imagePath, imageShoes)
+                loadImageFromAssets(fallbackShoes.imagePath, equippedShoesImage)
+            }
+        }
     }
     
     // 현재 선택된 아이템 그룹의 위치/스케일 조정값 가져오기

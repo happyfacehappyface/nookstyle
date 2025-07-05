@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.Item
@@ -26,7 +28,7 @@ class ItemGroupAdapter(
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewItem)
         val titleText: TextView = view.findViewById(R.id.textViewTitle)
-        val colorText: TextView = view.findViewById(R.id.textViewColor)
+        val colorContainer: LinearLayout = view.findViewById(R.id.colorContainer)
         val priceBellText: TextView = view.findViewById(R.id.textViewPrice_b)
         val priceMileText: TextView = view.findViewById(R.id.textViewPrice_m)
         val buttonPrev: ImageButton = view.findViewById(R.id.buttonPrev)
@@ -56,8 +58,8 @@ class ItemGroupAdapter(
         fun updateView(item: Item) {
             holder.titleText.text = group.title
 
-            val allColors = group.items.joinToString(" / ") { it.color }
-            holder.colorText.text = allColors
+            // 색상 사각형 생성
+            createColorSquares(holder.colorContainer, group.items)
 
             holder.priceBellText.text = "${group.price_bell} 벨"
             holder.priceMileText.text = "${group.price_mile} 마일"
@@ -167,6 +169,54 @@ class ItemGroupAdapter(
             holder.itemContainer.setBackgroundResource(R.drawable.selected_item_background)
         } else {
             holder.itemContainer.setBackgroundResource(android.R.color.white)
+        }
+    }
+    
+    // 색상 사각형을 생성하는 함수
+    private fun createColorSquares(colorContainer: LinearLayout, items: List<Item>) {
+        colorContainer.removeAllViews()
+        
+        items.forEach { item ->
+            val colorSquare = View(colorContainer.context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    dpToPx(colorContainer.context, 16), // 16dp
+                    dpToPx(colorContainer.context, 16)  // 16dp
+                ).apply {
+                    marginEnd = dpToPx(colorContainer.context, 4) // 4dp 간격
+                }
+                setBackgroundColor(getColorFromName(item.color))
+            }
+            colorContainer.addView(colorSquare)
+        }
+    }
+    
+    // dp를 px로 변환하는 함수
+    private fun dpToPx(context: android.content.Context, dp: Int): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
+    
+    // 색상 이름을 실제 색상 값으로 변환하는 함수
+    private fun getColorFromName(colorName: String): Int {
+        return when (colorName.lowercase()) {
+            "빨강", "red" -> android.graphics.Color.RED
+            "파랑", "blue" -> android.graphics.Color.BLUE
+            "초록", "green" -> android.graphics.Color.GREEN
+            "노랑", "yellow" -> android.graphics.Color.YELLOW
+            "검정", "black" -> android.graphics.Color.BLACK
+            "하양", "white" -> android.graphics.Color.WHITE
+            "회색", "gray", "grey" -> android.graphics.Color.GRAY
+            "주황", "orange" -> android.graphics.Color.rgb(255, 165, 0)
+            "보라", "purple" -> android.graphics.Color.rgb(128, 0, 128)
+            "분홍", "pink" -> android.graphics.Color.rgb(255, 192, 203)
+            "갈색", "brown" -> android.graphics.Color.rgb(139, 69, 19)
+            "하늘색", "skyblue" -> android.graphics.Color.rgb(135, 206, 235)
+            "네이비", "navy" -> android.graphics.Color.rgb(0, 0, 128)
+            "베이지", "beige" -> android.graphics.Color.rgb(245, 245, 220)
+            "와인레드", "winered" -> android.graphics.Color.rgb(128, 0, 0)
+            "코랄", "coral" -> android.graphics.Color.rgb(255, 127, 80)
+            "아이보리", "ivory" -> android.graphics.Color.rgb(255, 255, 240)
+            else -> android.graphics.Color.GRAY // 기본값
         }
     }
     

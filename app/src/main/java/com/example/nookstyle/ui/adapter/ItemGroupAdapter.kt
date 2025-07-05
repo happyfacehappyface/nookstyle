@@ -47,8 +47,8 @@ class ItemGroupAdapter(
             val allColors = group.items.joinToString(" / ") { it.color }
             holder.colorText.text = allColors
 
-            holder.priceBellText.text = group.price_bell
-            holder.priceMileText.text = group.price_mile
+            holder.priceBellText.text = "${group.price_bell} 벨"
+            holder.priceMileText.text = "${group.price_mile} 마일"
             loadImage(holder.imageView, item.imagePath, assetManager)
         }
 

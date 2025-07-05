@@ -114,14 +114,33 @@ object AssetItemLoader {
     }
     
     private fun extractColorFromFileName(fileName: String): String {
-        // 파일명에서 색상 추출 (예: "1_black.webp" -> "black")
+        // 파일명에서 색상 추출 (예: "1_black.webp" -> "검정")
         val nameWithoutExtension = fileName.substringBeforeLast(".")
         val parts = nameWithoutExtension.split("_")
         
-        return if (parts.size >= 2) {
+        val englishColor = if (parts.size >= 2) {
             parts[1] // 두 번째 부분이 색상
         } else {
             "unknown"
+        }
+        
+        return translateColorToKorean(englishColor)
+    }
+    
+    private fun translateColorToKorean(englishColor: String): String {
+        return when (englishColor.lowercase()) {
+            "red" -> "빨강"
+            "black" -> "검정"
+            "blue" -> "파랑"
+            "green" -> "초록"
+            "yellow" -> "노랑"
+            "white" -> "하양"
+            "brown" -> "갈색"
+            "purple" -> "보라"
+            "orange" -> "주황"
+            "pink" -> "분홍"
+            "gray", "grey" -> "회색"
+            else -> englishColor // 번역할 수 없는 색상은 그대로 반환
         }
     }
 } 

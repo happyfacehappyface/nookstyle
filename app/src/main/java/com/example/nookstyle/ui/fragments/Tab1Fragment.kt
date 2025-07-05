@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.*
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
+import com.example.nookstyle.util.AssetItemLoader
 import com.example.nookstyle.util.ScreenshotUtil
 import java.io.IOException
 
@@ -124,51 +125,10 @@ class Tab1Fragment : Fragment() {
 
     // ItemGroup 데이터 세팅
     private fun setupData() {
-//        allItemGroups = listOf(
-//            ItemGroup(
-//                title = "개구리 모자",
-//                tag = ItemTag.HAT,
-//                items = listOf(
-//                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
-//                )
-//            )
-//            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
-//        )
-
         if(globalItemGroups.isEmpty()) {
-            createItem("가죽 바지", ItemTag.BOTTOM, "검정", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/1_black.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "갈색", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/2_brown.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "베이지", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/3_beige.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "빨강", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/4_red.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "파랑", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/5_blue.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "노랑", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/6_yellow.webp")
-
-            createItem("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp")
-            createItem("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp")
-            createItem("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp")
-            createItem("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
-
-            createItem("마리오 모자", ItemTag.HAT, "빨강", "1500벨", "375 마일", "images/cloths/hat/MarioCap/1_red.webp")
-
-            createItem("가죽 스니커", ItemTag.SHOES, "하양", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/1_white.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "검정", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/2_black.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "빨강", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/3_red.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "초록", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/4_green.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "파랑", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/5_blue.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "노랑", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/6_yellow.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "하늘", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/7_skyblue.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "주황", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/8_orange.webp")
-
-            createItem("나뭇잎 달걀 신발", ItemTag.SHOES, "초록", "비매품", "800 마일", "images/cloths/shoes/LowCutEggLeaf/1_green.webp")
-
-            createItem("2번공 옷", ItemTag.TOP, "파랑", "560 벨", "140 마일", "images/cloths/top/HNumberBall2/1_blue.webp")
-
-            createItem("가죽 트렌치코트", ItemTag.TOP, "검정", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/1_black.webp")
-            createItem("가죽 트렌치코트", ItemTag.TOP, "보라", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/2_purple.webp")
-            createItem("가죽 트렌치코트", ItemTag.TOP, "갈색", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/3_brown.webp")
+            // assets 폴더에서 자동으로 아이템 로드
+            val loadedItemGroups = AssetItemLoader.loadItemsFromAssets(requireContext())
+            globalItemGroups.addAll(loadedItemGroups)
         }
 
         adapter = ItemGroupAdapter(globalItemGroups) { selectedItem, selectedGroup ->

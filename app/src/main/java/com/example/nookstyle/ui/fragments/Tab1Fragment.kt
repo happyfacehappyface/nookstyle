@@ -315,30 +315,30 @@ class Tab1Fragment : Fragment() {
             imagePath = "images/villagers/Joey.png",
             hatPosition = ClothingPosition(
                 x = 0.5f,
-                y = 0.27f,
-                scaleX = 3.0f,
-                scaleY = 3.0f,
+                y = 0.22f,
+                scaleX = 2.0f,
+                scaleY = 1.5f,
                 rotation = 0f
             ),
             topPosition = ClothingPosition(
-                x = 0.5f,
-                y = 0.60f,
-                scaleX = 1.1f,
-                scaleY = 0.9f,
+                x = 0.50f,
+                y = 0.61f,
+                scaleX = 1.24f,
+                scaleY = 0.78f,
                 rotation = 0f
             ),
             bottomPosition = ClothingPosition(
                 x = 0.5f,
-                y = 0.74f,
+                y = 0.75f,
                 scaleX = 0.9f,
-                scaleY = 0.5f,
+                scaleY = 0.41f,
                 rotation = 0f
             ),
             shoesPosition = ClothingPosition(
-                x = 0.5f,
+                x = 0.48f,
                 y = 0.82f,
-                scaleX = 0.5f,
-                scaleY = 0.3f,
+                scaleX = 0.62f,
+                scaleY = 0.42f,
                 rotation = 0f
             )
         )

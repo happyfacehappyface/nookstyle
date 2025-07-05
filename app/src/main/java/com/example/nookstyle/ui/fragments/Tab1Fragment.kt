@@ -140,7 +140,6 @@ class Tab1Fragment : Fragment() {
         createItem("가죽 트렌치코트", ItemTag.TOP, "보라", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/2_purple.webp")
         createItem("가죽 트렌치코트", ItemTag.TOP, "갈색", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/3_brown.webp")
 
-        log.
 
         adapter = ItemGroupAdapter(globalItemGroups)
         recyclerView.adapter = adapter

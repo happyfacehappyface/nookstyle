@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.ContestImage
+import com.example.nookstyle.util.LikeCountManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -146,13 +147,13 @@ class ContestImageAdapter(
      */
     private fun toggleLike(position: Int) {
         val contestImage = contestImages[position]
-        contestImage.isLiked = !contestImage.isLiked
         
-        if (contestImage.isLiked) {
-            contestImage.likeCount++
-        } else {
-            contestImage.likeCount--
-        }
+        // LikeCountManager를 통해 좋아요 토글
+        val newLikeCount = LikeCountManager.toggleLike(contestImage.imageName)
+        
+        // ContestImage 객체 업데이트
+        contestImage.isLiked = LikeCountManager.getLikeState(contestImage.imageName)
+        contestImage.likeCount = newLikeCount
         
         // 해당 아이템만 업데이트
         notifyItemChanged(position)

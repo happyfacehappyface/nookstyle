@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -31,9 +32,9 @@ class ScreenshotAdapter(
     class ScreenshotViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewScreenshot)
         val tvFileName: TextView = view.findViewById(R.id.tvFileName)
-        val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
-        val btnSubmit: Button = view.findViewById(R.id.btnSubmit)
-        val btnDelete: Button = view.findViewById(R.id.btnDelete)
+        val btnSaveToGallery: FrameLayout = view.findViewById(R.id.btnSaveToGallery)
+        val btnSubmit: FrameLayout = view.findViewById(R.id.btnSubmit)
+        val btnDelete: FrameLayout = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScreenshotViewHolder {

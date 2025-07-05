@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.*
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
+import com.example.nookstyle.util.AssetItemLoader
+import com.example.nookstyle.util.SelectedItemsManager
 import com.example.nookstyle.util.ScreenshotUtil
 import java.io.IOException
 
@@ -66,11 +68,7 @@ class Tab1Fragment : Fragment() {
     // 현재 빌라저
     private var currentVillager: Villager? = null
     
-    // 현재 선택된 아이템들
-    private var selectedHat: Item? = null
-    private var selectedTop: Item? = null
-    private var selectedBottom: Item? = null
-    private var selectedShoes: Item? = null
+
     
 
 
@@ -129,55 +127,14 @@ class Tab1Fragment : Fragment() {
 
     // ItemGroup 데이터 세팅
     private fun setupData() {
-//        allItemGroups = listOf(
-//            ItemGroup(
-//                title = "개구리 모자",
-//                tag = ItemTag.HAT,
-//                items = listOf(
-//                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
-//                )
-//            )
-//            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
-//        )
-
         if(globalItemGroups.isEmpty()) {
-            createItem("가죽 바지", ItemTag.BOTTOM, "검정", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/1_black.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "갈색", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/2_brown.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "베이지", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/3_beige.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "빨강", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/4_red.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "파랑", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/5_blue.webp")
-            createItem("가죽 바지", ItemTag.BOTTOM, "노랑", "1300벨", "325 마일", "images/cloths/bottom/LeatherPants/6_yellow.webp")
-
-            createItem("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp")
-            createItem("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp")
-            createItem("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp")
-            createItem("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
-
-            createItem("마리오 모자", ItemTag.HAT, "빨강", "1500벨", "375 마일", "images/cloths/hat/MarioCap/1_red.webp")
-
-            createItem("가죽 스니커", ItemTag.SHOES, "하양", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/1_white.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "검정", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/2_black.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "빨강", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/3_red.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "초록", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/4_green.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "파랑", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/5_blue.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "노랑", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/6_yellow.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "하늘", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/7_skyblue.webp")
-            createItem("가죽 스니커", ItemTag.SHOES, "주황", "700벨", "175 마일", "images/cloths/shoes/LeatherSneaker/8_orange.webp")
-
-            createItem("나뭇잎 달걀 신발", ItemTag.SHOES, "초록", "비매품", "800 마일", "images/cloths/shoes/LowCutEggLeaf/1_green.webp")
-
-            createItem("2번공 옷", ItemTag.TOP, "파랑", "560 벨", "140 마일", "images/cloths/top/HNumberBall2/1_blue.webp")
-
-            createItem("가죽 트렌치코트", ItemTag.TOP, "검정", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/1_black.webp")
-            createItem("가죽 트렌치코트", ItemTag.TOP, "보라", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/2_purple.webp")
-            createItem("가죽 트렌치코트", ItemTag.TOP, "갈색", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/3_brown.webp")
+            // assets 폴더에서 자동으로 아이템 로드
+            val loadedItemGroups = AssetItemLoader.loadItemsFromAssets(requireContext())
+            globalItemGroups.addAll(loadedItemGroups)
         }
 
-        adapter = ItemGroupAdapter(globalItemGroups) { selectedItem ->
-            onItemSelected(selectedItem)
+        adapter = ItemGroupAdapter(globalItemGroups) { selectedItem, selectedGroup ->
+            onItemSelected(selectedItem, selectedGroup)
         }
         recyclerView.adapter = adapter
         
@@ -314,12 +271,12 @@ class Tab1Fragment : Fragment() {
         // 검색어 필터 적용
         if (currentSearchQuery.isNotEmpty()) {
             filteredGroups = filteredGroups.filter { group ->
+                group.title.contains(currentSearchQuery, ignoreCase = true) ||
                 group.items.any { item ->
-                    item.title.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.color.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.price_mile.contains(currentSearchQuery, ignoreCase = true)
-                }
+                    item.color.contains(currentSearchQuery, ignoreCase = true)
+                } ||
+                group.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
+                group.price_mile.contains(currentSearchQuery, ignoreCase = true)
             }
         }
 
@@ -391,28 +348,63 @@ class Tab1Fragment : Fragment() {
         // 빌라저 기본 이미지 로드
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
-        // 기본 아이템들을 선택된 아이템으로 설정
-        selectedTop = globalItemGroups.find { it.tag == ItemTag.TOP }?.items?.firstOrNull()
-        selectedBottom = globalItemGroups.find { it.tag == ItemTag.BOTTOM }?.items?.firstOrNull()
-        selectedHat = globalItemGroups.find { it.tag == ItemTag.HAT }?.items?.firstOrNull()
-        selectedShoes = globalItemGroups.find { it.tag == ItemTag.SHOES }?.items?.firstOrNull()
+        // 저장된 선택된 아이템들 복원
+        val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
+        val (selectedBottom, selectedBottomGroup) = SelectedItemsManager.getSelectedBottom()
+        val (selectedHat, selectedHatGroup) = SelectedItemsManager.getSelectedHat()
+        val (selectedShoes, selectedShoesGroup) = SelectedItemsManager.getSelectedShoes()
         
-        // 선택된 아이템들로 이미지 로드
-        selectedTop?.let { 
-            loadImageFromAssets(it.imagePath, imageTop)
-            loadImageFromAssets(it.imagePath, equippedTopImage)
+        // 선택된 아이템이 없으면 기본값 설정
+        if (selectedTop == null || selectedTopGroup == null) {
+            val topGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
+            val defaultTop = topGroup?.items?.firstOrNull()
+            if (defaultTop != null && topGroup != null) {
+                SelectedItemsManager.setSelectedTop(defaultTop, topGroup)
+                loadImageFromAssets(defaultTop.imagePath, imageTop)
+                loadImageFromAssets(defaultTop.imagePath, equippedTopImage)
+            }
+        } else {
+            loadImageFromAssets(selectedTop.imagePath, imageTop)
+            loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
         }
-        selectedBottom?.let { 
-            loadImageFromAssets(it.imagePath, imageBottom)
-            loadImageFromAssets(it.imagePath, equippedBottomImage)
+        
+        if (selectedBottom == null || selectedBottomGroup == null) {
+            val bottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
+            val defaultBottom = bottomGroup?.items?.firstOrNull()
+            if (defaultBottom != null && bottomGroup != null) {
+                SelectedItemsManager.setSelectedBottom(defaultBottom, bottomGroup)
+                loadImageFromAssets(defaultBottom.imagePath, imageBottom)
+                loadImageFromAssets(defaultBottom.imagePath, equippedBottomImage)
+            }
+        } else {
+            loadImageFromAssets(selectedBottom.imagePath, imageBottom)
+            loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
         }
-        selectedHat?.let { 
-            loadImageFromAssets(it.imagePath, imageHat)
-            loadImageFromAssets(it.imagePath, equippedHatImage)
+        
+        if (selectedHat == null || selectedHatGroup == null) {
+            val hatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
+            val defaultHat = hatGroup?.items?.firstOrNull()
+            if (defaultHat != null && hatGroup != null) {
+                SelectedItemsManager.setSelectedHat(defaultHat, hatGroup)
+                loadImageFromAssets(defaultHat.imagePath, imageHat)
+                loadImageFromAssets(defaultHat.imagePath, equippedHatImage)
+            }
+        } else {
+            loadImageFromAssets(selectedHat.imagePath, imageHat)
+            loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
         }
-        selectedShoes?.let { 
-            loadImageFromAssets(it.imagePath, imageShoes)
-            loadImageFromAssets(it.imagePath, equippedShoesImage)
+        
+        if (selectedShoes == null || selectedShoesGroup == null) {
+            val shoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
+            val defaultShoes = shoesGroup?.items?.firstOrNull()
+            if (defaultShoes != null && shoesGroup != null) {
+                SelectedItemsManager.setSelectedShoes(defaultShoes, shoesGroup)
+                loadImageFromAssets(defaultShoes.imagePath, imageShoes)
+                loadImageFromAssets(defaultShoes.imagePath, equippedShoesImage)
+            }
+        } else {
+            loadImageFromAssets(selectedShoes.imagePath, imageShoes)
+            loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
         }
     }
     
@@ -517,25 +509,25 @@ class Tab1Fragment : Fragment() {
     }
 
     // 아이템 선택 처리
-    private fun onItemSelected(item: Item) {
-        when (item.tag) {
+    private fun onItemSelected(item: Item, group: ItemGroup) {
+        when (group.tag) {
             ItemTag.HAT -> {
-                selectedHat = item
+                SelectedItemsManager.setSelectedHat(item, group)
                 loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
             }
             ItemTag.TOP -> {
-                selectedTop = item
+                SelectedItemsManager.setSelectedTop(item, group)
                 loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
             }
             ItemTag.BOTTOM -> {
-                selectedBottom = item
+                SelectedItemsManager.setSelectedBottom(item, group)
                 loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
             }
             ItemTag.SHOES -> {
-                selectedShoes = item
+                SelectedItemsManager.setSelectedShoes(item, group)
                 loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
             }

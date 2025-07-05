@@ -16,7 +16,7 @@ import com.example.nookstyle.model.ItemGroup
 
 class ItemGroupAdapter(
     private var groupList: List<ItemGroup>,
-    private val onItemSelected: ((Item) -> Unit)? = null
+    private val onItemSelected: ((Item, ItemGroup) -> Unit)? = null
 ) : RecyclerView.Adapter<ItemGroupAdapter.ItemGroupViewHolder>() {
 
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -42,13 +42,13 @@ class ItemGroupAdapter(
         val assetManager = holder.itemView.context.assets
 
         fun updateView(item: Item) {
-            holder.titleText.text = item.title
+            holder.titleText.text = group.title
 
             val allColors = group.items.joinToString(" / ") { it.color }
             holder.colorText.text = allColors
 
-            holder.priceBellText.text = item.price_bell
-            holder.priceMileText.text = item.price_mile
+            holder.priceBellText.text = "${group.price_bell} 벨"
+            holder.priceMileText.text = "${group.price_mile} 마일"
             loadImage(holder.imageView, item.imagePath, assetManager)
         }
 
@@ -78,7 +78,7 @@ class ItemGroupAdapter(
 
         // 아이템 클릭 시 선택 리스너 호출
         holder.itemContainer.setOnClickListener {
-            onItemSelected?.invoke(group.items[currentIndex])
+            onItemSelected?.invoke(group.items[currentIndex], group)
         }
     }
 

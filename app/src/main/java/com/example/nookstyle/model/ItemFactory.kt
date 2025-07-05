@@ -11,11 +11,7 @@ fun createItem(
     imagePath: String
 ) {
     val item = Item(
-        title = title,
-        tag = tag,
         color = color,
-        price_bell = price_bell,
-        price_mile = price_mile,
         imagePath = imagePath
     )
 
@@ -25,11 +21,13 @@ fun createItem(
         val newItems = existingGroup.items.toMutableList()
         newItems.add(item)
         globalItemGroups[globalItemGroups.indexOf(existingGroup)] =
-            existingGroup. copy(items = newItems)
+            existingGroup.copy(items = newItems)
     } else {
         val newGroup = ItemGroup(
             title = title,
             tag = tag,
+            price_bell = price_bell,
+            price_mile = price_mile,
             items = listOf(item)
         )
         globalItemGroups.add(newGroup)

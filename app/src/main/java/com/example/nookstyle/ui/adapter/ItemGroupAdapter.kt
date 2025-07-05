@@ -19,6 +19,9 @@ class ItemGroupAdapter(
     private var groupList: List<ItemGroup>,
     private val onItemSelected: ((Item, ItemGroup) -> Unit)? = null
 ) : RecyclerView.Adapter<ItemGroupAdapter.ItemGroupViewHolder>() {
+    
+    // 각 ItemGroup별로 현재 보고 있는 아이템의 인덱스를 저장
+    private val currentIndexMap = mutableMapOf<ItemGroup, Int>()
 
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewItem)
@@ -39,8 +42,16 @@ class ItemGroupAdapter(
 
     override fun onBindViewHolder(holder: ItemGroupViewHolder, position: Int) {
         val group = groupList[position]
-        var currentIndex = 0
         val assetManager = holder.itemView.context.assets
+        
+
+        // 선택된 아이템이 있으면 해당 인덱스 사용, 없으면 저장된 인덱스 사용, 둘 다 없으면 0
+        val selectedItemIndex = getSelectedItemIndex(group)
+        var currentIndex = if (selectedItemIndex != -1) {
+            selectedItemIndex
+        } else {
+            currentIndexMap[group] ?: 0
+        }
 
         fun updateView(item: Item) {
             holder.titleText.text = group.title
@@ -71,12 +82,14 @@ class ItemGroupAdapter(
         // 다음 버튼 눌렀을 때
         holder.buttonNext.setOnClickListener {
             currentIndex = (currentIndex + 1) % group.items.size
+            currentIndexMap[group] = currentIndex
             updateView(group.items[currentIndex])
         }
 
         // 이전 버튼 눌렀을 때
         holder.buttonPrev.setOnClickListener {
             currentIndex = (currentIndex - 1 + group.items.size) % group.items.size
+            currentIndexMap[group] = currentIndex
             updateView(group.items[currentIndex])
         }
 
@@ -94,6 +107,39 @@ class ItemGroupAdapter(
     fun updateData(newGroupList: List<ItemGroup>) {
         groupList = newGroupList
         notifyDataSetChanged()
+    }
+    
+    /**
+     * 특정 ItemGroup의 현재 인덱스 업데이트
+     */
+    fun updateCurrentIndex(group: ItemGroup, index: Int) {
+        currentIndexMap[group] = index
+    }
+    
+    // 선택된 아이템의 인덱스를 찾는 함수
+    private fun getSelectedItemIndex(group: ItemGroup): Int {
+        val selectedItem = when (group.tag) {
+            com.example.nookstyle.model.ItemTag.HAT -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedHat()
+                if (selectedGroup == group) selectedItem else null
+            }
+            com.example.nookstyle.model.ItemTag.TOP -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedTop()
+                if (selectedGroup == group) selectedItem else null
+            }
+            com.example.nookstyle.model.ItemTag.BOTTOM -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedBottom()
+                if (selectedGroup == group) selectedItem else null
+            }
+            com.example.nookstyle.model.ItemTag.SHOES -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedShoes()
+                if (selectedGroup == group) selectedItem else null
+            }
+        }
+        
+        return selectedItem?.let { item ->
+            group.items.indexOfFirst { it.color == item.color && it.imagePath == item.imagePath }
+        } ?: -1
     }
 
     // 선택된 아이템의 배경색 업데이트

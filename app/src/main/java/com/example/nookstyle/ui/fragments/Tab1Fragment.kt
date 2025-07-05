@@ -499,8 +499,21 @@ class Tab1Fragment : Fragment() {
             }
         }
         
+        // 선택된 아이템의 인덱스를 adapter에 저장
+        updateSelectedItemIndex(item, group)
+        
         // 선택 상태 변경 후 리스트 업데이트
         adapter.notifyDataSetChanged()
+    }
+    
+    // 선택된 아이템의 인덱스를 adapter에 저장
+    private fun updateSelectedItemIndex(selectedItem: Item, selectedGroup: ItemGroup) {
+        val selectedIndex = selectedGroup.items.indexOfFirst { 
+            it.color == selectedItem.color && it.imagePath == selectedItem.imagePath 
+        }
+        if (selectedIndex != -1) {
+            adapter.updateCurrentIndex(selectedGroup, selectedIndex)
+        }
     }
     
 

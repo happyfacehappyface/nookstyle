@@ -104,18 +104,18 @@ class Tab1Fragment : Fragment() {
 //                title = "개구리 모자",
 //                tag = ItemTag.HAT,
 //                items = listOf(
-//                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp"),
-//                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
+//                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
 //                )
 //            )
 //            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
 //        )
-        createItem("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp")
-        createItem("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp")
-        createItem("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp")
-        createItem("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
+        createItem("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/FrogHat/1_green.webp")
+        createItem("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/2_blue.webp")
+        createItem("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/FrogHat/3_red.webp")
+        createItem("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/FrogHat/4_yellow.webp")
 
         adapter = ItemGroupAdapter(globalItemGroups)
         recyclerView.adapter = adapter
@@ -309,10 +309,10 @@ class Tab1Fragment : Fragment() {
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
         // 의류 이미지들 로드
-        loadImageFromAssets("images/cloths/top/TopsTexTopTshirtsHNumberball2.webp", imageTop)
-        loadImageFromAssets("images/cloths/bottom/BottomsTexPantsNormalLeather0.webp", imageBottom)
-        loadImageFromAssets("images/cloths/CapHatMario0.webp", imageHat)
-        loadImageFromAssets("images/cloths/ShoesLowcutEggleaf0.webp", imageShoes)
+        loadImageFromAssets("images/cloths/top/HNumberball2/1_blue.webp", imageTop)
+        loadImageFromAssets("images/cloths/bottom/LeatherPants/1_black.webp", imageBottom)
+        loadImageFromAssets("images/cloths/hat/MarioCap/1_red.webp", imageHat)
+        loadImageFromAssets("images/cloths/shoes/LowCutEggLeaf/1_green.webp", imageShoes)
     }
     
     // 이미지 스타일 설정

@@ -13,7 +13,7 @@ class ItemButtonActivity : AppCompatActivity() {
     private lateinit var buttonNext: ImageButton
 
     private val category = "hat"
-    private val itemName = "froghat"
+    private val itemName = "FrogHat"
     private val folderPath = "images/cloths/$category/$itemName"
 
     private var imageFiles: Array<String>? = null

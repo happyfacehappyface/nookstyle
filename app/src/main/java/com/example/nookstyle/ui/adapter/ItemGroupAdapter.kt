@@ -52,6 +52,15 @@ class ItemGroupAdapter(private var groupList: List<ItemGroup>)
         // 초기 이미지
         updateView(group.items[currentIndex])
 
+        // <, > 버튼 표시 여부 결정
+        if (group.items.size > 1) {
+            holder.buttonPrev.visibility = View.VISIBLE
+            holder.buttonNext.visibility = View.VISIBLE
+        } else {
+            holder.buttonPrev.visibility = View.GONE
+            holder.buttonNext.visibility = View.GONE
+        }
+
         // 다음 버튼 눌렀을 때
         holder.buttonNext.setOnClickListener {
             currentIndex = (currentIndex + 1) % group.items.size
@@ -66,7 +75,7 @@ class ItemGroupAdapter(private var groupList: List<ItemGroup>)
     }
 
     override fun getItemCount() = groupList.size
-    
+
     /**
      * 데이터 업데이트
      */

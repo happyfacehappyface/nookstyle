@@ -21,6 +21,7 @@ import com.example.nookstyle.R
 import com.example.nookstyle.model.*
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
 import com.example.nookstyle.util.AssetItemLoader
+import com.example.nookstyle.util.SelectedItemsManager
 import com.example.nookstyle.util.ScreenshotUtil
 import java.io.IOException
 
@@ -63,17 +64,7 @@ class Tab1Fragment : Fragment() {
     // 현재 빌라저
     private var currentVillager: Villager? = null
     
-    // 현재 선택된 아이템들
-    private var selectedHat: Item? = null
-    private var selectedTop: Item? = null
-    private var selectedBottom: Item? = null
-    private var selectedShoes: Item? = null
-    
-    // 현재 선택된 아이템 그룹들
-    private var selectedHatGroup: ItemGroup? = null
-    private var selectedTopGroup: ItemGroup? = null
-    private var selectedBottomGroup: ItemGroup? = null
-    private var selectedShoesGroup: ItemGroup? = null
+
     
 
 
@@ -323,38 +314,63 @@ class Tab1Fragment : Fragment() {
         // 빌라저 기본 이미지 로드
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
-        // 기본 아이템들을 선택된 아이템으로 설정
-        val topGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
-        val bottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
-        val hatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
-        val shoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
+        // 저장된 선택된 아이템들 복원
+        val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
+        val (selectedBottom, selectedBottomGroup) = SelectedItemsManager.getSelectedBottom()
+        val (selectedHat, selectedHatGroup) = SelectedItemsManager.getSelectedHat()
+        val (selectedShoes, selectedShoesGroup) = SelectedItemsManager.getSelectedShoes()
         
-        selectedTop = topGroup?.items?.firstOrNull()
-        selectedBottom = bottomGroup?.items?.firstOrNull()
-        selectedHat = hatGroup?.items?.firstOrNull()
-        selectedShoes = shoesGroup?.items?.firstOrNull()
+        // 선택된 아이템이 없으면 기본값 설정
+        if (selectedTop == null || selectedTopGroup == null) {
+            val topGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
+            val defaultTop = topGroup?.items?.firstOrNull()
+            if (defaultTop != null && topGroup != null) {
+                SelectedItemsManager.setSelectedTop(defaultTop, topGroup)
+                loadImageFromAssets(defaultTop.imagePath, imageTop)
+                loadImageFromAssets(defaultTop.imagePath, equippedTopImage)
+            }
+        } else {
+            loadImageFromAssets(selectedTop.imagePath, imageTop)
+            loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
+        }
         
-        selectedTopGroup = topGroup
-        selectedBottomGroup = bottomGroup
-        selectedHatGroup = hatGroup
-        selectedShoesGroup = shoesGroup
+        if (selectedBottom == null || selectedBottomGroup == null) {
+            val bottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
+            val defaultBottom = bottomGroup?.items?.firstOrNull()
+            if (defaultBottom != null && bottomGroup != null) {
+                SelectedItemsManager.setSelectedBottom(defaultBottom, bottomGroup)
+                loadImageFromAssets(defaultBottom.imagePath, imageBottom)
+                loadImageFromAssets(defaultBottom.imagePath, equippedBottomImage)
+            }
+        } else {
+            loadImageFromAssets(selectedBottom.imagePath, imageBottom)
+            loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
+        }
         
-        // 선택된 아이템들로 이미지 로드
-        selectedTop?.let { 
-            loadImageFromAssets(it.imagePath, imageTop)
-            loadImageFromAssets(it.imagePath, equippedTopImage)
+        if (selectedHat == null || selectedHatGroup == null) {
+            val hatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
+            val defaultHat = hatGroup?.items?.firstOrNull()
+            if (defaultHat != null && hatGroup != null) {
+                SelectedItemsManager.setSelectedHat(defaultHat, hatGroup)
+                loadImageFromAssets(defaultHat.imagePath, imageHat)
+                loadImageFromAssets(defaultHat.imagePath, equippedHatImage)
+            }
+        } else {
+            loadImageFromAssets(selectedHat.imagePath, imageHat)
+            loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
         }
-        selectedBottom?.let { 
-            loadImageFromAssets(it.imagePath, imageBottom)
-            loadImageFromAssets(it.imagePath, equippedBottomImage)
-        }
-        selectedHat?.let { 
-            loadImageFromAssets(it.imagePath, imageHat)
-            loadImageFromAssets(it.imagePath, equippedHatImage)
-        }
-        selectedShoes?.let { 
-            loadImageFromAssets(it.imagePath, imageShoes)
-            loadImageFromAssets(it.imagePath, equippedShoesImage)
+        
+        if (selectedShoes == null || selectedShoesGroup == null) {
+            val shoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
+            val defaultShoes = shoesGroup?.items?.firstOrNull()
+            if (defaultShoes != null && shoesGroup != null) {
+                SelectedItemsManager.setSelectedShoes(defaultShoes, shoesGroup)
+                loadImageFromAssets(defaultShoes.imagePath, imageShoes)
+                loadImageFromAssets(defaultShoes.imagePath, equippedShoesImage)
+            }
+        } else {
+            loadImageFromAssets(selectedShoes.imagePath, imageShoes)
+            loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
         }
     }
     
@@ -462,26 +478,22 @@ class Tab1Fragment : Fragment() {
     private fun onItemSelected(item: Item, group: ItemGroup) {
         when (group.tag) {
             ItemTag.HAT -> {
-                selectedHat = item
-                selectedHatGroup = group
+                SelectedItemsManager.setSelectedHat(item, group)
                 loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
             }
             ItemTag.TOP -> {
-                selectedTop = item
-                selectedTopGroup = group
+                SelectedItemsManager.setSelectedTop(item, group)
                 loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
             }
             ItemTag.BOTTOM -> {
-                selectedBottom = item
-                selectedBottomGroup = group
+                SelectedItemsManager.setSelectedBottom(item, group)
                 loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
             }
             ItemTag.SHOES -> {
-                selectedShoes = item
-                selectedShoesGroup = group
+                SelectedItemsManager.setSelectedShoes(item, group)
                 loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
             }

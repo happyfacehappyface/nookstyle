@@ -90,6 +90,19 @@
                 android:background="@android:color/holo_blue_light"
                 android:textColor="@android:color/white" />
 
+            <!-- 출품 취소 버튼 (출품된 작품에만 표시) -->
+            <Button
+                android:id="@+id/btnCancelSubmission"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="출품취소"
+                android:textSize="10sp"
+                android:layout_marginStart="2dp"
+                android:background="@android:color/holo_red_dark"
+                android:textColor="@android:color/white"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </LinearLayout>

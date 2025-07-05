@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -26,7 +27,8 @@ import java.io.InputStream
 
 class ContestImageAdapter(
     private var contestImages: List<ContestImage>,
-    private val onItemClick: (String) -> Unit
+    private val onItemClick: (String) -> Unit,
+    private val onCancelSubmission: (ContestImage) -> Unit
 ) : RecyclerView.Adapter<ContestImageAdapter.ContestImageViewHolder>() {
 
     class ContestImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -35,6 +37,7 @@ class ContestImageAdapter(
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val tvLikeCount: TextView = view.findViewById(R.id.tvLikeCount)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
+        val btnCancelSubmission: Button = view.findViewById(R.id.btnCancelSubmission)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContestImageViewHolder {
@@ -53,6 +56,19 @@ class ContestImageAdapter(
         
         // 좋아요 상태 설정
         updateLikeButton(holder, contestImage)
+        
+        // 출품 취소 버튼 표시 여부 설정
+        if (contestImage.isSubmitted) {
+            holder.btnCancelSubmission.visibility = View.VISIBLE
+            val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
+            saveParams.weight = 1f
+            holder.btnSaveToGallery.layoutParams = saveParams
+        } else {
+            holder.btnCancelSubmission.visibility = View.GONE
+            val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
+            saveParams.weight = 2f
+            holder.btnSaveToGallery.layoutParams = saveParams
+        }
         
         // 이미지 로드 (assets 또는 외부 파일)
         try {
@@ -92,6 +108,11 @@ class ContestImageAdapter(
         // 갤러리 저장 버튼 클릭 리스너
         holder.btnSaveToGallery.setOnClickListener {
             saveToGallery(holder.itemView.context, imageName)
+        }
+        
+        // 출품 취소 버튼 클릭 리스너
+        holder.btnCancelSubmission.setOnClickListener {
+            onCancelSubmission(contestImage)
         }
     }
 

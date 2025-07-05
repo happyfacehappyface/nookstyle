@@ -54,6 +54,10 @@ class Tab3Fragment : Fragment() {
             onItemClick = { imageName ->
                 // 이미지 클릭 시 전체화면으로 보기 (나중에 구현)
                 showFullScreenImage(imageName)
+            },
+            onCancelSubmission = { contestImage ->
+                // 출품 취소 버튼 클릭 시
+                cancelSubmission(contestImage)
             }
         )
         recyclerView.adapter = adapter
@@ -100,7 +104,7 @@ class Tab3Fragment : Fragment() {
                 
                 externalFiles?.sortedByDescending { it.lastModified() }?.forEach { file ->
                     val randomLikeCount = Random.nextInt(0, 100) // 0~99 사이의 임의 좋아요 수
-                    contestImages.add(ContestImage(imageName = "external/${file.name}", likeCount = randomLikeCount, file = file))
+                    contestImages.add(ContestImage(imageName = "external/${file.name}", likeCount = randomLikeCount, file = file, isSubmitted = true))
                 }
             }
             
@@ -125,6 +129,37 @@ class Tab3Fragment : Fragment() {
         } else {
             tvEmptyState.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
+        }
+    }
+    
+    /**
+     * 출품 취소
+     */
+    private fun cancelSubmission(contestImage: ContestImage) {
+        try {
+            // 확인 다이얼로그 표시
+            android.app.AlertDialog.Builder(requireContext())
+                .setTitle("출품 취소")
+                .setMessage("이 작품의 출품을 취소하시겠습니까?")
+                .setPositiveButton("취소") { _, _ ->
+                    // 파일 삭제
+                    contestImage.file?.let { file ->
+                        if (file.exists() && file.delete()) {
+                            Toast.makeText(context, "출품이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+                            // 목록 새로고침
+                            loadContestImages()
+                            adapter.updateImages(contestImages)
+                            updateEmptyState()
+                        } else {
+                            Toast.makeText(context, "출품 취소에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                .setNegativeButton("아니오", null)
+                .show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "출품 취소 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 } 

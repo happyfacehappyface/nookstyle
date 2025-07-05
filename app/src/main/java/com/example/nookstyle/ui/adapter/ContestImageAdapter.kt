@@ -36,7 +36,7 @@ class ContestImageAdapter(
         val imageView: ImageView = view.findViewById(R.id.imageViewContest)
         val tvFileName: TextView = view.findViewById(R.id.tvFileName)
         val tvMySubmission: TextView = view.findViewById(R.id.tvMySubmission)
-        val btnLike: Button = view.findViewById(R.id.btnLike)
+        val btnLike: ImageView = view.findViewById(R.id.btnLike)
         val tvLikeCount: TextView = view.findViewById(R.id.tvLikeCount)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
         val btnCancelSubmission: Button = view.findViewById(R.id.btnCancelSubmission)
@@ -134,11 +134,11 @@ class ContestImageAdapter(
         holder.tvLikeCount.text = contestImage.likeCount.toString()
         
         if (contestImage.isLiked) {
-            holder.btnLike.text = "❤️"
-            holder.btnLike.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_red_dark))
+            holder.btnLike.setImageResource(R.drawable.ic_heart_filled)
+            holder.btnLike.setColorFilter(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_red_dark))
         } else {
-            holder.btnLike.text = "🤍"
-            holder.btnLike.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_red_light))
+            holder.btnLike.setImageResource(R.drawable.ic_heart_outline)
+            holder.btnLike.setColorFilter(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_red_light))
         }
     }
     

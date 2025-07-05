@@ -66,29 +66,26 @@
             android:layout_marginTop="4dp"
             android:gravity="center_vertical">
 
-            <!-- 좋아요 버튼 -->
-            <Button
+            <!-- 좋아요 버튼 (하트 아이콘) -->
+            <ImageView
                 android:id="@+id/btnLike"
-                android:layout_width="0dp"
+                android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_weight="1"
-                android:text="❤️"
-                android:textSize="12sp"
-                android:layout_marginEnd="2dp"
-                android:background="@android:color/holo_red_light"
-                android:textColor="@android:color/white" />
+                android:src="@drawable/ic_heart_outline"
+                android:scaleType="centerInside"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="좋아요" />
 
             <!-- 좋아요 수 -->
             <TextView
                 android:id="@+id/tvLikeCount"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="0"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:gravity="center"
-                android:layout_marginEnd="2dp" />
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 

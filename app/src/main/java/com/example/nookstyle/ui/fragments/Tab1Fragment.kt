@@ -234,9 +234,9 @@ class Tab1Fragment : Fragment() {
     // 파일명으로 스크린샷 캡처 및 저장
     private fun captureAndSaveWithFileName(fileName: String) {
         try {
-            // 이미지 컨테이너 (빌라저와 의류가 겹쳐진 부분) 스크린샷
-            val imageContainer = view?.findViewById<FrameLayout>(R.id.imageContainer)
-            imageContainer?.let { container ->
+            // villager 전용 캡처 컨테이너 스크린샷 (주변 UI 제외)
+            val villagerContainer = view?.findViewById<FrameLayout>(R.id.villagerCaptureContainer)
+            villagerContainer?.let { container ->
                 // 뷰가 완전히 그려진 후 스크린샷 찍기
                 container.post {
                     val savedPath = ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)

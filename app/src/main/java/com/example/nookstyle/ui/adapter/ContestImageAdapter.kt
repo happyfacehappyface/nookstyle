@@ -45,8 +45,6 @@ class ContestImageAdapter(
         val tvMySubmission: TextView = view.findViewById(R.id.tvMySubmission)
         val btnLike: ImageView = view.findViewById(R.id.btnLike)
         val tvLikeCount: TextView = view.findViewById(R.id.tvLikeCount)
-        val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
-        val btnCancelSubmission: Button = view.findViewById(R.id.btnCancelSubmission)
         val btnKebabMenu: ImageView = view.findViewById(R.id.btnKebabMenu)
     }
 
@@ -67,19 +65,11 @@ class ContestImageAdapter(
         // 좋아요 상태 설정
         updateLikeButton(holder, contestImage)
         
-        // 출품 취소 버튼 표시 여부 설정
+        // 출품 표시 배지 표시 여부 설정
         if (contestImage.isSubmitted) {
-            holder.btnCancelSubmission.visibility = View.VISIBLE
             holder.tvMySubmission.visibility = View.VISIBLE
-            val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
-            saveParams.weight = 1f
-            holder.btnSaveToGallery.layoutParams = saveParams
         } else {
-            holder.btnCancelSubmission.visibility = View.GONE
             holder.tvMySubmission.visibility = View.GONE
-            val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
-            saveParams.weight = 2f
-            holder.btnSaveToGallery.layoutParams = saveParams
         }
         
         // 이미지 로드 (assets 또는 외부 파일)
@@ -115,16 +105,6 @@ class ContestImageAdapter(
         // 좋아요 버튼 클릭 리스너
         holder.btnLike.setOnClickListener {
             toggleLike(position)
-        }
-        
-        // 갤러리 저장 버튼 클릭 리스너
-        holder.btnSaveToGallery.setOnClickListener {
-            saveToGallery(holder.itemView.context, imageName)
-        }
-        
-        // 출품 취소 버튼 클릭 리스너
-        holder.btnCancelSubmission.setOnClickListener {
-            onCancelSubmission(contestImage)
         }
         
         // 케밥 메뉴 버튼 클릭 리스너
@@ -253,7 +233,15 @@ class ContestImageAdapter(
      */
     private fun showKebabMenu(context: Context, anchorView: View, contestImage: ContestImage, position: Int) {
         val popupMenu = PopupMenu(context, anchorView)
-        popupMenu.menuInflater.inflate(R.menu.contest_image_menu, popupMenu.menu)
+        
+        // 내 출품 이미지인지 확인하여 다른 메뉴 표시
+        if (contestImage.isSubmitted) {
+            // 내 출품 이미지: 저장하기, 삭제
+            popupMenu.menuInflater.inflate(R.menu.contest_image_menu_my_submission, popupMenu.menu)
+        } else {
+            // 일반 이미지: 저장하기, 신고
+            popupMenu.menuInflater.inflate(R.menu.contest_image_menu, popupMenu.menu)
+        }
         
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -263,6 +251,10 @@ class ContestImageAdapter(
                 }
                 R.id.action_report -> {
                     showReportDialog(context, contestImage)
+                    true
+                }
+                R.id.action_delete -> {
+                    showDeleteDialog(context, contestImage)
                     true
                 }
                 else -> false
@@ -341,6 +333,21 @@ class ContestImageAdapter(
         }
         
         dialog.show()
+    }
+    
+    /**
+     * 삭제 다이얼로그 표시
+     */
+    private fun showDeleteDialog(context: Context, contestImage: ContestImage) {
+        android.app.AlertDialog.Builder(context)
+            .setTitle("출품 취소")
+            .setMessage("이 작품의 출품을 취소하시겠습니까?\n\n취소하면 이미지가 완전히 삭제됩니다.")
+            .setPositiveButton("삭제") { _, _ ->
+                // 출품 취소 콜백 호출
+                onCancelSubmission(contestImage)
+            }
+            .setNegativeButton("취소", null)
+            .show()
     }
     
     /**

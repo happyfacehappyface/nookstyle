@@ -64,12 +64,16 @@ class Tab1Fragment : Fragment() {
     // 필터링 상태
     private var currentFilter: ItemTag? = null
     private var currentSearchQuery: String = ""
-    
+
     // 현재 빌라저
     private var currentVillager: Villager? = null
-    
 
-    
+    // 전체 빌라저 리스트
+    val villagerList = mutableListOf<Villager>()
+
+
+
+
 
 
     override fun onCreateView(
@@ -310,39 +314,48 @@ class Tab1Fragment : Fragment() {
     
     // 빌라저 설정
     private fun setupVillager() {
-        currentVillager = Villager(
-            name = "Joey",
-            imagePath = "images/villagers/Joey.png",
-            hatPosition = ClothingPosition(
-                x = 0.5f,
-                y = 0.22f,
-                scaleX = 2.0f,
-                scaleY = 1.5f,
-                rotation = 0f
-            ),
-            topPosition = ClothingPosition(
-                x = 0.50f,
-                y = 0.61f,
-                scaleX = 1.24f,
-                scaleY = 0.78f,
-                rotation = 0f
-            ),
-            bottomPosition = ClothingPosition(
-                x = 0.5f,
-                y = 0.75f,
-                scaleX = 0.9f,
-                scaleY = 0.41f,
-                rotation = 0f
-            ),
-            shoesPosition = ClothingPosition(
-                x = 0.48f,
-                y = 0.82f,
-                scaleX = 0.62f,
-                scaleY = 0.42f,
-                rotation = 0f
-            )
-        )
+        val assetManager = requireContext().assets
+        try {
+            val villagerFiles = assetManager.list("images/villagers")
+            villagerFiles?.forEach { fileName ->
+                val name = fileName.substringBefore(".")
+                val villager = when (name) {
+                    "Joey" -> Villager(
+                        name,
+                        "images/villagers/$fileName",
+                        hatPosition = ClothingPosition(0.5f, 0.22f, 2.0f, 1.5f, 0f),
+                        topPosition = ClothingPosition(0.50f, 0.61f, 1.24f, 0.78f, 0f),
+                        bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
+                        shoesPosition = ClothingPosition(0.48f, 0.82f, 0.62f, 0.42f, 0f)
+                    )
+                    "girl" -> Villager(
+                        name,
+                        "images/villagers/$fileName",
+                        hatPosition = ClothingPosition(0.52f, 0.20f, 1.8f, 1.3f, 0f),
+                        topPosition = ClothingPosition(0.51f, 0.6f, 1.2f, 0.75f, 0f),
+                        bottomPosition = ClothingPosition(0.5f, 0.74f, 0.85f, 0.4f, 0f),
+                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.6f, 0.4f, 0f)
+                    )
+                    else -> Villager(
+                        name,
+                        "images/villagers/$fileName",
+                        hatPosition = ClothingPosition(0.5f, 0.22f, 2.0f, 1.5f, 0f),
+                        topPosition = ClothingPosition(0.50f, 0.61f, 1.24f, 0.78f, 0f),
+                        bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
+                        shoesPosition = ClothingPosition(0.48f, 0.82f, 0.62f, 0.42f, 0f)
+                    )
+                }
+                villagerList.add(villager)
+            }
+
+            currentVillager = villagerList.firstOrNull()
+            currentVillager?.let { loadImageFromAssets(it.imagePath, imageVillager) }
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
+
     
     private fun setupOverlappingImages() {
         // 빌라저 기본 이미지 로드

@@ -1,0 +1,30 @@
+{
+    "topPosition" : 
+    {
+        "x": 0,
+        "y": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0
+    },
+    "bottomPosition" : 
+    {
+        "x": 0,
+        "y": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0
+    },
+    "hairPosition" : 
+    {
+        "x": 0,
+        "y": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0
+    },
+    "accessoryPosition" : 
+    {
+        "x": 0,
+        "y": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0
+    }
+}

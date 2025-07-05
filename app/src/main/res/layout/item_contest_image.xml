@@ -43,6 +43,19 @@
                 android:layout_margin="8dp"
                 android:visibility="gone" />
 
+            <!-- 케밥 메뉴 아이콘 -->
+            <ImageView
+                android:id="@+id/btnKebabMenu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_kebab_menu"
+                android:scaleType="centerInside"
+                android:background="@drawable/circle_background_gray"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:tint="@android:color/white"
+                android:contentDescription="메뉴" />
+
         </FrameLayout>
 
         <!-- 파일명 -->

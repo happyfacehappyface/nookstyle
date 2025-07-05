@@ -50,10 +50,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="2dp"
-                android:text="저장"
-                android:textSize="10sp"
                 android:backgroundTint="@android:color/holo_blue_dark"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:drawableTop="@drawable/ic_download"
+                android:drawablePadding="2dp" />
 
             <!-- 출품 버튼 -->
             <Button
@@ -63,10 +63,10 @@
                 android:layout_weight="1"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                android:text="출품"
-                android:textSize="10sp"
                 android:backgroundTint="@android:color/holo_green_dark"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:drawableTop="@drawable/ic_upload"
+                android:drawablePadding="2dp" />
 
             <!-- 삭제 버튼 -->
             <Button
@@ -75,10 +75,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="2dp"
-                android:text="삭제"
-                android:textSize="10sp"
                 android:backgroundTint="@android:color/holo_red_dark"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:drawableTop="@drawable/ic_delete"
+                android:drawablePadding="2dp" />
 
         </LinearLayout>
 

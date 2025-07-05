@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -37,6 +38,9 @@ class Tab1Fragment : Fragment() {
     private lateinit var imageBottom: ImageView
     private lateinit var imageTop: ImageView
     private lateinit var imageHat: ImageView
+
+    // 캐릭터 선택 버튼
+    private lateinit var chooseCharacter: ImageButton
     
     // 착용 중인 아이템 표시 이미지들
     private lateinit var equippedHatImage: ImageView
@@ -86,7 +90,14 @@ class Tab1Fragment : Fragment() {
         imageBottom = view.findViewById(R.id.imageBottom)
         imageTop = view.findViewById(R.id.imageTop)
         imageHat = view.findViewById(R.id.imageHat)
-        
+
+        // 캐릭터 버튼 초기화
+        chooseCharacter = view.findViewById(R.id.chooseCharacter)
+        chooseCharacter.setOnClickListener {
+            showCharacterSelectDialog()
+        }
+
+
         // 착용 중인 아이템 표시 이미지들 초기화
         equippedHatImage = view.findViewById(R.id.equippedHatImage)
         equippedTopImage = view.findViewById(R.id.equippedTopImage)
@@ -147,7 +158,30 @@ class Tab1Fragment : Fragment() {
             setupImageStyles()
         }
     }
-    
+
+    // 캐릭터 선택 버튼 설정
+    private fun showCharacterSelectDialog() {
+        val characters = arrayOf("여자 주민", "리처드")
+        val characterImages = mapOf(
+            "여자 주민" to "images/villagers/girl.png",
+            "리처드" to "images/villagers/Joey.png"
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("캐릭터를 선택하세요")
+            .setItems(characters) { _, which ->
+                val selected = characters[which]
+                val imagePath = characterImages[selected]
+                if (imagePath != null) {
+                    loadImageFromAssets(imagePath, imageVillager)
+                    Toast.makeText(context, "$selected 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+
     // 태그 버튼 설정
     private fun setupTagButtons() {
         btnAll.setOnClickListener { filterItems(null) }

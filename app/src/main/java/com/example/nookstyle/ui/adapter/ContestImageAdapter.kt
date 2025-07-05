@@ -34,6 +34,7 @@ class ContestImageAdapter(
     class ContestImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewContest)
         val tvFileName: TextView = view.findViewById(R.id.tvFileName)
+        val tvMySubmission: TextView = view.findViewById(R.id.tvMySubmission)
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val tvLikeCount: TextView = view.findViewById(R.id.tvLikeCount)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
@@ -60,11 +61,13 @@ class ContestImageAdapter(
         // 출품 취소 버튼 표시 여부 설정
         if (contestImage.isSubmitted) {
             holder.btnCancelSubmission.visibility = View.VISIBLE
+            holder.tvMySubmission.visibility = View.VISIBLE
             val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
             saveParams.weight = 1f
             holder.btnSaveToGallery.layoutParams = saveParams
         } else {
             holder.btnCancelSubmission.visibility = View.GONE
+            holder.tvMySubmission.visibility = View.GONE
             val saveParams = holder.btnSaveToGallery.layoutParams as LinearLayout.LayoutParams
             saveParams.weight = 2f
             holder.btnSaveToGallery.layoutParams = saveParams

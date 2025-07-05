@@ -108,6 +108,9 @@ class Tab3Fragment : Fragment() {
                 }
             }
             
+            // 3. 출품한 작품을 먼저 정렬
+            contestImages.sortWith(compareByDescending { it.isSubmitted })
+            
         } catch (e: IOException) {
             e.printStackTrace()
         }

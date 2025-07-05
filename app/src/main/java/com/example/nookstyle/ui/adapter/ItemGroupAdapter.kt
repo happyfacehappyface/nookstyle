@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.Item
 import com.example.nookstyle.model.ItemGroup
+import com.example.nookstyle.util.SelectedItemsManager
 
 
 class ItemGroupAdapter(
@@ -50,6 +51,9 @@ class ItemGroupAdapter(
             holder.priceBellText.text = "${group.price_bell} 벨"
             holder.priceMileText.text = "${group.price_mile} 마일"
             loadImage(holder.imageView, item.imagePath, assetManager)
+            
+            // 선택된 아이템인지 확인하고 배경색 변경
+            updateItemSelectionBackground(holder, item, group)
         }
 
         // 초기 이미지
@@ -92,6 +96,34 @@ class ItemGroupAdapter(
         notifyDataSetChanged()
     }
 
+    // 선택된 아이템의 배경색 업데이트
+    private fun updateItemSelectionBackground(holder: ItemGroupViewHolder, item: Item, group: ItemGroup) {
+        val isSelected = when (group.tag) {
+            com.example.nookstyle.model.ItemTag.HAT -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedHat()
+                selectedItem == item && selectedGroup == group
+            }
+            com.example.nookstyle.model.ItemTag.TOP -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedTop()
+                selectedItem == item && selectedGroup == group
+            }
+            com.example.nookstyle.model.ItemTag.BOTTOM -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedBottom()
+                selectedItem == item && selectedGroup == group
+            }
+            com.example.nookstyle.model.ItemTag.SHOES -> {
+                val (selectedItem, selectedGroup) = SelectedItemsManager.getSelectedShoes()
+                selectedItem == item && selectedGroup == group
+            }
+        }
+        
+        if (isSelected) {
+            holder.itemContainer.setBackgroundResource(R.drawable.selected_item_background)
+        } else {
+            holder.itemContainer.setBackgroundResource(android.R.color.white)
+        }
+    }
+    
     // assets에서 이미지를 불러와 ImageView에 넣는 함수
     private fun loadImage(imageView: ImageView, assetPath: String, assetManager: AssetManager) {
         try {

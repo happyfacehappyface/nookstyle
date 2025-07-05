@@ -498,6 +498,9 @@ class Tab1Fragment : Fragment() {
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
             }
         }
+        
+        // 선택 상태 변경 후 리스트 업데이트
+        adapter.notifyDataSetChanged()
     }
     
 

@@ -68,6 +68,12 @@ class Tab1Fragment : Fragment() {
     private var selectedBottom: Item? = null
     private var selectedShoes: Item? = null
     
+    // 현재 선택된 아이템 그룹들
+    private var selectedHatGroup: ItemGroup? = null
+    private var selectedTopGroup: ItemGroup? = null
+    private var selectedBottomGroup: ItemGroup? = null
+    private var selectedShoesGroup: ItemGroup? = null
+    
 
 
     override fun onCreateView(
@@ -165,8 +171,8 @@ class Tab1Fragment : Fragment() {
             createItem("가죽 트렌치코트", ItemTag.TOP, "갈색", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/3_brown.webp")
         }
 
-        adapter = ItemGroupAdapter(globalItemGroups) { selectedItem ->
-            onItemSelected(selectedItem)
+        adapter = ItemGroupAdapter(globalItemGroups) { selectedItem, selectedGroup ->
+            onItemSelected(selectedItem, selectedGroup)
         }
         recyclerView.adapter = adapter
         
@@ -280,12 +286,12 @@ class Tab1Fragment : Fragment() {
         // 검색어 필터 적용
         if (currentSearchQuery.isNotEmpty()) {
             filteredGroups = filteredGroups.filter { group ->
+                group.title.contains(currentSearchQuery, ignoreCase = true) ||
                 group.items.any { item ->
-                    item.title.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.color.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
-                    item.price_mile.contains(currentSearchQuery, ignoreCase = true)
-                }
+                    item.color.contains(currentSearchQuery, ignoreCase = true)
+                } ||
+                group.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
+                group.price_mile.contains(currentSearchQuery, ignoreCase = true)
             }
         }
 
@@ -358,10 +364,20 @@ class Tab1Fragment : Fragment() {
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
         // 기본 아이템들을 선택된 아이템으로 설정
-        selectedTop = globalItemGroups.find { it.tag == ItemTag.TOP }?.items?.firstOrNull()
-        selectedBottom = globalItemGroups.find { it.tag == ItemTag.BOTTOM }?.items?.firstOrNull()
-        selectedHat = globalItemGroups.find { it.tag == ItemTag.HAT }?.items?.firstOrNull()
-        selectedShoes = globalItemGroups.find { it.tag == ItemTag.SHOES }?.items?.firstOrNull()
+        val topGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
+        val bottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
+        val hatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
+        val shoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
+        
+        selectedTop = topGroup?.items?.firstOrNull()
+        selectedBottom = bottomGroup?.items?.firstOrNull()
+        selectedHat = hatGroup?.items?.firstOrNull()
+        selectedShoes = shoesGroup?.items?.firstOrNull()
+        
+        selectedTopGroup = topGroup
+        selectedBottomGroup = bottomGroup
+        selectedHatGroup = hatGroup
+        selectedShoesGroup = shoesGroup
         
         // 선택된 아이템들로 이미지 로드
         selectedTop?.let { 
@@ -483,25 +499,29 @@ class Tab1Fragment : Fragment() {
     }
 
     // 아이템 선택 처리
-    private fun onItemSelected(item: Item) {
-        when (item.tag) {
+    private fun onItemSelected(item: Item, group: ItemGroup) {
+        when (group.tag) {
             ItemTag.HAT -> {
                 selectedHat = item
+                selectedHatGroup = group
                 loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
             }
             ItemTag.TOP -> {
                 selectedTop = item
+                selectedTopGroup = group
                 loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
             }
             ItemTag.BOTTOM -> {
                 selectedBottom = item
+                selectedBottomGroup = group
                 loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
             }
             ItemTag.SHOES -> {
                 selectedShoes = item
+                selectedShoesGroup = group
                 loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
             }

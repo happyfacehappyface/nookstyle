@@ -87,12 +87,22 @@ object AssetItemLoader {
                 Item(color = color, imagePath = imagePath)
             }
             
+            // JSON에서 위치와 스케일 정보 읽기
+            val x = infoJson.optDouble("x", 0.0).toFloat()
+            val y = infoJson.optDouble("y", 0.0).toFloat()
+            val scaleX = infoJson.optDouble("scaleX", 1.0).toFloat()
+            val scaleY = infoJson.optDouble("scaleY", 1.0).toFloat()
+            
             return ItemGroup(
                 title = title,
                 tag = itemTag,
                 price_bell = priceBell,
                 price_mile = priceMile,
-                items = items
+                items = items,
+                x = x,
+                y = y,
+                scaleX = scaleX,
+                scaleY = scaleY
             )
             
         } catch (e: Exception) {
@@ -140,6 +150,8 @@ object AssetItemLoader {
             "orange" -> "주황"
             "pink" -> "분홍"
             "gray", "grey" -> "회색"
+            "skyblue" -> "하늘색"
+            "beige" -> "베이지"
             else -> englishColor // 번역할 수 없는 색상은 그대로 반환
         }
     }

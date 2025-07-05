@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.ui.adapter.ContestImageAdapter
 import com.example.nookstyle.model.ContestImage
+import com.example.nookstyle.util.LikeCountManager
 import java.io.File
 import java.io.IOException
-import kotlin.random.Random
 
 class Tab3Fragment : Fragment() {
 
@@ -88,8 +88,10 @@ class Tab3Fragment : Fragment() {
                 fileName.lowercase().endsWith(".png") ||
                 fileName.lowercase().endsWith(".webp")
             }?.forEach { fileName ->
-                val randomLikeCount = Random.nextInt(0, 100) // 0~99 사이의 임의 좋아요 수
-                contestImages.add(ContestImage(imageName = "assets/$fileName", likeCount = randomLikeCount))
+                val imageName = "assets/$fileName"
+                val likeCount = LikeCountManager.getLikeCount(imageName)
+                val isLiked = LikeCountManager.getLikeState(imageName)
+                contestImages.add(ContestImage(imageName = imageName, likeCount = likeCount, isLiked = isLiked))
             }
             
             // 2. 외부 저장소 contest 폴더에서 이미지 로드
@@ -103,10 +105,16 @@ class Tab3Fragment : Fragment() {
                 }
                 
                 externalFiles?.sortedByDescending { it.lastModified() }?.forEach { file ->
-                    val randomLikeCount = Random.nextInt(0, 100) // 0~99 사이의 임의 좋아요 수
-                    contestImages.add(ContestImage(imageName = "external/${file.name}", likeCount = randomLikeCount, file = file, isSubmitted = true))
+                    val imageName = "external/${file.name}"
+                    val likeCount = LikeCountManager.getLikeCount(imageName)
+                    val isLiked = LikeCountManager.getLikeState(imageName)
+                    contestImages.add(ContestImage(imageName = imageName, likeCount = likeCount, file = file, isSubmitted = true, isLiked = isLiked))
                 }
             }
+            
+            // 3. 내 작품 우선, 그 다음 좋아요 수 순으로 정렬
+            contestImages.sortWith(compareByDescending<ContestImage> { it.isSubmitted }
+                .thenByDescending { it.likeCount })
             
         } catch (e: IOException) {
             e.printStackTrace()
@@ -145,6 +153,9 @@ class Tab3Fragment : Fragment() {
                     // 파일 삭제
                     contestImage.file?.let { file ->
                         if (file.exists() && file.delete()) {
+                            // 좋아요 수 제거
+                            LikeCountManager.removeImage(contestImage.imageName)
+                            
                             Toast.makeText(context, "출품이 취소되었습니다.", Toast.LENGTH_SHORT).show()
                             // 목록 새로고침
                             loadContestImages()

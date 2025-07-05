@@ -8,6 +8,7 @@ import com.example.nookstyle.R
 import com.example.nookstyle.ui.fragments.Tab1Fragment
 import com.example.nookstyle.ui.fragments.Tab2Fragment
 import com.example.nookstyle.ui.fragments.Tab3Fragment
+import com.example.nookstyle.util.LikeCountManager
 import android.content.Intent
 import android.view.View
 import android.view.WindowInsets
@@ -38,6 +39,9 @@ class MainActivity : AppCompatActivity() {
         
         // 권한 확인 및 요청
         checkAndRequestPermissions()
+        
+        // 좋아요 수 초기화 (앱 시작 시 한 번만)
+        LikeCountManager.initializeLikeCounts(this)
         
         // 뷰 초기화
         tab1 = findViewById(R.id.tab1)

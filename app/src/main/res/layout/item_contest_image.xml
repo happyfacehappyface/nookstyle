@@ -15,14 +15,35 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <!-- 이미지 -->
-        <ImageView
-            android:id="@+id/imageViewContest"
+        <!-- 이미지 컨테이너 -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray"
-            android:contentDescription="콘테스트 이미지" />
+            android:layout_height="120dp">
+
+            <!-- 이미지 -->
+            <ImageView
+                android:id="@+id/imageViewContest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:contentDescription="콘테스트 이미지" />
+
+            <!-- 출품 표시 배지 (출품된 작품에만 표시) -->
+            <TextView
+                android:id="@+id/tvMySubmission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내 작품"
+                android:textSize="10sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/my_submission_badge"
+                android:padding="4dp"
+                android:layout_gravity="top|start"
+                android:layout_margin="8dp"
+                android:visibility="gone" />
+
+        </FrameLayout>
 
         <!-- 파일명 -->
         <TextView
@@ -45,29 +66,26 @@
             android:layout_marginTop="4dp"
             android:gravity="center_vertical">
 
-            <!-- 좋아요 버튼 -->
-            <Button
+            <!-- 좋아요 버튼 (하트 아이콘) -->
+            <ImageView
                 android:id="@+id/btnLike"
-                android:layout_width="0dp"
+                android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_weight="1"
-                android:text="❤️"
-                android:textSize="12sp"
-                android:layout_marginEnd="2dp"
-                android:background="@android:color/holo_red_light"
-                android:textColor="@android:color/white" />
+                android:src="@drawable/ic_heart_outline"
+                android:scaleType="centerInside"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="좋아요" />
 
             <!-- 좋아요 수 -->
             <TextView
                 android:id="@+id/tvLikeCount"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="0"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:gravity="center"
-                android:layout_marginEnd="2dp" />
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 

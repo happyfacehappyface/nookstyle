@@ -14,7 +14,7 @@ import com.example.nookstyle.model.Item
 import com.example.nookstyle.model.ItemGroup
 
 
-class ItemGroupAdapter(private val groupList: List<ItemGroup>)
+class ItemGroupAdapter(private var groupList: List<ItemGroup>)
     : RecyclerView.Adapter<ItemGroupAdapter.ItemGroupViewHolder>() {
 
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -66,6 +66,14 @@ class ItemGroupAdapter(private val groupList: List<ItemGroup>)
     }
 
     override fun getItemCount() = groupList.size
+    
+    /**
+     * 데이터 업데이트
+     */
+    fun updateData(newGroupList: List<ItemGroup>) {
+        groupList = newGroupList
+        notifyDataSetChanged()
+    }
 
     // assets에서 이미지를 불러와 ImageView에 넣는 함수
     private fun loadImage(imageView: ImageView, assetPath: String, assetManager: AssetManager) {

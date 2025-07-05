@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -31,9 +32,9 @@ class ScreenshotAdapter(
     class ScreenshotViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewScreenshot)
         val tvFileName: TextView = view.findViewById(R.id.tvFileName)
-        val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
-        val btnSubmit: Button = view.findViewById(R.id.btnSubmit)
-        val btnDelete: Button = view.findViewById(R.id.btnDelete)
+        val btnSaveToGallery: FrameLayout = view.findViewById(R.id.btnSaveToGallery)
+        val btnSubmit: FrameLayout = view.findViewById(R.id.btnSubmit)
+        val btnDelete: FrameLayout = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScreenshotViewHolder {
@@ -87,6 +88,16 @@ class ScreenshotAdapter(
             onItemClick(file)
         }
         
+        // 출품 상태 확인
+        val isSubmitted = checkIfSubmitted(file)
+        
+        // 출품 버튼 상태 설정
+        if (isSubmitted) {
+            holder.btnSubmit.alpha = 0.5f // 반투명으로 비활성화 표시
+        } else {
+            holder.btnSubmit.alpha = 1.0f // 완전 불투명
+        }
+        
         // 갤러리 저장 버튼 클릭 리스너
         holder.btnSaveToGallery.setOnClickListener {
             saveToGallery(holder.itemView.context, file)
@@ -94,7 +105,11 @@ class ScreenshotAdapter(
         
         // 출품 버튼 클릭 리스너
         holder.btnSubmit.setOnClickListener {
-            onSubmitClick(file)
+            if (!isSubmitted) {
+                onSubmitClick(file)
+            } else {
+                Toast.makeText(holder.itemView.context, "이미 출품된 사진입니다.", Toast.LENGTH_SHORT).show()
+            }
         }
         
         // 삭제 버튼 클릭 리스너
@@ -108,6 +123,20 @@ class ScreenshotAdapter(
     fun updateFiles(newFiles: List<File>) {
         screenshotFiles = newFiles
         notifyDataSetChanged()
+    }
+    
+    /**
+     * 파일이 이미 출품되었는지 확인
+     */
+    private fun checkIfSubmitted(file: File): Boolean {
+        return try {
+            val contestDir = File(file.parentFile?.parentFile, "contest")
+            val contestFile = File(contestDir, file.name)
+            contestFile.exists()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
     
     /**

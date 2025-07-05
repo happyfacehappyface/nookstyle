@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.ui.adapter.ScreenshotAdapter
+import com.example.nookstyle.util.LikeCountManager
 import java.io.File
 
 class Tab2Fragment : Fragment() {
@@ -159,6 +160,10 @@ class Tab2Fragment : Fragment() {
             
             val contestFile = File(contestDir, file.name)
             file.copyTo(contestFile, overwrite = true)
+            
+            // 새로운 이미지에 좋아요 수 할당
+            val imageName = "external/${file.name}"
+            LikeCountManager.addNewImage(imageName)
             
             Toast.makeText(context, "콘테스트에 출품되었습니다!", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {

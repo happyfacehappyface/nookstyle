@@ -151,7 +151,12 @@ object AssetItemLoader {
             "pink" -> "분홍"
             "gray", "grey" -> "회색"
             "skyblue" -> "하늘색"
+            "navy" -> "남색"
             "beige" -> "베이지"
+            "winered" -> "와인 레드"
+            "coral" -> "코랄"
+            "ivory" -> "아이보리"
+
             else -> englishColor // 번역할 수 없는 색상은 그대로 반환
         }
     }

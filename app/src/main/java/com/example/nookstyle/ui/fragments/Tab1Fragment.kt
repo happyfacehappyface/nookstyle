@@ -99,21 +99,25 @@ class Tab1Fragment : Fragment() {
 
     // ItemGroup 데이터 세팅
     private fun setupData() {
-        allItemGroups = listOf(
-            ItemGroup(
-                title = "개구리 모자",
-                tag = ItemTag.HAT,
-                items = listOf(
-                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp"),
-                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp"),
-                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp"),
-                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
-                )
-            )
-            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
-        )
+//        allItemGroups = listOf(
+//            ItemGroup(
+//                title = "개구리 모자",
+//                tag = ItemTag.HAT,
+//                items = listOf(
+//                    Item("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp"),
+//                    Item("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
+//                )
+//            )
+//            // ➡️ 여기에 ItemGroup 추가하면 자동으로 RecyclerView에 표시됨
+//        )
+        createItem("개구리 모자", ItemTag.HAT, "초록", "1120벨", "280 마일", "images/cloths/hat/froghat/1_green.webp")
+        createItem("개구리 모자", ItemTag.HAT, "파랑", "1120벨", "280 마일", "images/cloths/hat/froghat/2_blue.webp")
+        createItem("개구리 모자", ItemTag.HAT, "빨강", "1120벨", "280 마일", "images/cloths/hat/froghat/3_red.webp")
+        createItem("개구리 모자", ItemTag.HAT, "노랑", "1120벨", "280 마일", "images/cloths/hat/froghat/4_yellow.webp")
 
-        adapter = ItemGroupAdapter(allItemGroups)
+        adapter = ItemGroupAdapter(globalItemGroups)
         recyclerView.adapter = adapter
         
         // 태그 버튼 클릭 리스너 설정

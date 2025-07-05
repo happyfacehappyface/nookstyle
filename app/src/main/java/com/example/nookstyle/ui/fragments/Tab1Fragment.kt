@@ -55,6 +55,14 @@ class Tab1Fragment : Fragment() {
     
     // 현재 빌라저
     private var currentVillager: Villager? = null
+    
+    // 현재 선택된 아이템들
+    private var selectedHat: Item? = null
+    private var selectedTop: Item? = null
+    private var selectedBottom: Item? = null
+    private var selectedShoes: Item? = null
+    
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,6 +95,8 @@ class Tab1Fragment : Fragment() {
         
         // 검색창 초기화
         searchEditText = view.findViewById(R.id.searchEditText)
+        
+
         
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
@@ -143,7 +153,9 @@ class Tab1Fragment : Fragment() {
             createItem("가죽 트렌치코트", ItemTag.TOP, "갈색", "1680 벨", "420 마일", "images/cloths/top/LeatherTrenchCoat/3_brown.webp")
         }
 
-        adapter = ItemGroupAdapter(globalItemGroups)
+        adapter = ItemGroupAdapter(globalItemGroups) { selectedItem ->
+            onItemSelected(selectedItem)
+        }
         recyclerView.adapter = adapter
         
         // 태그 버튼 클릭 리스너 설정
@@ -333,11 +345,17 @@ class Tab1Fragment : Fragment() {
         // 빌라저 기본 이미지 로드
         loadImageFromAssets("images/villagers/Joey.png", imageVillager)
         
-        // 의류 이미지들 로드
-        loadImageFromAssets("images/cloths/top/HNumberBall2/1_blue.webp", imageTop)
-        loadImageFromAssets("images/cloths/bottom/LeatherPants/1_black.webp", imageBottom)
-        loadImageFromAssets("images/cloths/hat/MarioCap/1_red.webp", imageHat)
-        loadImageFromAssets("images/cloths/shoes/LowCutEggLeaf/1_green.webp", imageShoes)
+        // 기본 아이템들을 선택된 아이템으로 설정
+        selectedTop = globalItemGroups.find { it.tag == ItemTag.TOP }?.items?.firstOrNull()
+        selectedBottom = globalItemGroups.find { it.tag == ItemTag.BOTTOM }?.items?.firstOrNull()
+        selectedHat = globalItemGroups.find { it.tag == ItemTag.HAT }?.items?.firstOrNull()
+        selectedShoes = globalItemGroups.find { it.tag == ItemTag.SHOES }?.items?.firstOrNull()
+        
+        // 선택된 아이템들로 이미지 로드
+        selectedTop?.let { loadImageFromAssets(it.imagePath, imageTop) }
+        selectedBottom?.let { loadImageFromAssets(it.imagePath, imageBottom) }
+        selectedHat?.let { loadImageFromAssets(it.imagePath, imageHat) }
+        selectedShoes?.let { loadImageFromAssets(it.imagePath, imageShoes) }
     }
     
     // 이미지 스타일 설정
@@ -440,6 +458,30 @@ class Tab1Fragment : Fragment() {
         }
     }
 
+    // 아이템 선택 처리
+    private fun onItemSelected(item: Item) {
+        when (item.tag) {
+            ItemTag.HAT -> {
+                selectedHat = item
+                loadImageFromAssets(item.imagePath, imageHat)
+            }
+            ItemTag.TOP -> {
+                selectedTop = item
+                loadImageFromAssets(item.imagePath, imageTop)
+            }
+            ItemTag.BOTTOM -> {
+                selectedBottom = item
+                loadImageFromAssets(item.imagePath, imageBottom)
+            }
+            ItemTag.SHOES -> {
+                selectedShoes = item
+                loadImageFromAssets(item.imagePath, imageShoes)
+            }
+        }
+    }
+    
+
+    
     // 검색 기능 설정
     private fun setupSearchFunction() {
         // 한글 입력을 위한 설정

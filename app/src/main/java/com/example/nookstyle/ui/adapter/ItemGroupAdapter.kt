@@ -14,8 +14,10 @@ import com.example.nookstyle.model.Item
 import com.example.nookstyle.model.ItemGroup
 
 
-class ItemGroupAdapter(private var groupList: List<ItemGroup>)
-    : RecyclerView.Adapter<ItemGroupAdapter.ItemGroupViewHolder>() {
+class ItemGroupAdapter(
+    private var groupList: List<ItemGroup>,
+    private val onItemSelected: ((Item) -> Unit)? = null
+) : RecyclerView.Adapter<ItemGroupAdapter.ItemGroupViewHolder>() {
 
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewItem)
@@ -25,6 +27,7 @@ class ItemGroupAdapter(private var groupList: List<ItemGroup>)
         val priceMileText: TextView = view.findViewById(R.id.textViewPrice_m)
         val buttonPrev: ImageButton = view.findViewById(R.id.buttonPrev)
         val buttonNext: ImageButton = view.findViewById(R.id.buttonNext)
+        val itemContainer: View = view.findViewById(R.id.itemContainer)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemGroupViewHolder {
@@ -71,6 +74,11 @@ class ItemGroupAdapter(private var groupList: List<ItemGroup>)
         holder.buttonPrev.setOnClickListener {
             currentIndex = (currentIndex - 1 + group.items.size) % group.items.size
             updateView(group.items[currentIndex])
+        }
+
+        // 아이템 클릭 시 선택 리스너 호출
+        holder.itemContainer.setOnClickListener {
+            onItemSelected?.invoke(group.items[currentIndex])
         }
     }
 

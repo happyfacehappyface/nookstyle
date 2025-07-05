@@ -24,13 +24,15 @@ import java.io.IOException
 class ScreenshotAdapter(
     private var screenshotFiles: List<File>,
     private val onItemClick: (File) -> Unit,
-    private val onDeleteClick: (File) -> Unit
+    private val onDeleteClick: (File) -> Unit,
+    private val onSubmitClick: (File) -> Unit
 ) : RecyclerView.Adapter<ScreenshotAdapter.ScreenshotViewHolder>() {
 
     class ScreenshotViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewScreenshot)
         val tvFileName: TextView = view.findViewById(R.id.tvFileName)
         val btnSaveToGallery: Button = view.findViewById(R.id.btnSaveToGallery)
+        val btnSubmit: Button = view.findViewById(R.id.btnSubmit)
         val btnDelete: Button = view.findViewById(R.id.btnDelete)
     }
 
@@ -88,6 +90,11 @@ class ScreenshotAdapter(
         // 갤러리 저장 버튼 클릭 리스너
         holder.btnSaveToGallery.setOnClickListener {
             saveToGallery(holder.itemView.context, file)
+        }
+        
+        // 출품 버튼 클릭 리스너
+        holder.btnSubmit.setOnClickListener {
+            onSubmitClick(file)
         }
         
         // 삭제 버튼 클릭 리스너

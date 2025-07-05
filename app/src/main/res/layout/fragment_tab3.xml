@@ -3,24 +3,57 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_orange_light"
-    android:gravity="center"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="탭 3 콘텐츠"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- 콘테스트 정보 박스 -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="여기에 탭 3의 실제 콘텐츠가 들어갑니다"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[2025년 7월 첫째주 콘테스트]\n억울해 보이는 코디"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 빈 상태 메시지 -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="콘테스트 이미지 없음"
         android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"/>
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+
+    <!-- 콘테스트 이미지 Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewContest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
 </LinearLayout> 

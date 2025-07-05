@@ -56,6 +56,10 @@ class Tab2Fragment : Fragment() {
             onDeleteClick = { file ->
                 // 삭제 버튼 클릭 시 확인 다이얼로그 표시
                 showDeleteConfirmationDialog(file)
+            },
+            onSubmitClick = { file ->
+                // 출품 버튼 클릭 시 Tab3에 이미지 복사
+                submitToContest(file)
             }
         )
         recyclerView.adapter = adapter
@@ -139,6 +143,27 @@ class Tab2Fragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(context, "삭제 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * 콘테스트에 출품
+     */
+    private fun submitToContest(file: File) {
+        try {
+            // contest 폴더에 이미지 복사
+            val contestDir = File(requireContext().getExternalFilesDir(null), "contest")
+            if (!contestDir.exists()) {
+                contestDir.mkdirs()
+            }
+            
+            val contestFile = File(contestDir, file.name)
+            file.copyTo(contestFile, overwrite = true)
+            
+            Toast.makeText(context, "콘테스트에 출품되었습니다!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "출품에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 } 

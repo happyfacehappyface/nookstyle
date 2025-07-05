@@ -36,6 +36,12 @@ class Tab1Fragment : Fragment() {
     private lateinit var imageTop: ImageView
     private lateinit var imageHat: ImageView
     
+    // 착용 중인 아이템 표시 이미지들
+    private lateinit var equippedHatImage: ImageView
+    private lateinit var equippedTopImage: ImageView
+    private lateinit var equippedBottomImage: ImageView
+    private lateinit var equippedShoesImage: ImageView
+    
     // 태그 버튼들
     private lateinit var btnAll: Button
     private lateinit var btnTop: Button
@@ -82,6 +88,12 @@ class Tab1Fragment : Fragment() {
         imageBottom = view.findViewById(R.id.imageBottom)
         imageTop = view.findViewById(R.id.imageTop)
         imageHat = view.findViewById(R.id.imageHat)
+        
+        // 착용 중인 아이템 표시 이미지들 초기화
+        equippedHatImage = view.findViewById(R.id.equippedHatImage)
+        equippedTopImage = view.findViewById(R.id.equippedTopImage)
+        equippedBottomImage = view.findViewById(R.id.equippedBottomImage)
+        equippedShoesImage = view.findViewById(R.id.equippedShoesImage)
         
         // 태그 버튼 초기화
         btnAll = view.findViewById(R.id.btnAll)
@@ -352,10 +364,22 @@ class Tab1Fragment : Fragment() {
         selectedShoes = globalItemGroups.find { it.tag == ItemTag.SHOES }?.items?.firstOrNull()
         
         // 선택된 아이템들로 이미지 로드
-        selectedTop?.let { loadImageFromAssets(it.imagePath, imageTop) }
-        selectedBottom?.let { loadImageFromAssets(it.imagePath, imageBottom) }
-        selectedHat?.let { loadImageFromAssets(it.imagePath, imageHat) }
-        selectedShoes?.let { loadImageFromAssets(it.imagePath, imageShoes) }
+        selectedTop?.let { 
+            loadImageFromAssets(it.imagePath, imageTop)
+            loadImageFromAssets(it.imagePath, equippedTopImage)
+        }
+        selectedBottom?.let { 
+            loadImageFromAssets(it.imagePath, imageBottom)
+            loadImageFromAssets(it.imagePath, equippedBottomImage)
+        }
+        selectedHat?.let { 
+            loadImageFromAssets(it.imagePath, imageHat)
+            loadImageFromAssets(it.imagePath, equippedHatImage)
+        }
+        selectedShoes?.let { 
+            loadImageFromAssets(it.imagePath, imageShoes)
+            loadImageFromAssets(it.imagePath, equippedShoesImage)
+        }
     }
     
     // 이미지 스타일 설정
@@ -464,18 +488,22 @@ class Tab1Fragment : Fragment() {
             ItemTag.HAT -> {
                 selectedHat = item
                 loadImageFromAssets(item.imagePath, imageHat)
+                loadImageFromAssets(item.imagePath, equippedHatImage)
             }
             ItemTag.TOP -> {
                 selectedTop = item
                 loadImageFromAssets(item.imagePath, imageTop)
+                loadImageFromAssets(item.imagePath, equippedTopImage)
             }
             ItemTag.BOTTOM -> {
                 selectedBottom = item
                 loadImageFromAssets(item.imagePath, imageBottom)
+                loadImageFromAssets(item.imagePath, equippedBottomImage)
             }
             ItemTag.SHOES -> {
                 selectedShoes = item
                 loadImageFromAssets(item.imagePath, imageShoes)
+                loadImageFromAssets(item.imagePath, equippedShoesImage)
             }
         }
     }

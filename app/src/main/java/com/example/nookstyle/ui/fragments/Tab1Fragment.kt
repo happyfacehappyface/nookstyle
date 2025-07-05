@@ -165,10 +165,11 @@ class Tab1Fragment : Fragment() {
 
     // 캐릭터 선택 버튼 설정
     private fun showCharacterSelectDialog() {
-        val characters = arrayOf("여자 주민", "리처드")
+        val characters = arrayOf("여자 주민", "리처드", "리처드 측면")
         val characterImages = mapOf(
             "여자 주민" to "images/villagers/girl.png",
-            "리처드" to "images/villagers/Joey.png"
+            "리처드" to "images/villagers/Joey.png",
+            "리처드 측면" to "images/villagers/Joey2.png"
         )
 
         AlertDialog.Builder(requireContext())
@@ -328,6 +329,14 @@ class Tab1Fragment : Fragment() {
                         bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
                         shoesPosition = ClothingPosition(0.48f, 0.82f, 0.62f, 0.42f, 0f)
                     )
+                    "joey2" -> Villager(
+                        name,
+                        "images/villagers/$fileName",
+                        hatPosition = ClothingPosition(0.52f, 0.20f, 1.8f, 1.3f, 0f),
+                        topPosition = ClothingPosition(0.51f, 0.6f, 1.2f, 0.75f, 0f),
+                        bottomPosition = ClothingPosition(0.5f, 0.74f, 0.85f, 0.4f, 0f),
+                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.6f, 0.4f, 0f)
+                    )
                     "girl" -> Villager(
                         name,
                         "images/villagers/$fileName",
@@ -359,7 +368,7 @@ class Tab1Fragment : Fragment() {
     
     private fun setupOverlappingImages() {
         // 빌라저 기본 이미지 로드
-        loadImageFromAssets("images/villagers/Joey.png", imageVillager)
+        loadImageFromAssets("images/villagers/Joey2.png", imageVillager)
         
         // 저장된 선택된 아이템들 복원
         val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()

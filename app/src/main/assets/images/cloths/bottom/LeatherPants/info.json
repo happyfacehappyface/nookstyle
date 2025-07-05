@@ -2,5 +2,9 @@
     "title": "가죽 바지",
     "tag": "bottom",
     "price_bell": "1300",
-    "price_mile": "325"
+    "price_mile": "325",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 }

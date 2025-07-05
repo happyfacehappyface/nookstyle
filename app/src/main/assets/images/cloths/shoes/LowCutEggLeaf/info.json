@@ -2,5 +2,9 @@
     "title": "나뭇잎 달걀 신발",
     "tag": "shoes",
     "price_bell": "비매품",
-    "price_mile": "800"
+    "price_mile": "800",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 } 

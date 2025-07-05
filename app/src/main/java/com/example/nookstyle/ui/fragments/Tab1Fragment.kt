@@ -464,27 +464,36 @@ class Tab1Fragment : Fragment() {
         imageView.layoutParams = layoutParams
     }
     
-    // 의류 이미지 스타일 설정 (ClothingPosition 사용)
+    // 의류 이미지 스타일 설정 (ClothingPosition과 ItemGroup 값 중복 적용)
     private fun setupClothingImageStyle(
         imageView: ImageView,
         position: ClothingPosition,
         baseWidth: Int,
         baseHeight: Int
     ) {
-        val scaledWidth = (baseWidth * position.scaleX * resources.displayMetrics.density).toInt()
-        val scaledHeight = (baseHeight * position.scaleY * resources.displayMetrics.density).toInt()
+        // 현재 선택된 아이템 그룹의 위치/스케일 값 가져오기
+        val itemGroupAdjustment = getCurrentItemGroupAdjustment(imageView)
+        
+        // villager의 기본 위치와 ItemGroup의 조정값을 중복 적용
+        val adjustedScaleX = position.scaleX * itemGroupAdjustment.scaleX
+        val adjustedScaleY = position.scaleY * itemGroupAdjustment.scaleY
+        
+        val scaledWidth = (baseWidth * adjustedScaleX * resources.displayMetrics.density).toInt()
+        val scaledHeight = (baseHeight * adjustedScaleY * resources.displayMetrics.density).toInt()
 
         val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
         layoutParams.width = scaledWidth
         layoutParams.height = scaledHeight
 
-        // 중심 위치로 이동 (부모 FrameLayout 기준)
+        // 중심 위치로 이동 (부모 FrameLayout 기준) + ItemGroup 조정값 적용
         val parent = imageView.parent as View
         val parentWidth = parent.width
         val parentHeight = parent.height
         if (parentWidth > 0 && parentHeight > 0) {
-            layoutParams.leftMargin = (parentWidth * position.x - scaledWidth / 2).toInt()
-            layoutParams.topMargin = (parentHeight * position.y - scaledHeight / 2).toInt()
+            val adjustedX = position.x + itemGroupAdjustment.x
+            val adjustedY = position.y + itemGroupAdjustment.y
+            layoutParams.leftMargin = (parentWidth * adjustedX - scaledWidth / 2).toInt()
+            layoutParams.topMargin = (parentHeight * adjustedY - scaledHeight / 2).toInt()
         }
 
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
@@ -495,6 +504,45 @@ class Tab1Fragment : Fragment() {
         imageView.rotation = position.rotation
         imageView.setPadding(0, 0, 0, 0)
     }
+    
+    // 현재 선택된 아이템 그룹의 위치/스케일 조정값 가져오기
+    private fun getCurrentItemGroupAdjustment(imageView: ImageView): ItemGroupAdjustment {
+        return when (imageView) {
+            imageHat -> {
+                val (_, selectedGroup) = SelectedItemsManager.getSelectedHat()
+                selectedGroup?.let { group ->
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            }
+            imageTop -> {
+                val (_, selectedGroup) = SelectedItemsManager.getSelectedTop()
+                selectedGroup?.let { group ->
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            }
+            imageBottom -> {
+                val (_, selectedGroup) = SelectedItemsManager.getSelectedBottom()
+                selectedGroup?.let { group ->
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            }
+            imageShoes -> {
+                val (_, selectedGroup) = SelectedItemsManager.getSelectedShoes()
+                selectedGroup?.let { group ->
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            }
+            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+        }
+    }
+    
+    // ItemGroup 조정값을 담는 데이터 클래스
+    private data class ItemGroupAdjustment(
+        val x: Float,
+        val y: Float,
+        val scaleX: Float,
+        val scaleY: Float
+    )
     
     // assets 폴더에서 이미지 불러오기
     private fun loadImageFromAssets(fileName: String, imageView: ImageView) {
@@ -538,6 +586,11 @@ class Tab1Fragment : Fragment() {
         
         // 선택 상태 변경 후 리스트 업데이트
         adapter.notifyDataSetChanged()
+        
+        // 아이템 선택 후 이미지 스타일 다시 적용 (ItemGroup 조정값 반영)
+        view?.post {
+            setupImageStyles()
+        }
     }
     
     // 선택된 아이템의 인덱스를 adapter에 저장

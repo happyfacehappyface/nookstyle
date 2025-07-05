@@ -43,16 +43,13 @@ class Tab1Fragment : Fragment() {
     private lateinit var btnHat: Button
     private lateinit var btnShoes: Button
 
-    private var allItemGroups = listOf<ItemGroup>()
-    
     // 저장 버튼
     private lateinit var btnSave: Button
     
     // 검색창
     private lateinit var searchEditText: EditText
     
-    // 전체 아이템 리스트 (필터링용)
-    private var allItems = listOf<Item>()
+    // 필터링 상태
     private var currentFilter: ItemTag? = null
     private var currentSearchQuery: String = ""
     
@@ -214,18 +211,13 @@ class Tab1Fragment : Fragment() {
     
     // 아이템 필터링
     private fun filterItems(tag: ItemTag?) {
-        val filtered = if (tag == null) {
-            allItemGroups // 전체 보기
-        } else {
-            allItemGroups.filter { it.tag == tag } // 특정 태그만 필터링
-            currentFilter = tag
-            applyFilters()
-        }
+        currentFilter = tag
+        applyFilters()
     }
     
     // 필터와 검색을 모두 적용
     private fun applyFilters() {
-        var filteredGroups = allItemGroups
+        var filteredGroups: List<ItemGroup> = globalItemGroups
 
         // 태그 필터 적용
         if (currentFilter != null) {
@@ -235,13 +227,17 @@ class Tab1Fragment : Fragment() {
         // 검색어 필터 적용
         if (currentSearchQuery.isNotEmpty()) {
             filteredGroups = filteredGroups.filter { group ->
-                group.items.any { it.title.contains(currentSearchQuery, ignoreCase = true) }
+                group.items.any { item ->
+                    item.title.contains(currentSearchQuery, ignoreCase = true) ||
+                    item.color.contains(currentSearchQuery, ignoreCase = true) ||
+                    item.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
+                    item.price_mile.contains(currentSearchQuery, ignoreCase = true)
+                }
             }
         }
 
-        adapter = ItemGroupAdapter(filteredGroups)
-        recyclerView.adapter = adapter
-
+        // 어댑터 데이터만 업데이트 (재생성하지 않음)
+        adapter.updateData(filteredGroups)
         updateButtonStyles(currentFilter)
     }
     

@@ -26,12 +26,12 @@ object VillagerLoader {
                     val folderPath = "images/villagers/$folderName"
                     val files = assetManager.list(folderPath)
                     
-                    // PNG 파일과 info.json 파일 찾기
-                    val pngFile = files?.find { it.endsWith(".png") }
+                    // remain.png 파일과 info.json 파일 찾기
+                    val remainFile = files?.find { it == "remain.png" }
                     val infoFile = files?.find { it == "info.json" }
                     
-                    if (pngFile != null) {
-                        val imagePath = "$folderPath/$pngFile"
+                    if (remainFile != null) {
+                        val imagePath = "$folderPath/$remainFile"
                         
                         // info.json 파일이 있으면 읽어서 위치 정보와 이름 로드, 없으면 기본값 사용
                         val (clothingPositions, villagerName) = if (infoFile != null) {

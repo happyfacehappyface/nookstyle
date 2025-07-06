@@ -47,12 +47,12 @@ class ItemGroupAdapter(
         val assetManager = holder.itemView.context.assets
         
 
-        // 선택된 아이템이 있으면 해당 인덱스 사용, 없으면 저장된 인덱스 사용, 둘 다 없으면 0
+        // 저장된 인덱스를 우선적으로 사용, 없으면 선택된 아이템 인덱스 사용, 둘 다 없으면 0
         val selectedItemIndex = getSelectedItemIndex(group)
-        var currentIndex = if (selectedItemIndex != -1) {
+        var currentIndex = currentIndexMap[group] ?: if (selectedItemIndex != -1) {
             selectedItemIndex
         } else {
-            currentIndexMap[group] ?: 0
+            0
         }
 
         fun updateView(item: Item) {
@@ -225,15 +225,13 @@ class ItemGroupAdapter(
                     alpha = 0.7f
                     postDelayed({ alpha = 1.0f }, 100)
                     
-                    // 해당 색상의 아이템으로 바로 전환
+                    // 해당 색상의 아이템으로 바로 전환 (선택하지 않고 보기만)
                     val group = groupList.find { group ->
                         group.items.contains(item)
                     }
                     group?.let { foundGroup ->
                         // 현재 인덱스를 해당 색상의 인덱스로 업데이트
                         currentIndexMap[foundGroup] = index
-                        // 아이템 선택 콜백 호출
-                        onItemSelected?.invoke(item, foundGroup)
                         // 어댑터 전체 업데이트
                         notifyDataSetChanged()
                     }

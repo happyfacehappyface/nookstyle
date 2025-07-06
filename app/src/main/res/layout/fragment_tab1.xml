@@ -38,7 +38,7 @@
                 android:orientation="vertical"
                 android:background="@android:color/transparent">
 
-                <!-- 버튼 -->
+                <!-- 캐릭터 전환 버튼 -->
                 <ImageButton
                     android:id="@+id/chooseCharacter"
                     android:layout_width="36dp"
@@ -56,6 +56,32 @@
                 android:layout_height="280dp"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginEnd="30dp"
+                    android:orientation="horizontal"
+                    android:background="@android:color/transparent">
+
+                    <!-- 리처드 회전 버튼 -->
+                    <ImageButton
+                        android:id="@+id/rotateJoeyLeft"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="0dp"
+                        android:background="@android:color/transparent"
+                        app:srcCompat="@drawable/ic_chevron_left" />
+
+                    <ImageButton
+                        android:id="@+id/rotateJoeyRight"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="0dp"
+                        android:background="@android:color/transparent"
+                        app:srcCompat="@drawable/ic_chevron_right" />
+                </LinearLayout>
 
                 <!-- 맨 아래 이미지 - 빌라저 기본 이미지 -->
                 <ImageView
@@ -114,7 +140,7 @@
                 <!-- 맨 위 이미지 - 모자 이미지 -->
                 <ImageView
                     android:id="@+id/imageHat"
-                    android:layout_width="240dp"
+                    android:layout_width="243dp"
                     android:layout_height="240dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="0dp"

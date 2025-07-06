@@ -24,6 +24,7 @@ import com.example.nookstyle.ui.adapter.ItemGroupAdapter
 import com.example.nookstyle.util.AssetItemLoader
 import com.example.nookstyle.util.SelectedItemsManager
 import com.example.nookstyle.util.ScreenshotUtil
+import com.example.nookstyle.util.VillagerLoader
 import java.io.IOException
 
 
@@ -165,22 +166,24 @@ class Tab1Fragment : Fragment() {
 
     // 캐릭터 선택 버튼 설정
     private fun showCharacterSelectDialog() {
-        val characters = arrayOf("여자 주민", "리처드", "리처드 측면")
-        val characterImages = mapOf(
-            "여자 주민" to "images/villagers/girl.png",
-            "리처드" to "images/villagers/Joey.png",
-            "리처드 측면" to "images/villagers/Joey2.png"
-        )
+        // 동적으로 로드된 villager 목록 사용
+        val characterNames = villagerList.map { it.name }.toTypedArray()
 
         AlertDialog.Builder(requireContext())
             .setTitle("캐릭터를 선택하세요")
-            .setItems(characters) { _, which ->
-                val selected = characters[which]
-                val imagePath = characterImages[selected]
-                if (imagePath != null) {
-                    loadImageFromAssets(imagePath, imageVillager)
-                    Toast.makeText(context, "$selected 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+            .setItems(characterNames) { _, which ->
+                val selectedVillager = villagerList[which]
+                currentVillager = selectedVillager
+                
+                // villager 이미지 변경
+                loadImageFromAssets(selectedVillager.imagePath, imageVillager)
+                
+                // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
+                view?.post {
+                    setupImageStyles()
                 }
+                
+                Toast.makeText(context, "${selectedVillager.name} 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("취소", null)
             .show()
@@ -315,60 +318,27 @@ class Tab1Fragment : Fragment() {
     
     // 빌라저 설정
     private fun setupVillager() {
-        val assetManager = requireContext().assets
         try {
-            val villagerFiles = assetManager.list("images/villagers")
-            villagerFiles?.forEach { fileName ->
-                val name = fileName.substringBefore(".")
-                val villager = when (name) {
-                    "Joey" -> Villager(
-                        name,
-                        "images/villagers/$fileName",
-                        hatPosition = ClothingPosition(0.5f, 0.22f, 2.0f, 1.5f, 0f),
-                        topPosition = ClothingPosition(0.50f, 0.61f, 1.24f, 0.78f, 0f),
-                        bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
-                        shoesPosition = ClothingPosition(0.48f, 0.82f, 0.62f, 0.42f, 0f)
-                    )
-                    "joey2" -> Villager(
-                        name,
-                        "images/villagers/$fileName",
-                        hatPosition = ClothingPosition(0.52f, 0.20f, 1.8f, 1.3f, 0f),
-                        topPosition = ClothingPosition(0.51f, 0.6f, 1.2f, 0.75f, 0f),
-                        bottomPosition = ClothingPosition(0.5f, 0.74f, 0.85f, 0.4f, 0f),
-                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.6f, 0.4f, 0f)
-                    )
-                    "girl" -> Villager(
-                        name,
-                        "images/villagers/$fileName",
-                        hatPosition = ClothingPosition(0.52f, 0.20f, 1.8f, 1.3f, 0f),
-                        topPosition = ClothingPosition(0.51f, 0.6f, 1.2f, 0.75f, 0f),
-                        bottomPosition = ClothingPosition(0.5f, 0.74f, 0.85f, 0.4f, 0f),
-                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.6f, 0.4f, 0f)
-                    )
-                    else -> Villager(
-                        name,
-                        "images/villagers/$fileName",
-                        hatPosition = ClothingPosition(0.5f, 0.22f, 2.0f, 1.5f, 0f),
-                        topPosition = ClothingPosition(0.50f, 0.61f, 1.24f, 0.78f, 0f),
-                        bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
-                        shoesPosition = ClothingPosition(0.48f, 0.82f, 0.62f, 0.42f, 0f)
-                    )
-                }
-                villagerList.add(villager)
-            }
+            // VillagerLoader를 사용하여 동적으로 villager 정보 로드
+            val loadedVillagers = VillagerLoader.loadVillagersFromAssets(requireContext())
+            villagerList.clear()
+            villagerList.addAll(loadedVillagers)
 
+            // 첫 번째 villager를 기본으로 설정
             currentVillager = villagerList.firstOrNull()
             currentVillager?.let { loadImageFromAssets(it.imagePath, imageVillager) }
 
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     
     private fun setupOverlappingImages() {
-        // 빌라저 기본 이미지 로드
-        loadImageFromAssets("images/villagers/Joey2.png", imageVillager)
+        // 빌라저 기본 이미지 로드 (동적으로 로드된 villager 사용)
+        currentVillager?.let { villager ->
+            loadImageFromAssets(villager.imagePath, imageVillager)
+        }
         
         // 저장된 선택된 아이템들 복원
         val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()

@@ -178,7 +178,15 @@ class Tab1Fragment : Fragment() {
                 val selected = characters[which]
                 val imagePath = characterImages[selected]
                 if (imagePath != null) {
+                    // currentVillager 갱신
+                    currentVillager = villagerList.find { it.imagePath == imagePath }
+
+                    // 이미지 변경
                     loadImageFromAssets(imagePath, imageVillager)
+
+                    // 스타일 다시 적용
+                    view?.post { setupImageStyles() }
+
                     Toast.makeText(context, "$selected 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -340,10 +348,10 @@ class Tab1Fragment : Fragment() {
                     "girl" -> Villager(
                         name,
                         "images/villagers/$fileName",
-                        hatPosition = ClothingPosition(0.52f, 0.20f, 1.8f, 1.3f, 0f),
-                        topPosition = ClothingPosition(0.51f, 0.6f, 1.2f, 0.75f, 0f),
-                        bottomPosition = ClothingPosition(0.5f, 0.74f, 0.85f, 0.4f, 0f),
-                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.6f, 0.4f, 0f)
+                        hatPosition = ClothingPosition(0.50f, 0.22f, 1.75f, 1.3f, 3f),
+                        topPosition = ClothingPosition(0.50f, 0.548f, 1.43f, 1.0f, 0f),
+                        bottomPosition = ClothingPosition(0.5f, 0.70f, 0.85f, 0.585f, 0f),
+                        shoesPosition = ClothingPosition(0.48f, 0.81f, 0.55f, 0.4f, 0f)
                     )
                     else -> Villager(
                         name,
@@ -368,7 +376,9 @@ class Tab1Fragment : Fragment() {
     
     private fun setupOverlappingImages() {
         // 빌라저 기본 이미지 로드
-        loadImageFromAssets("images/villagers/Joey2.png", imageVillager)
+        currentVillager?.let { villager ->
+            loadImageFromAssets(villager.imagePath, imageVillager)
+        }
         
         // 저장된 선택된 아이템들 복원
         val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
@@ -493,6 +503,7 @@ class Tab1Fragment : Fragment() {
             layoutParams.leftMargin = (parentWidth * adjustedX - scaledWidth / 2).toInt()
             layoutParams.topMargin = (parentHeight * adjustedY - scaledHeight / 2).toInt()
         }
+
 
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
         imageView.layoutParams = layoutParams

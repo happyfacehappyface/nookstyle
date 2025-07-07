@@ -348,10 +348,8 @@ class Tab1Fragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filename_input, null)
         val editTextFileName = dialogView.findViewById<EditText>(R.id.editTextFileName)
         
-        // 기본 파일명 설정 (현재 시간 기준)
-        val defaultFileName = "Villager_Outfit_${System.currentTimeMillis()}"
-        editTextFileName.setText(defaultFileName)
-        editTextFileName.selectAll() // 전체 선택하여 쉽게 수정할 수 있도록
+        // 기본 파일명을 빈 문자열로 설정
+        editTextFileName.setText("")
         
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("스크린샷 저장")

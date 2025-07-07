@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    >
 
     <!-- 메인 콘텐츠 영역 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        >
 
         <!-- 왼쪽 세로 탭 -->
         <LinearLayout
+            android:id="@+id/tabs_container"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:orientation="vertical"

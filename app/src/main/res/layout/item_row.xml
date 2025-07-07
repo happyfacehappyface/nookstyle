@@ -63,17 +63,46 @@
             android:orientation="horizontal"
             android:layout_marginTop="3dp"
             android:gravity="center_vertical"/>
-        <TextView
-            android:id="@+id/textViewPrice_b"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"/>
-        <TextView
-            android:id="@+id/textViewPrice_m"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/bells"
+                android:contentDescription="Bell icon"
+                android:layout_marginEnd="4dp"/>
+                
+            <TextView
+                android:id="@+id/textViewPrice_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"/>
+        </LinearLayout>
+        
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/nook"
+                android:contentDescription="Nook Miles icon"
+                android:layout_marginEnd="4dp"/>
+                
+            <TextView
+                android:id="@+id/textViewPrice_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

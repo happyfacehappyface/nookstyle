@@ -142,7 +142,7 @@ class Tab1Fragment : Fragment() {
 
         // 리처드 회전 버튼 클릭 리스너
         rotateJoeyLeft.setOnClickListener {
-            val joey2 = villagerList.find { it.name == "Joey2" }
+            val joey2 = villagerList.find { it.name == "리처드 측면" }
             if (joey2 != null) {
                 currentVillager = joey2
 
@@ -158,7 +158,7 @@ class Tab1Fragment : Fragment() {
         }
 
         rotateJoeyRight.setOnClickListener {
-            val joey = villagerList.find { it.name == "Joey" }
+            val joey = villagerList.find { it.name == "리처드" }
             if (joey != null) {
                 currentVillager = joey
 
@@ -366,10 +366,10 @@ class Tab1Fragment : Fragment() {
     }
 
     private fun updateRotateButtons() {
-        if (currentVillager?.name == "Joey") {
+        if (currentVillager?.name == "리처드") {
             rotateJoeyLeft.visibility = View.VISIBLE
             rotateJoeyRight.visibility = View.GONE
-        } else if (currentVillager?.name == "Joey2") {
+        } else if (currentVillager?.name == "리처드 측면") {
             rotateJoeyLeft.visibility = View.GONE
             rotateJoeyRight.visibility = View.VISIBLE
         } else {

@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.*
+import com.example.nookstyle.model.ColorItem
 import com.example.nookstyle.ui.adapter.CharacterSelectAdapter
+import com.example.nookstyle.ui.adapter.ColorFilterAdapter
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
 import com.example.nookstyle.util.AssetItemLoader
 import com.example.nookstyle.util.SelectedItemsManager
@@ -74,9 +76,13 @@ class Tab1Fragment : Fragment() {
     // 검색창
     private lateinit var searchEditText: EditText
     
+    // 색상 필터 버튼
+    private lateinit var colorButton: ImageButton
+    
     // 필터링 상태
     private var currentFilter: ItemTag? = null
     private var currentSearchQuery: String = ""
+    private var currentColorFilter: String? = null
 
 
     // 전체 빌라저 리스트
@@ -174,6 +180,12 @@ class Tab1Fragment : Fragment() {
         
         // 검색창 초기화
         searchEditText = view.findViewById(R.id.searchEditText)
+        
+        // 색상 필터 버튼 초기화
+        colorButton = view.findViewById(R.id.colorButton)
+        colorButton.setOnClickListener {
+            showColorFilterDialog()
+        }
         
 
         
@@ -342,6 +354,98 @@ class Tab1Fragment : Fragment() {
         }
     }
     
+    // 색상 필터 다이얼로그 표시
+    private fun showColorFilterDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_color_filter, null)
+        val colorRecyclerView = dialogView.findViewById<RecyclerView>(R.id.colorRecyclerView)
+        val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        
+        // 색상 목록 생성
+        val colorList = createColorList()
+        
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        
+        // RecyclerView 설정 - 팝업 중앙 정렬을 위한 GridLayoutManager
+        val gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 4)
+        colorRecyclerView.layoutManager = gridLayoutManager
+        
+        // 아이템 데코레이션 추가로 팝업 중앙 정렬 개선
+        colorRecyclerView.addItemDecoration(object : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                view: View,
+                parent: androidx.recyclerview.widget.RecyclerView,
+                state: androidx.recyclerview.widget.RecyclerView.State
+            ) {
+                val position = parent.getChildAdapterPosition(view)
+                val spanCount = 4
+                val column = position % spanCount
+                
+                // 팝업 중앙 정렬을 위한 여백 조정
+                val spacing = 12
+                outRect.left = if (column == 0) spacing else spacing / 2
+                outRect.right = if (column == spanCount - 1) spacing else spacing / 2
+                outRect.top = spacing
+                outRect.bottom = spacing
+            }
+        })
+        
+        val colorAdapter = ColorFilterAdapter(colorList) { selectedColor ->
+            currentColorFilter = selectedColor.colorName
+            applyFilters()
+            dialog.dismiss() // 색상 선택 시 다이얼로그 닫기
+        }
+        
+        // 현재 선택된 색상이 있다면 어댑터에 설정
+        if (currentColorFilter != null) {
+            val currentColorItem = colorList.find { it.colorName == currentColorFilter }
+            currentColorItem?.let { colorAdapter.setSelectedColor(it) }
+        }
+        
+        colorRecyclerView.adapter = colorAdapter
+        
+        // 버튼 리스너 설정
+        btnClearFilter.setOnClickListener {
+            currentColorFilter = null
+            colorAdapter.clearSelection()
+            applyFilters()
+            dialog.dismiss()
+        }
+        
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
+    }
+    
+    // 색상 목록 생성
+    private fun createColorList(): List<ColorItem> {
+        return listOf(
+            ColorItem("빨강", android.graphics.Color.RED, "빨강"),
+            ColorItem("파랑", android.graphics.Color.BLUE, "파랑"),
+            ColorItem("초록", android.graphics.Color.GREEN, "초록"),
+            ColorItem("노랑", android.graphics.Color.YELLOW, "노랑"),
+            ColorItem("주황", android.graphics.Color.rgb(255, 165, 0), "주황"),
+            ColorItem("보라", android.graphics.Color.rgb(128, 0, 128), "보라"),
+            ColorItem("분홍", android.graphics.Color.rgb(255, 192, 203), "분홍"),
+            ColorItem("갈색", android.graphics.Color.rgb(139, 69, 19), "갈색"),
+            ColorItem("검정", android.graphics.Color.BLACK, "검정"),
+            ColorItem("하양", android.graphics.Color.WHITE, "하양"),
+            ColorItem("회색", android.graphics.Color.GRAY, "회색"),
+            ColorItem("하늘색", android.graphics.Color.rgb(135, 206, 235), "하늘색"),
+            ColorItem("남색", android.graphics.Color.rgb(0, 0, 128), "남색"),
+            ColorItem("베이지", android.graphics.Color.rgb(245, 245, 220), "베이지"),
+            ColorItem("와인 레드", android.graphics.Color.rgb(139, 0, 0), "와인 레드"),
+            ColorItem("코랄", android.graphics.Color.rgb(255, 127, 80), "코랄"),
+            ColorItem("아이보리", android.graphics.Color.rgb(255, 255, 240), "아이보리")
+        )
+    }
+    
     // 아이템 필터링
     private fun filterItems(tag: ItemTag?) {
         currentFilter = tag
@@ -369,9 +473,30 @@ class Tab1Fragment : Fragment() {
             }
         }
 
+        // 색상 필터 적용
+        if (currentColorFilter != null) {
+            android.util.Log.d("Tab1Fragment", "색상 필터 적용: $currentColorFilter")
+            filteredGroups = filteredGroups.filter { group ->
+                group.items.any { item ->
+                    val matches = item.color == currentColorFilter ||
+                        item.color.contains(currentColorFilter!!, ignoreCase = true) ||
+                        getEnglishColorName(currentColorFilter!!)?.let { englishName ->
+                            item.color.contains(englishName, ignoreCase = true)
+                        } ?: false
+                    
+                    if (matches) {
+                        android.util.Log.d("Tab1Fragment", "색상 매칭: ${item.color} == $currentColorFilter")
+                    }
+                    matches
+                }
+            }
+            android.util.Log.d("Tab1Fragment", "색상 필터링 후 아이템 그룹 수: ${filteredGroups.size}")
+        }
+
         // 어댑터 데이터만 업데이트 (재생성하지 않음)
         adapter.updateData(filteredGroups)
         updateButtonStyles(currentFilter)
+        updateColorButtonStyle()
     }
     
     // 버튼 스타일 업데이트
@@ -395,6 +520,43 @@ class Tab1Fragment : Fragment() {
     private fun highlightButton(button: Button) {
         button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
         button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+    }
+    
+    // 색상 버튼 스타일 업데이트
+    private fun updateColorButtonStyle() {
+        if (currentColorFilter != null) {
+            // 색상 필터가 적용된 경우 버튼을 강조
+            colorButton.alpha = 0.7f
+            colorButton.setBackgroundResource(R.drawable.circle_background_blue)
+        } else {
+            // 색상 필터가 없는 경우 기본 스타일
+            colorButton.alpha = 1.0f
+            colorButton.setBackgroundResource(R.drawable.circle_background_white)
+        }
+    }
+    
+    // 한국어 색상명을 영어 색상명으로 변환
+    private fun getEnglishColorName(koreanColor: String): String? {
+        return when (koreanColor) {
+            "빨강" -> "red"
+            "파랑" -> "blue"
+            "초록" -> "green"
+            "노랑" -> "yellow"
+            "주황" -> "orange"
+            "보라" -> "purple"
+            "분홍" -> "pink"
+            "갈색" -> "brown"
+            "검정" -> "black"
+            "하양" -> "white"
+            "회색" -> "grey"
+            "하늘색" -> "skyblue"
+            "남색" -> "navy"
+            "베이지" -> "beige"
+            "와인 레드" -> "winered"
+            "코랄" -> "coral"
+            "아이보리" -> "ivory"
+            else -> null
+        }
     }
 
     

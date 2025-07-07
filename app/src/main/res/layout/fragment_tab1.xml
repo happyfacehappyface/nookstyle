@@ -329,6 +329,18 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
 
+            <!-- 원형 버튼 -->
+            <ImageButton
+                android:id="@+id/colorButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle_background_white"
+                android:src="@drawable/color_icon"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:contentDescription="색상 선택 버튼" />
+
         </LinearLayout>
 
         <!-- 태그 선택 버튼들 -->

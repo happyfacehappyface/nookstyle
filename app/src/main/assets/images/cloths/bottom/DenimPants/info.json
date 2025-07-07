@@ -2,5 +2,9 @@
     "title": "데님 바지",
     "tag": "bottom",
     "price_bell": "1120",
-    "price_mile": "280"
+    "price_mile": "280",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 }

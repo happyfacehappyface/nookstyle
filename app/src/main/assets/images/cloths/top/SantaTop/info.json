@@ -2,5 +2,9 @@
     "title": "산타 재킷",
     "tag": "top",
     "price_bell": "2600",
-    "price_mile": "650"
+    "price_mile": "650",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 }

@@ -2,5 +2,9 @@
     "title": "댄스 트레이닝복 바지",
     "tag": "bottom",
     "price_bell": "1560",
-    "price_mile": "390"
+    "price_mile": "390",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 }

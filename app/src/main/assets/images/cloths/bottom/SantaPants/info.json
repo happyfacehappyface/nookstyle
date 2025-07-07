@@ -2,5 +2,9 @@
     "title": "산타 바지",
     "tag": "bottom",
     "price_bell": "2150",
-    "price_mile": "537"
+    "price_mile": "537",
+    "x": 0,
+    "y": 0,
+    "scaleX": 1.0,
+    "scaleY": 1.0
 }

@@ -114,10 +114,38 @@ class Tab1Fragment : Fragment() {
         equippedShoesImage = view.findViewById(R.id.equippedShoesImage)
 
         // 착용 아이템 클릭 리스너 설정
-        equippedHatImage.setOnClickListener { unequipItem(ItemTag.HAT) }
-        equippedTopImage.setOnClickListener { unequipItem(ItemTag.TOP) }
-        equippedBottomImage.setOnClickListener { unequipItem(ItemTag.BOTTOM) }
-        equippedShoesImage.setOnClickListener { unequipItem(ItemTag.SHOES) }
+        equippedHatImage.setOnClickListener {
+            val (item, _) = SelectedItemsManager.getSelectedHat()
+            if (item == null) {
+                filterItems(ItemTag.HAT)
+            } else {
+                unequipItem(ItemTag.HAT)
+            }
+        }
+        equippedTopImage.setOnClickListener {
+            val (item, _) = SelectedItemsManager.getSelectedTop()
+            if (item == null) {
+                filterItems(ItemTag.TOP)
+            } else {
+                unequipItem(ItemTag.TOP)
+            }
+        }
+        equippedBottomImage.setOnClickListener {
+            val (item, _) = SelectedItemsManager.getSelectedBottom()
+            if (item == null) {
+                filterItems(ItemTag.BOTTOM)
+            } else {
+                unequipItem(ItemTag.BOTTOM)
+            }
+        }
+        equippedShoesImage.setOnClickListener {
+            val (item, _) = SelectedItemsManager.getSelectedShoes()
+            if (item == null) {
+                filterItems(ItemTag.SHOES)
+            } else {
+                unequipItem(ItemTag.SHOES)
+            }
+        }
         
         // 태그 버튼 초기화
         btnAll = view.findViewById(R.id.btnAll)

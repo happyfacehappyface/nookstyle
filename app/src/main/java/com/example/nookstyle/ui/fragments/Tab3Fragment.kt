@@ -1,9 +1,12 @@
 package com.example.nookstyle.ui.fragments
 
+import android.app.AlertDialog
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -122,9 +125,53 @@ class Tab3Fragment : Fragment() {
     }
     
     private fun showFullScreenImage(imageName: String) {
-        // TODO: 전체화면 이미지 보기 다이얼로그 구현
-        // 현재는 간단한 토스트 메시지로 대체
-        Toast.makeText(context, "이미지: $imageName", Toast.LENGTH_SHORT).show()
+        try {
+            // 전체화면 다이얼로그 레이아웃 인플레이트
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_fullscreen_image, null)
+            val fullscreenImageView = dialogView.findViewById<ImageView>(R.id.fullscreenImageView)
+            val btnClose = dialogView.findViewById<View>(R.id.btnClose)
+            
+            // 이미지 로드 (assets 또는 외부 파일)
+            val bitmap = if (imageName.startsWith("assets/")) {
+                // assets에서 로드
+                val assetPath = imageName.substringAfter("assets/")
+                val inputStream = requireContext().assets.open(assetPath)
+                BitmapFactory.decodeStream(inputStream).also { inputStream.close() }
+            } else {
+                // 외부 파일에서 로드
+                val filePath = imageName.substringAfter("external/")
+                val file = File(requireContext().getExternalFilesDir(null), "contest/$filePath")
+                BitmapFactory.decodeFile(file.absolutePath)
+            }
+            
+            fullscreenImageView.setImageBitmap(bitmap)
+            
+            // 다이얼로그 생성
+            val dialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .create()
+            
+            // 닫기 버튼 클릭 리스너
+            btnClose.setOnClickListener {
+                dialog.dismiss()
+            }
+            
+            // 배경 클릭 시에도 닫기
+            dialogView.setOnClickListener {
+                dialog.dismiss()
+            }
+            
+            // 다이얼로그 표시 (전체화면)
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            dialog.show()
+            
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "이미지를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
     
     /**

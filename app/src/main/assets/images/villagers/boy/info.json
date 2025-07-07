@@ -1,0 +1,31 @@
+{
+    "name" : "남자 주민",
+    "topPosition" : 
+    {
+        "x": 0.50,
+        "y": 0.548,
+        "scaleX": 1.43,
+        "scaleY": 1.0
+    },
+    "bottomPosition" : 
+    {
+        "x": 0.5,
+        "y": 0.7,
+        "scaleX": 0.85,
+        "scaleY": 0.585
+    },
+    "hairPosition" : 
+    {
+        "x": 0.50,
+        "y": 0.22,
+        "scaleX": 1.75,
+        "scaleY": 1.3
+    },
+    "accessoryPosition" : 
+    {
+        "x": 0.48,
+        "y": 0.81,
+        "scaleX": 0.55,
+        "scaleY": 0.4
+    }
+} 

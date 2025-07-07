@@ -28,6 +28,7 @@ import com.example.nookstyle.util.AssetItemLoader
 import com.example.nookstyle.util.SelectedItemsManager
 import com.example.nookstyle.util.ScreenshotUtil
 import com.example.nookstyle.util.VillagerLoader
+import com.example.nookstyle.util.SelectedCharacterManager
 import java.io.IOException
 
 
@@ -83,8 +84,6 @@ class Tab1Fragment : Fragment() {
     private var currentSearchQuery: String = ""
     private var currentColorFilter: String? = null
 
-    // 현재 빌라저
-    private var currentVillager: Villager? = null
 
     // 전체 빌라저 리스트
     val villagerList = mutableListOf<Villager>()
@@ -249,7 +248,7 @@ class Tab1Fragment : Fragment() {
         
         // 어댑터 설정
         val adapter = CharacterSelectAdapter(villagerList) { selectedVillager ->
-            currentVillager = selectedVillager
+            SelectedCharacterManager.setSelectedVillager(selectedVillager)
             
             // villager 이미지 변경
             loadVillagerImages(selectedVillager)
@@ -579,9 +578,19 @@ class Tab1Fragment : Fragment() {
             villagerList.clear()
             villagerList.addAll(loadedVillagers)
 
-            // 첫 번째 villager를 기본으로 설정
-            currentVillager = villagerList.firstOrNull()
-            currentVillager?.let { loadVillagerImages(it) }
+            // 이전에 선택된 빌라저가 있는지 확인
+            val previouslySelectedVillager = SelectedCharacterManager.getSelectedVillager()
+
+            if (previouslySelectedVillager != null) {
+                // 이전에 선택된 빌라저가 있으면 해당 빌라저를 사용
+                loadVillagerImages(previouslySelectedVillager)
+            } else {
+                // 이전에 선택된 빌라저가 없으면 첫 번째 빌라저를 기본으로 설정하고 저장
+                villagerList.firstOrNull()?.let { 
+                    SelectedCharacterManager.setSelectedVillager(it)
+                    loadVillagerImages(it)
+                }
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -591,7 +600,7 @@ class Tab1Fragment : Fragment() {
     
     private fun setupOverlappingImages() {
         // 빌라저 기본 이미지 로드 (동적으로 로드된 villager 사용)
-        currentVillager?.let { villager ->
+        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
             loadVillagerImages(villager)
         }
 
@@ -648,7 +657,7 @@ class Tab1Fragment : Fragment() {
     
     // 이미지 스타일 설정
     private fun setupImageStyles() {
-        currentVillager?.let { villager ->
+        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
             // 빌라저 remain 이미지와 head 이미지를 완전히 동일한 크기로 설정
             val villagerSize = 200
             setupImageStyle(imageVillager, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
@@ -952,7 +961,7 @@ class Tab1Fragment : Fragment() {
     
     // 기본 의류 이미지 로드
     private fun loadDefaultClothingImages() {
-        currentVillager?.let { villager ->
+        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
             val folderPath = villager.imagePath.substringBeforeLast("/")
             
             // 기본 의류 이미지들 로드 (존재하는 경우에만)

@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rightContainer"
-        app:layout_constraintWidth_percent="0.4">
+        app:layout_constraintWidth_percent="0.3">
 
         <!-- 이미지 영역 (FrameLayout) -->
         <FrameLayout
@@ -54,7 +54,8 @@
                 android:id="@+id/villagerCaptureContainer"
                 android:layout_width="280dp"
                 android:layout_height="280dp"
-                android:layout_gravity="center"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="-20dp"
                 android:background="@android:color/transparent">
 
                 <LinearLayout
@@ -165,8 +166,8 @@
                 <!-- 모자 아이템 표시 -->
                 <FrameLayout
                     android:id="@+id/equippedHatContainer"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/equipped_item_border"
                     android:elevation="4dp">
@@ -184,8 +185,8 @@
                 <!-- 상의 아이템 표시 -->
                 <FrameLayout
                     android:id="@+id/equippedTopContainer"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/equipped_item_border"
                     android:elevation="4dp">
@@ -203,8 +204,8 @@
                 <!-- 하의 아이템 표시 -->
                 <FrameLayout
                     android:id="@+id/equippedBottomContainer"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/equipped_item_border"
                     android:elevation="4dp">
@@ -222,8 +223,8 @@
                 <!-- 신발 아이템 표시 -->
                 <FrameLayout
                     android:id="@+id/equippedShoesContainer"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/equipped_item_border"
                     android:elevation="4dp">
 
@@ -268,7 +269,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/leftSpace"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.6">
+        app:layout_constraintWidth_percent="0.7">
 
         <!-- 검색창 -->
         <LinearLayout

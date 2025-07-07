@@ -24,17 +24,29 @@ class ColorFilterAdapter(
         fun bind(colorItem: ColorItem) {
             colorName.text = colorItem.name
             
-            // 색상 원형 배경 설정 - 원형 drawable 생성
-            val circleDrawable = createCircleDrawable(colorItem.color)
-            colorCircle.background = circleDrawable
-            
-            // 선택된 색상 표시
-            if (selectedColor == colorItem) {
-                colorCircle.alpha = 0.8f
-                colorCircleContainer.setBackgroundResource(R.drawable.color_circle_selected)
-            } else {
+            if (colorItem.isClearFilter) {
+                // 필터 해제 버튼인 경우
+                colorCircle.setBackgroundResource(R.drawable.color_icon)
                 colorCircle.alpha = 1.0f
                 colorCircleContainer.setBackgroundResource(R.drawable.color_circle_border)
+                
+                // 선택된 색상 표시 (필터 해제 버튼이 선택된 경우)
+                if (selectedColor == colorItem) {
+                    colorCircleContainer.setBackgroundResource(R.drawable.color_circle_selected)
+                }
+            } else {
+                // 일반 색상 버튼인 경우
+                val circleDrawable = createCircleDrawable(colorItem.color)
+                colorCircle.background = circleDrawable
+                
+                // 선택된 색상 표시
+                if (selectedColor == colorItem) {
+                    colorCircle.alpha = 0.8f
+                    colorCircleContainer.setBackgroundResource(R.drawable.color_circle_selected)
+                } else {
+                    colorCircle.alpha = 1.0f
+                    colorCircleContainer.setBackgroundResource(R.drawable.color_circle_border)
+                }
             }
             
             itemView.setOnClickListener {

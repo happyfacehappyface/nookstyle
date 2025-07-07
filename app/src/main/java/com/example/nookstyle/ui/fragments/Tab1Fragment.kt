@@ -396,9 +396,17 @@ class Tab1Fragment : Fragment() {
         })
         
         val colorAdapter = ColorFilterAdapter(colorList) { selectedColor ->
-            currentColorFilter = selectedColor.colorName
-            applyFilters()
-            dialog.dismiss() // 색상 선택 시 다이얼로그 닫기
+            if (selectedColor.isClearFilter) {
+                // 필터 해제 버튼 클릭 시
+                currentColorFilter = null
+                applyFilters()
+                dialog.dismiss()
+            } else {
+                // 일반 색상 선택 시
+                currentColorFilter = selectedColor.colorName
+                applyFilters()
+                dialog.dismiss() // 색상 선택 시 다이얼로그 닫기
+            }
         }
         
         // 현재 선택된 색상이 있다면 어댑터에 설정
@@ -427,6 +435,7 @@ class Tab1Fragment : Fragment() {
     // 색상 목록 생성
     private fun createColorList(): List<ColorItem> {
         return listOf(
+            ColorItem("필터 해제", android.graphics.Color.TRANSPARENT, "", true),
             ColorItem("빨강", android.graphics.Color.RED, "빨강"),
             ColorItem("파랑", android.graphics.Color.BLUE, "파랑"),
             ColorItem("초록", android.graphics.Color.GREEN, "초록"),

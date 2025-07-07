@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nookstyle.R
 import com.example.nookstyle.model.*
+import com.example.nookstyle.ui.adapter.CharacterSelectAdapter
 import com.example.nookstyle.ui.adapter.ItemGroupAdapter
 import com.example.nookstyle.util.AssetItemLoader
 import com.example.nookstyle.util.SelectedItemsManager
@@ -76,6 +77,9 @@ class Tab1Fragment : Fragment() {
 
     // 전체 빌라저 리스트
     val villagerList = mutableListOf<Villager>()
+    
+    // 캐릭터 선택 다이얼로그
+    private var dialog: AlertDialog? = null
 
 
 
@@ -243,33 +247,46 @@ class Tab1Fragment : Fragment() {
 
     // 캐릭터 선택 버튼 설정
     private fun showCharacterSelectDialog() {
-        // 동적으로 로드된 villager 목록 사용
-        val characterNames = villagerList.map { it.name }.toTypedArray()
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("캐릭터를 선택하세요")
-            .setItems(characterNames) { _, which ->
-                val selectedVillager = villagerList[which]
-                currentVillager = selectedVillager
-                
-                // villager 이미지 변경
-                loadImageFromAssets(selectedVillager.imagePath, imageVillager)
-                
-                // 여기에서 rotate 버튼 표시 여부 결정
-                updateRotateButtons()
-                
-                // 선택한 후 재세팅
-                setupOverlappingImages()
-                
-                // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
-                view?.post {
-                    setupImageStyles()
-                }
-                
-                Toast.makeText(context, "${selectedVillager.name} 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+        // 커스텀 다이얼로그 레이아웃 인플레이트
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_character_select, null)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.characterRecyclerView)
+        
+        // RecyclerView 설정 - 그리드 레이아웃으로 변경 (3열)
+        recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 3)
+        
+        // 어댑터 설정
+        val adapter = CharacterSelectAdapter(villagerList) { selectedVillager ->
+            currentVillager = selectedVillager
+            
+            // villager 이미지 변경
+            loadImageFromAssets(selectedVillager.imagePath, imageVillager)
+            
+            // 여기에서 rotate 버튼 표시 여부 결정
+            updateRotateButtons()
+            
+            // 선택한 후 재세팅
+            setupOverlappingImages()
+            
+            // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
+            view?.post {
+                setupImageStyles()
             }
+            
+            Toast.makeText(context, "${selectedVillager.name} 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+            
+            // 다이얼로그 닫기
+            dialog?.dismiss()
+        }
+        
+        recyclerView.adapter = adapter
+        
+        // 다이얼로그 생성 및 표시
+        dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
             .setNegativeButton("취소", null)
-            .show()
+            .create()
+        
+        dialog?.show()
     }
 
 

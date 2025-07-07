@@ -40,6 +40,12 @@ class Tab1Fragment : Fragment() {
     private lateinit var imageBottom: ImageView
     private lateinit var imageTop: ImageView
     private lateinit var imageHat: ImageView
+    
+    // 기본 의류 이미지들
+    private lateinit var defaultShoes: ImageView
+    private lateinit var defaultBottom: ImageView
+    private lateinit var defaultTop: ImageView
+    private lateinit var defaultHat: ImageView
 
     // 캐릭터 선택 버튼
     private lateinit var chooseCharacter: ImageButton
@@ -104,6 +110,12 @@ class Tab1Fragment : Fragment() {
         imageBottom = view.findViewById(R.id.imageBottom)
         imageTop = view.findViewById(R.id.imageTop)
         imageHat = view.findViewById(R.id.imageHat)
+        
+        // 기본 의류 이미지들 초기화
+        defaultShoes = view.findViewById(R.id.defaultShoes)
+        defaultBottom = view.findViewById(R.id.defaultBottom)
+        defaultTop = view.findViewById(R.id.defaultTop)
+        defaultHat = view.findViewById(R.id.defaultHat)
 
         // 캐릭터 버튼 초기화
         chooseCharacter = view.findViewById(R.id.chooseCharacter)
@@ -186,10 +198,16 @@ class Tab1Fragment : Fragment() {
 
                 // 이미지 변경
                 loadImageFromAssets("images/villagers/Joey2", imageVillager)
+                
+                // 기본 의류 이미지 로드
+                loadDefaultClothingImages()
 
                 // 선택한 후 재세팅
                 setupOverlappingImages()
-                view?.post { setupImageStyles() }
+                view?.post { 
+                    setupImageStyles()
+                    updateDefaultClothingVisibility()
+                }
                 updateRotateButtons()
 
             }
@@ -201,9 +219,15 @@ class Tab1Fragment : Fragment() {
                 currentVillager = joey
 
                 loadImageFromAssets("images/villagers/Joey", imageVillager)
+                
+                // 기본 의류 이미지 로드
+                loadDefaultClothingImages()
 
                 setupOverlappingImages()
-                view?.post { setupImageStyles() }
+                view?.post { 
+                    setupImageStyles()
+                    updateDefaultClothingVisibility()
+                }
                 updateRotateButtons()
             }
         }
@@ -236,12 +260,16 @@ class Tab1Fragment : Fragment() {
         // 빌라저 초기화
         setupVillager()
         
+        // 기본 의류 이미지 로드
+        loadDefaultClothingImages()
+        
         // 겹쳐진 이미지 설정
         setupOverlappingImages()
         
         // 뷰가 완전히 그려진 후 이미지 스타일 설정
         view?.post {
             setupImageStyles()
+            updateDefaultClothingVisibility()
         }
     }
 
@@ -261,6 +289,9 @@ class Tab1Fragment : Fragment() {
             // villager 이미지 변경
             loadImageFromAssets(selectedVillager.imagePath, imageVillager)
             
+            // 기본 의류 이미지 로드
+            loadDefaultClothingImages()
+            
             // 여기에서 rotate 버튼 표시 여부 결정
             updateRotateButtons()
             
@@ -270,6 +301,7 @@ class Tab1Fragment : Fragment() {
             // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
             view?.post {
                 setupImageStyles()
+                updateDefaultClothingVisibility()
             }
             
             Toast.makeText(context, "${selectedVillager.name} 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
@@ -512,14 +544,26 @@ class Tab1Fragment : Fragment() {
             // 빌라저 기본 이미지 (맨 아래) - 더 큰 크기로 설정
             setupImageStyle(imageVillager, 200, 200, 0, 0, android.R.color.transparent)
             
+            // 기본 신발 이미지 - villager와 동일한 크기
+            setupImageStyle(defaultShoes, 200, 200, 0, 0, android.R.color.transparent)
+            
             // 신발 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageShoes, villager.shoesPosition, 120, 120)
+            
+            // 기본 하의 이미지 - villager와 동일한 크기
+            setupImageStyle(defaultBottom, 200, 200, 0, 0, android.R.color.transparent)
             
             // 하의 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageBottom, villager.bottomPosition, 100, 100)
             
+            // 기본 상의 이미지 - villager와 동일한 크기
+            setupImageStyle(defaultTop, 200, 200, 0, 0, android.R.color.transparent)
+            
             // 상의 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageTop, villager.topPosition, 80, 80)
+            
+            // 기본 모자 이미지 - villager와 동일한 크기
+            setupImageStyle(defaultHat, 200, 200, 0, 0, android.R.color.transparent)
             
             // 모자 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageHat, villager.hatPosition, 60, 60)
@@ -547,8 +591,8 @@ class Tab1Fragment : Fragment() {
         // 배경 설정
         imageView.setBackgroundColor(ContextCompat.getColor(requireContext(), backgroundColor))
         
-        // 스케일 타입 설정 - 빌라저는 FIT_CENTER로 설정하여 잘리지 않도록
-        if (imageView == imageVillager) {
+        // 스케일 타입 설정 - 빌라저와 기본 의류 이미지는 FIT_CENTER로 설정하여 잘리지 않도록
+        if (imageView == imageVillager || imageView == defaultShoes || imageView == defaultBottom || imageView == defaultTop || imageView == defaultHat) {
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
         } else {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -601,6 +645,37 @@ class Tab1Fragment : Fragment() {
         // 스케일, 회전 적용
         imageView.scaleType = ImageView.ScaleType.FIT_XY
         imageView.rotation = position.rotation
+        imageView.setPadding(0, 0, 0, 0)
+    }
+    
+    // 기본 의류 이미지 스타일 설정 (고정 크기 및 위치)
+    private fun setupDefaultClothingImageStyle(
+        imageView: ImageView,
+        baseWidth: Int,
+        baseHeight: Int
+    ) {
+        val scaledWidth = (baseWidth * resources.displayMetrics.density).toInt()
+        val scaledHeight = (baseHeight * resources.displayMetrics.density).toInt()
+
+        val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
+        layoutParams.width = scaledWidth
+        layoutParams.height = scaledHeight
+
+        // 부모 FrameLayout의 중심에 고정 배치
+        val parent = imageView.parent as View
+        val parentWidth = parent.width
+        val parentHeight = parent.height
+        if (parentWidth > 0 && parentHeight > 0) {
+            layoutParams.leftMargin = (parentWidth - scaledWidth) / 2
+            layoutParams.topMargin = (parentHeight - scaledHeight) / 2
+        }
+
+        layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
+        imageView.layoutParams = layoutParams
+
+        // 스케일 타입 설정
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
+        imageView.rotation = 0f // 회전 없음
         imageView.setPadding(0, 0, 0, 0)
     }
     
@@ -735,6 +810,33 @@ class Tab1Fragment : Fragment() {
             e.printStackTrace()
         }
     }
+    
+    // 기본 의류 이미지 로드
+    private fun loadDefaultClothingImages() {
+        currentVillager?.let { villager ->
+            val folderPath = villager.imagePath.substringBeforeLast("/")
+            
+            // 기본 의류 이미지들 로드
+            loadImageFromAssets("$folderPath/shoes.png", defaultShoes)
+            loadImageFromAssets("$folderPath/bottom.png", defaultBottom)
+            loadImageFromAssets("$folderPath/top.png", defaultTop)
+            loadImageFromAssets("$folderPath/hat.png", defaultHat)
+        }
+    }
+    
+    // 기본 의류 이미지 표시/숨김 관리
+    private fun updateDefaultClothingVisibility() {
+        val (selectedTop, _) = SelectedItemsManager.getSelectedTop()
+        val (selectedBottom, _) = SelectedItemsManager.getSelectedBottom()
+        val (selectedHat, _) = SelectedItemsManager.getSelectedHat()
+        val (selectedShoes, _) = SelectedItemsManager.getSelectedShoes()
+        
+        // 착용된 의류가 없을 때만 기본 의류 이미지 표시
+        defaultTop.visibility = if (selectedTop == null) View.VISIBLE else View.GONE
+        defaultBottom.visibility = if (selectedBottom == null) View.VISIBLE else View.GONE
+        defaultHat.visibility = if (selectedHat == null) View.VISIBLE else View.GONE
+        defaultShoes.visibility = if (selectedShoes == null) View.VISIBLE else View.GONE
+    }
 
     // 아이템 선택 처리
     private fun onItemSelected(item: Item, group: ItemGroup) {
@@ -784,6 +886,7 @@ class Tab1Fragment : Fragment() {
         adapter.notifyDataSetChanged()
         view?.post {
             setupImageStyles()
+            updateDefaultClothingVisibility()
         }
     }
 
@@ -820,6 +923,9 @@ class Tab1Fragment : Fragment() {
         }
         // UI 갱신이 필요하다면 추가 로직
         adapter.notifyDataSetChanged()
+        view?.post {
+            updateDefaultClothingVisibility()
+        }
     }
     
     // 선택된 아이템의 인덱스를 adapter에 저장

@@ -58,8 +58,14 @@ class ContestImageAdapter(
         val contestImage = contestImages[position]
         val imageName = contestImage.imageName
         
-        // 파일명 표시 (확장자 제외)
-        val fileName = imageName.substringBeforeLast(".")
+        // 파일명 표시 (경로와 확장자 제외)
+        val fileName = if (imageName.startsWith("assets/")) {
+            // assets/filename.jpg -> filename
+            imageName.substringAfter("assets/").substringBeforeLast(".")
+        } else {
+            // external/filename.jpg -> filename
+            imageName.substringAfter("external/").substringBeforeLast(".")
+        }
         holder.tvFileName.text = fileName
         
         // 좋아요 상태 설정

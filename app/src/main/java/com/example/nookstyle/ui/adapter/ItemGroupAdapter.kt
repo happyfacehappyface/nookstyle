@@ -24,6 +24,9 @@ class ItemGroupAdapter(
     
     // 각 ItemGroup별로 현재 보고 있는 아이템의 인덱스를 저장
     private val currentIndexMap = mutableMapOf<ItemGroup, Int>()
+    
+    // 현재 적용된 색상 필터
+    private var currentColorFilter: String? = null
 
     class ItemGroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageViewItem)
@@ -47,12 +50,33 @@ class ItemGroupAdapter(
         val assetManager = holder.itemView.context.assets
         
 
-        // 저장된 인덱스를 우선적으로 사용, 없으면 선택된 아이템 인덱스 사용, 둘 다 없으면 0
-        val selectedItemIndex = getSelectedItemIndex(group)
-        var currentIndex = currentIndexMap[group] ?: if (selectedItemIndex != -1) {
-            selectedItemIndex
+        // 색상 필터가 적용된 경우 해당 색상의 아이템을 우선적으로 선택
+        var currentIndex = if (currentColorFilter != null) {
+            val filteredItemIndex = group.items.indexOfFirst { item ->
+                item.color.contains(currentColorFilter!!, ignoreCase = true) ||
+                getEnglishColorName(currentColorFilter!!)?.let { englishName ->
+                    item.color.contains(englishName, ignoreCase = true)
+                } ?: false
+            }
+            if (filteredItemIndex != -1) {
+                filteredItemIndex
+            } else {
+                // 필터된 색상이 없으면 저장된 인덱스 또는 선택된 아이템 인덱스 사용
+                val selectedItemIndex = getSelectedItemIndex(group)
+                currentIndexMap[group] ?: if (selectedItemIndex != -1) {
+                    selectedItemIndex
+                } else {
+                    0
+                }
+            }
         } else {
-            0
+            // 색상 필터가 없는 경우 기존 로직 사용
+            val selectedItemIndex = getSelectedItemIndex(group)
+            currentIndexMap[group] ?: if (selectedItemIndex != -1) {
+                selectedItemIndex
+            } else {
+                0
+            }
         }
 
         fun updateView(item: Item) {
@@ -116,6 +140,30 @@ class ItemGroupAdapter(
      */
     fun updateCurrentIndex(group: ItemGroup, index: Int) {
         currentIndexMap[group] = index
+    }
+    
+    /**
+     * 색상 필터 설정
+     */
+    fun setColorFilter(colorFilter: String?) {
+        currentColorFilter = colorFilter
+        
+        // 색상 필터가 변경되면 해당 색상의 아이템을 선택하도록 currentIndexMap 업데이트
+        if (colorFilter != null) {
+            groupList.forEach { group ->
+                val filteredItemIndex = group.items.indexOfFirst { item ->
+                    item.color.contains(colorFilter, ignoreCase = true) ||
+                    getEnglishColorName(colorFilter)?.let { englishName ->
+                        item.color.contains(englishName, ignoreCase = true)
+                    } ?: false
+                }
+                if (filteredItemIndex != -1) {
+                    currentIndexMap[group] = filteredItemIndex
+                }
+            }
+        }
+        
+        notifyDataSetChanged()
     }
     
     // 선택된 아이템의 인덱스를 찾는 함수
@@ -192,15 +240,15 @@ class ItemGroupAdapter(
                 
                 // 현재 선택된 색상인지 확인하여 강조 표시
                 val isCurrentColor = item.color == currentItem.color
+                
                 if (isCurrentColor) {
-                    // 선택된 색상은 더 큰 크기와 테두리로 강조
+                    // 현재 선택된 색상은 더 큰 크기와 검은색 테두리로 강조
                     layoutParams.width = dpToPx(colorContainer.context, 20)
                     layoutParams.height = dpToPx(colorContainer.context, 20)
                     elevation = dpToPx(colorContainer.context, 4).toFloat()
                     setPadding(dpToPx(colorContainer.context, 2), dpToPx(colorContainer.context, 2), 
                               dpToPx(colorContainer.context, 2), dpToPx(colorContainer.context, 2))
                     
-                    // 선택된 색상에 검은색 테두리 추가
                     val borderDrawable = android.graphics.drawable.GradientDrawable().apply {
                         shape = android.graphics.drawable.GradientDrawable.RECTANGLE
                         setColor(getColorFromName(item.color))
@@ -268,6 +316,30 @@ class ItemGroupAdapter(
             "코랄", "coral" -> android.graphics.Color.rgb(255, 127, 80)
             "아이보리", "ivory" -> android.graphics.Color.rgb(255, 255, 240)
             else -> android.graphics.Color.GRAY // 기본값
+        }
+    }
+    
+    // 한국어 색상명을 영어 색상명으로 변환
+    private fun getEnglishColorName(koreanColor: String): String? {
+        return when (koreanColor) {
+            "빨강" -> "red"
+            "파랑" -> "blue"
+            "초록" -> "green"
+            "노랑" -> "yellow"
+            "주황" -> "orange"
+            "보라" -> "purple"
+            "분홍" -> "pink"
+            "갈색" -> "brown"
+            "검정" -> "black"
+            "하양" -> "white"
+            "회색" -> "grey"
+            "하늘색" -> "skyblue"
+            "남색" -> "navy"
+            "베이지" -> "beige"
+            "와인 레드" -> "winered"
+            "코랄" -> "coral"
+            "아이보리" -> "ivory"
+            else -> null
         }
     }
     

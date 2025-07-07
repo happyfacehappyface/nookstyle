@@ -504,6 +504,7 @@ class Tab1Fragment : Fragment() {
 
         // 어댑터 데이터만 업데이트 (재생성하지 않음)
         adapter.updateData(filteredGroups)
+        adapter.setColorFilter(currentColorFilter)
         updateButtonStyles(currentFilter)
         updateColorButtonStyle()
     }

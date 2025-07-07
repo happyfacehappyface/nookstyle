@@ -95,6 +95,18 @@
                     android:padding="8dp"
                     android:scaleType="fitCenter" />
 
+                <!-- 기본 신발 이미지 (착용된 신발이 없을 때만 표시) -->
+                <ImageView
+                    android:id="@+id/defaultShoes"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="기본 신발 이미지"
+                    android:elevation="2dp"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter" />
+
                 <!-- 신발 이미지 -->
                 <ImageView
                     android:id="@+id/imageShoes"
@@ -108,6 +120,18 @@
                     android:elevation="2dp"
                     android:padding="6dp"
                     android:scaleType="centerCrop" />
+
+                <!-- 기본 하의 이미지 (착용된 하의가 없을 때만 표시) -->
+                <ImageView
+                    android:id="@+id/defaultBottom"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="기본 하의 이미지"
+                    android:elevation="3dp"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter" />
 
                 <!-- 하의 이미지 -->
                 <ImageView
@@ -123,6 +147,18 @@
                     android:padding="4dp"
                     android:scaleType="centerCrop" />
 
+                <!-- 기본 상의 이미지 (착용된 상의가 없을 때만 표시) -->
+                <ImageView
+                    android:id="@+id/defaultTop"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="기본 상의 이미지"
+                    android:elevation="4dp"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter" />
+
                 <!-- 상의 이미지 -->
                 <ImageView
                     android:id="@+id/imageTop"
@@ -136,6 +172,18 @@
                     android:elevation="4dp"
                     android:padding="2dp"
                     android:scaleType="centerCrop" />
+
+                <!-- 기본 모자 이미지 (착용된 모자가 없을 때만 표시) -->
+                <ImageView
+                    android:id="@+id/defaultHat"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="기본 모자 이미지"
+                    android:elevation="5dp"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter" />
 
                 <!-- 맨 위 이미지 - 모자 이미지 -->
                 <ImageView

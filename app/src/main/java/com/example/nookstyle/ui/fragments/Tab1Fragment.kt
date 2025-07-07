@@ -746,16 +746,34 @@ class Tab1Fragment : Fragment() {
         }
     }
     
+    // assets 폴더에서 이미지가 존재하는 경우에만 불러오기
+    private fun loadImageFromAssetsIfExists(fileName: String, imageView: ImageView) {
+        try {
+            // 먼저 파일이 존재하는지 확인
+            val inputStream = requireContext().assets.open(fileName)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            imageView.setImageBitmap(bitmap)
+            inputStream.close()
+            
+            // 이미지가 성공적으로 로드되면 태그를 설정하여 존재함을 표시
+            imageView.tag = true
+        } catch (e: IOException) {
+            // 파일이 존재하지 않으면 이미지를 지우고 태그를 false로 설정
+            imageView.setImageDrawable(null)
+            imageView.tag = false
+        }
+    }
+    
     // 기본 의류 이미지 로드
     private fun loadDefaultClothingImages() {
         currentVillager?.let { villager ->
             val folderPath = villager.imagePath.substringBeforeLast("/")
             
-            // 기본 의류 이미지들 로드
-            loadImageFromAssets("$folderPath/shoes.png", defaultShoes)
-            loadImageFromAssets("$folderPath/bottom.png", defaultBottom)
-            loadImageFromAssets("$folderPath/top.png", defaultTop)
-            loadImageFromAssets("$folderPath/hat.png", defaultHat)
+            // 기본 의류 이미지들 로드 (존재하는 경우에만)
+            loadImageFromAssetsIfExists("$folderPath/shoes.png", defaultShoes)
+            loadImageFromAssetsIfExists("$folderPath/bottom.png", defaultBottom)
+            loadImageFromAssetsIfExists("$folderPath/top.png", defaultTop)
+            loadImageFromAssetsIfExists("$folderPath/hat.png", defaultHat)
         }
     }
     
@@ -766,11 +784,11 @@ class Tab1Fragment : Fragment() {
         val (selectedHat, _) = SelectedItemsManager.getSelectedHat()
         val (selectedShoes, _) = SelectedItemsManager.getSelectedShoes()
         
-        // 착용된 의류가 없을 때만 기본 의류 이미지 표시
-        defaultTop.visibility = if (selectedTop == null) View.VISIBLE else View.GONE
-        defaultBottom.visibility = if (selectedBottom == null) View.VISIBLE else View.GONE
-        defaultHat.visibility = if (selectedHat == null) View.VISIBLE else View.GONE
-        defaultShoes.visibility = if (selectedShoes == null) View.VISIBLE else View.GONE
+        // 착용된 의류가 없고, 기본 이미지가 존재할 때만 기본 의류 이미지 표시
+        defaultTop.visibility = if (selectedTop == null && defaultTop.tag == true) View.VISIBLE else View.GONE
+        defaultBottom.visibility = if (selectedBottom == null && defaultBottom.tag == true) View.VISIBLE else View.GONE
+        defaultHat.visibility = if (selectedHat == null && defaultHat.tag == true) View.VISIBLE else View.GONE
+        defaultShoes.visibility = if (selectedShoes == null && defaultShoes.tag == true) View.VISIBLE else View.GONE
     }
 
     // 아이템 선택 처리

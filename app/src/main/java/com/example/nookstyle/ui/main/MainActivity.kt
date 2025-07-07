@@ -15,6 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import android.os.Build
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +32,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_main)
+
+        val tabsContainer = findViewById<View>(R.id.tabs_container)
+        ViewCompat.setOnApplyWindowInsetsListener(tabsContainer) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, insets.top, 0, insets.bottom)
+            windowInsets
+        }
         
         // 권한 확인 및 요청
         checkAndRequestPermissions()

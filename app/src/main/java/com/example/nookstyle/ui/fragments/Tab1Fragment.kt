@@ -36,6 +36,7 @@ class Tab1Fragment : Fragment() {
     private lateinit var adapter: ItemGroupAdapter
 
     private lateinit var imageVillager: ImageView
+    private lateinit var imageVillagerHead: ImageView
     private lateinit var imageShoes: ImageView
     private lateinit var imageBottom: ImageView
     private lateinit var imageTop: ImageView
@@ -104,6 +105,7 @@ class Tab1Fragment : Fragment() {
         // 뷰 초기화
         recyclerView = view.findViewById(R.id.recyclerView)
         imageVillager = view.findViewById(R.id.imageVillager)
+        imageVillagerHead = view.findViewById(R.id.imageVillagerHead)
         imageShoes = view.findViewById(R.id.imageShoes)
         imageBottom = view.findViewById(R.id.imageBottom)
         imageTop = view.findViewById(R.id.imageTop)
@@ -238,7 +240,7 @@ class Tab1Fragment : Fragment() {
             currentVillager = selectedVillager
             
             // villager 이미지 변경
-            loadImageFromAssets(selectedVillager.imagePath, imageVillager)
+            loadVillagerImages(selectedVillager)
             
             // 기본 의류 이미지 로드
             loadDefaultClothingImages()
@@ -408,7 +410,7 @@ class Tab1Fragment : Fragment() {
 
             // 첫 번째 villager를 기본으로 설정
             currentVillager = villagerList.firstOrNull()
-            currentVillager?.let { loadImageFromAssets(it.imagePath, imageVillager) }
+            currentVillager?.let { loadVillagerImages(it) }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -419,7 +421,7 @@ class Tab1Fragment : Fragment() {
     private fun setupOverlappingImages() {
         // 빌라저 기본 이미지 로드 (동적으로 로드된 villager 사용)
         currentVillager?.let { villager ->
-            loadImageFromAssets(villager.imagePath, imageVillager)
+            loadVillagerImages(villager)
         }
 
         // 저장된 선택된 아이템들 복원
@@ -476,8 +478,10 @@ class Tab1Fragment : Fragment() {
     // 이미지 스타일 설정
     private fun setupImageStyles() {
         currentVillager?.let { villager ->
-            // 빌라저 기본 이미지 (맨 아래) - 더 큰 크기로 설정
-            setupImageStyle(imageVillager, 200, 200, 0, 0, android.R.color.transparent)
+            // 빌라저 remain 이미지와 head 이미지를 완전히 동일한 크기로 설정
+            val villagerSize = 200
+            setupImageStyle(imageVillager, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
+            setupImageStyle(imageVillagerHead, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 기본 신발 이미지 - villager와 동일한 크기
             setupImageStyle(defaultShoes, 200, 200, 0, 0, android.R.color.transparent)
@@ -527,7 +531,7 @@ class Tab1Fragment : Fragment() {
         imageView.setBackgroundColor(ContextCompat.getColor(requireContext(), backgroundColor))
         
         // 스케일 타입 설정 - 빌라저와 기본 의류 이미지는 FIT_CENTER로 설정하여 잘리지 않도록
-        if (imageView == imageVillager || imageView == defaultShoes || imageView == defaultBottom || imageView == defaultTop || imageView == defaultHat) {
+        if (imageView == imageVillager || imageView == imageVillagerHead || imageView == defaultShoes || imageView == defaultBottom || imageView == defaultTop || imageView == defaultHat) {
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
         } else {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -762,6 +766,17 @@ class Tab1Fragment : Fragment() {
             imageView.setImageDrawable(null)
             imageView.tag = false
         }
+    }
+    
+    // villager 이미지들 로드 (remain.png와 head.png)
+    private fun loadVillagerImages(villager: Villager) {
+        val folderPath = villager.imagePath.substringBeforeLast("/")
+        
+        // remain.png 로드 (기본 villager 이미지)
+        loadImageFromAssetsIfExists("$folderPath/remain.png", imageVillager)
+        
+        // head.png 로드 (head 이미지)
+        loadImageFromAssetsIfExists("$folderPath/head.png", imageVillagerHead)
     }
     
     // 기본 의류 이미지 로드

@@ -139,15 +139,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 맨 아래 이미지 - 빌라저 기본 이미지 -->
+            <!-- 맨 아래 이미지 - 빌라저 remain 이미지 -->
             <ImageView
                 android:id="@+id/imageVillager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
-                android:contentDescription="빌라저 이미지"
+                android:contentDescription="빌라저 remain 이미지"
                 android:elevation="1dp"
+                android:padding="8dp"
+                android:scaleType="fitCenter" />
+
+            <!-- 빌라저 head 이미지 -->
+            <ImageView
+                android:id="@+id/imageVillagerHead"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:contentDescription="빌라저 head 이미지"
+                android:elevation="5dp"
                 android:padding="8dp"
                 android:scaleType="fitCenter" />
 
@@ -237,7 +249,7 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:contentDescription="기본 모자 이미지"
-                android:elevation="5dp"
+                android:elevation="6dp"
                 android:padding="8dp"
                 android:scaleType="fitCenter" />
 
@@ -251,7 +263,7 @@
                 android:layout_marginTop="0dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="모자 이미지"
-                android:elevation="5dp"
+                android:elevation="6dp"
                 android:padding="0dp"
                 android:scaleType="centerCrop" />
 

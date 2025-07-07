@@ -1,0 +1,31 @@
+{
+    "name" : "근엄",
+    "topPosition" : 
+    {
+        "x": 0.50,
+        "y": 0.66,
+        "scaleX": 2.3,
+        "scaleY": 0.70
+    },
+    "bottomPosition" : 
+    {
+        "x": 0.5,
+        "y": 0.75,
+        "scaleX": 1.2,
+        "scaleY": 0.36
+    },
+    "hairPosition" : 
+    {
+        "x": 0.5,
+        "y": 0.22,
+        "scaleX": 2.0,
+        "scaleY": 1.5
+    },
+    "accessoryPosition" : 
+    {
+        "x": 0.48,
+        "y": 0.82,
+        "scaleX": 0.84,
+        "scaleY": 0.40
+    }
+}

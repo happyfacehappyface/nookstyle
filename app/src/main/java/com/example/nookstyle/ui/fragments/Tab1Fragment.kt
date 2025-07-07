@@ -50,9 +50,7 @@ class Tab1Fragment : Fragment() {
     // 캐릭터 선택 버튼
     private lateinit var chooseCharacter: ImageButton
 
-    // 리처드 회전 버튼
-    private lateinit var rotateJoeyLeft: ImageButton
-    private lateinit var rotateJoeyRight: ImageButton
+    
 
     
     // 착용 중인 아이템 표시 이미지들
@@ -183,54 +181,7 @@ class Tab1Fragment : Fragment() {
 
 
 
-        // 리처드 회전 버튼
-        rotateJoeyLeft = view.findViewById(R.id.rotateJoeyLeft)
-        rotateJoeyRight = view.findViewById(R.id.rotateJoeyRight)
-        // 초기에는 안보이게
-        rotateJoeyLeft.visibility = View.GONE
-        rotateJoeyRight.visibility = View.GONE
-
-        // 리처드 회전 버튼 클릭 리스너
-        rotateJoeyLeft.setOnClickListener {
-            val joey2 = villagerList.find { it.name == "리처드 측면" }
-            if (joey2 != null) {
-                currentVillager = joey2
-
-                // 이미지 변경
-                loadImageFromAssets("images/villagers/Joey2", imageVillager)
-                
-                // 기본 의류 이미지 로드
-                loadDefaultClothingImages()
-
-                // 선택한 후 재세팅
-                setupOverlappingImages()
-                view?.post { 
-                    setupImageStyles()
-                    updateDefaultClothingVisibility()
-                }
-                updateRotateButtons()
-
-            }
-        }
-
-        rotateJoeyRight.setOnClickListener {
-            val joey = villagerList.find { it.name == "리처드" }
-            if (joey != null) {
-                currentVillager = joey
-
-                loadImageFromAssets("images/villagers/Joey", imageVillager)
-                
-                // 기본 의류 이미지 로드
-                loadDefaultClothingImages()
-
-                setupOverlappingImages()
-                view?.post { 
-                    setupImageStyles()
-                    updateDefaultClothingVisibility()
-                }
-                updateRotateButtons()
-            }
-        }
+        
 
         setupData()
     }
@@ -293,7 +244,6 @@ class Tab1Fragment : Fragment() {
             loadDefaultClothingImages()
             
             // 여기에서 rotate 버튼 표시 여부 결정
-            updateRotateButtons()
             
             // 선택한 후 재세팅
             setupOverlappingImages()
@@ -446,18 +396,7 @@ class Tab1Fragment : Fragment() {
         button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
     }
 
-    private fun updateRotateButtons() {
-        if (currentVillager?.name == "리처드") {
-            rotateJoeyLeft.visibility = View.VISIBLE
-            rotateJoeyRight.visibility = View.GONE
-        } else if (currentVillager?.name == "리처드 측면") {
-            rotateJoeyLeft.visibility = View.GONE
-            rotateJoeyRight.visibility = View.VISIBLE
-        } else {
-            rotateJoeyLeft.visibility = View.GONE
-            rotateJoeyRight.visibility = View.GONE
-        }
-    }
+    
     
     // 빌라저 설정
     private fun setupVillager() {
@@ -470,8 +409,6 @@ class Tab1Fragment : Fragment() {
             // 첫 번째 villager를 기본으로 설정
             currentVillager = villagerList.firstOrNull()
             currentVillager?.let { loadImageFromAssets(it.imagePath, imageVillager) }
-
-            updateRotateButtons()
 
         } catch (e: Exception) {
             e.printStackTrace()

@@ -104,7 +104,7 @@
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:contentDescription="기본 신발 이미지"
-                    android:elevation="1dp"
+                    android:elevation="2dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter" />
 
@@ -130,7 +130,7 @@
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:contentDescription="기본 하의 이미지"
-                    android:elevation="1dp"
+                    android:elevation="3dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter" />
 
@@ -156,7 +156,7 @@
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:contentDescription="기본 상의 이미지"
-                    android:elevation="1dp"
+                    android:elevation="4dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter" />
 
@@ -182,7 +182,7 @@
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:contentDescription="기본 모자 이미지"
-                    android:elevation="1dp"
+                    android:elevation="5dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter" />
 

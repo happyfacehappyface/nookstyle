@@ -24,12 +24,13 @@ class ColorFilterAdapter(
         fun bind(colorItem: ColorItem) {
             colorName.text = colorItem.name
             
-            // 색상 원형 배경 설정
-            colorCircle.setBackgroundColor(colorItem.color)
+            // 색상 원형 배경 설정 - 원형 drawable 생성
+            val circleDrawable = createCircleDrawable(colorItem.color)
+            colorCircle.background = circleDrawable
             
             // 선택된 색상 표시
             if (selectedColor == colorItem) {
-                colorCircle.alpha = 0.7f
+                colorCircle.alpha = 0.8f
                 colorCircleContainer.setBackgroundResource(R.drawable.color_circle_selected)
             } else {
                 colorCircle.alpha = 1.0f
@@ -40,6 +41,14 @@ class ColorFilterAdapter(
                 selectedColor = colorItem
                 onColorSelected(colorItem)
                 notifyDataSetChanged()
+            }
+        }
+        
+        private fun createCircleDrawable(color: Int): android.graphics.drawable.GradientDrawable {
+            return android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                setColor(color)
+                setSize(44, 44)
             }
         }
     }

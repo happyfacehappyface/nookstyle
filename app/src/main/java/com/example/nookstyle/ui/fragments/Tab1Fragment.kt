@@ -370,8 +370,30 @@ class Tab1Fragment : Fragment() {
             .setView(dialogView)
             .create()
         
-        // RecyclerView 설정
-        colorRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 4)
+        // RecyclerView 설정 - 팝업 중앙 정렬을 위한 GridLayoutManager
+        val gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 4)
+        colorRecyclerView.layoutManager = gridLayoutManager
+        
+        // 아이템 데코레이션 추가로 팝업 중앙 정렬 개선
+        colorRecyclerView.addItemDecoration(object : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                view: View,
+                parent: androidx.recyclerview.widget.RecyclerView,
+                state: androidx.recyclerview.widget.RecyclerView.State
+            ) {
+                val position = parent.getChildAdapterPosition(view)
+                val spanCount = 4
+                val column = position % spanCount
+                
+                // 팝업 중앙 정렬을 위한 여백 조정
+                val spacing = 12
+                outRect.left = if (column == 0) spacing else spacing / 2
+                outRect.right = if (column == spanCount - 1) spacing else spacing / 2
+                outRect.top = spacing
+                outRect.bottom = spacing
+            }
+        })
         
         val colorAdapter = ColorFilterAdapter(colorList) { selectedColor ->
             currentColorFilter = selectedColor.colorName

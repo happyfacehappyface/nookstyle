@@ -19,11 +19,22 @@
         android:textColor="@android:color/black" />
 
     <!-- 색상 그리드 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/colorRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="300dp" />
+        android:maxHeight="300dp"
+        android:gravity="center">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/colorRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+    </FrameLayout>
 
     <!-- 버튼 영역 -->
     <LinearLayout

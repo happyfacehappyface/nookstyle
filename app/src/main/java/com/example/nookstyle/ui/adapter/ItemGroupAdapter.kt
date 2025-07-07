@@ -61,8 +61,8 @@ class ItemGroupAdapter(
             // 색상 사각형 생성 (현재 선택된 아이템 정보 전달)
             createColorSquares(holder.colorContainer, group.items, item)
 
-            holder.priceBellText.text = "${group.price_bell} 벨"
-            holder.priceMileText.text = "${group.price_mile} 마일"
+            holder.priceBellText.text = "${group.price_bell}"
+            holder.priceMileText.text = "${group.price_mile}"
             loadImage(holder.imageView, item.imagePath, assetManager)
             
             // 선택된 아이템인지 확인하고 배경색 변경

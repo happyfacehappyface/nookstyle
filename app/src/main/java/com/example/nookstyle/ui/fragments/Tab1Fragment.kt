@@ -42,6 +42,11 @@ class Tab1Fragment : Fragment() {
 
     // 캐릭터 선택 버튼
     private lateinit var chooseCharacter: ImageButton
+
+    // 리처드 회전 버튼
+    private lateinit var rotateJoeyLeft: ImageButton
+    private lateinit var rotateJoeyRight: ImageButton
+
     
     // 착용 중인 아이템 표시 이미지들
     private lateinit var equippedHatImage: ImageView
@@ -102,7 +107,6 @@ class Tab1Fragment : Fragment() {
             showCharacterSelectDialog()
         }
 
-
         // 착용 중인 아이템 표시 이미지들 초기화
         equippedHatImage = view.findViewById(R.id.equippedHatImage)
         equippedTopImage = view.findViewById(R.id.equippedTopImage)
@@ -126,6 +130,45 @@ class Tab1Fragment : Fragment() {
         
         // RecyclerView 설정
         recyclerView.layoutManager = GridLayoutManager(context, 2)
+
+
+
+        // 리처드 회전 버튼
+        rotateJoeyLeft = view.findViewById(R.id.rotateJoeyLeft)
+        rotateJoeyRight = view.findViewById(R.id.rotateJoeyRight)
+        // 초기에는 안보이게
+        rotateJoeyLeft.visibility = View.GONE
+        rotateJoeyRight.visibility = View.GONE
+
+        // 리처드 회전 버튼 클릭 리스너
+        rotateJoeyLeft.setOnClickListener {
+            val joey2 = villagerList.find { it.name == "Joey2" }
+            if (joey2 != null) {
+                currentVillager = joey2
+
+                // 이미지 변경
+                loadImageFromAssets("images/villagers/Joey2", imageVillager)
+
+                // 선택한 후 재세팅
+                setupOverlappingImages()
+                view?.post { setupImageStyles() }
+                updateRotateButtons()
+
+            }
+        }
+
+        rotateJoeyRight.setOnClickListener {
+            val joey = villagerList.find { it.name == "Joey" }
+            if (joey != null) {
+                currentVillager = joey
+
+                loadImageFromAssets("images/villagers/Joey", imageVillager)
+
+                setupOverlappingImages()
+                view?.post { setupImageStyles() }
+                updateRotateButtons()
+            }
+        }
 
         setupData()
     }
@@ -177,6 +220,12 @@ class Tab1Fragment : Fragment() {
                 
                 // villager 이미지 변경
                 loadImageFromAssets(selectedVillager.imagePath, imageVillager)
+                
+                // 여기에서 rotate 버튼 표시 여부 결정
+                updateRotateButtons()
+                
+                // 선택한 후 재세팅
+                setupOverlappingImages()
                 
                 // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
                 view?.post {
@@ -315,6 +364,19 @@ class Tab1Fragment : Fragment() {
         button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
         button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
     }
+
+    private fun updateRotateButtons() {
+        if (currentVillager?.name == "Joey") {
+            rotateJoeyLeft.visibility = View.VISIBLE
+            rotateJoeyRight.visibility = View.GONE
+        } else if (currentVillager?.name == "Joey2") {
+            rotateJoeyLeft.visibility = View.GONE
+            rotateJoeyRight.visibility = View.VISIBLE
+        } else {
+            rotateJoeyLeft.visibility = View.GONE
+            rotateJoeyRight.visibility = View.GONE
+        }
+    }
     
     // 빌라저 설정
     private fun setupVillager() {
@@ -327,6 +389,8 @@ class Tab1Fragment : Fragment() {
             // 첫 번째 villager를 기본으로 설정
             currentVillager = villagerList.firstOrNull()
             currentVillager?.let { loadImageFromAssets(it.imagePath, imageVillager) }
+
+            updateRotateButtons()
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -463,6 +527,7 @@ class Tab1Fragment : Fragment() {
             layoutParams.leftMargin = (parentWidth * adjustedX - scaledWidth / 2).toInt()
             layoutParams.topMargin = (parentHeight * adjustedY - scaledHeight / 2).toInt()
         }
+
 
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
         imageView.layoutParams = layoutParams

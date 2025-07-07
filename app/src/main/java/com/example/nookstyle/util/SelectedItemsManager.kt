@@ -55,15 +55,24 @@ object SelectedItemsManager {
         return Pair(selectedShoes, selectedShoesGroup)
     }
     
-    // 모든 선택 초기화
-    fun clearAllSelections() {
+    // 선택 해제
+    fun clearSelectedHat() {
         selectedHat = null
-        selectedTop = null
-        selectedBottom = null
-        selectedShoes = null
         selectedHatGroup = null
+    }
+
+    fun clearSelectedTop() {
+        selectedTop = null
         selectedTopGroup = null
+    }
+
+    fun clearSelectedBottom() {
+        selectedBottom = null
         selectedBottomGroup = null
+    }
+
+    fun clearSelectedShoes() {
+        selectedShoes = null
         selectedShoesGroup = null
     }
     

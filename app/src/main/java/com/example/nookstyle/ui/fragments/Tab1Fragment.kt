@@ -111,6 +111,12 @@ class Tab1Fragment : Fragment() {
         equippedTopImage = view.findViewById(R.id.equippedTopImage)
         equippedBottomImage = view.findViewById(R.id.equippedBottomImage)
         equippedShoesImage = view.findViewById(R.id.equippedShoesImage)
+
+        // 착용 아이템 클릭 리스너 설정
+        equippedHatImage.setOnClickListener { unequipItem(ItemTag.HAT) }
+        equippedTopImage.setOnClickListener { unequipItem(ItemTag.TOP) }
+        equippedBottomImage.setOnClickListener { unequipItem(ItemTag.BOTTOM) }
+        equippedShoesImage.setOnClickListener { unequipItem(ItemTag.SHOES) }
         
         // 태그 버튼 초기화
         btnAll = view.findViewById(R.id.btnAll)
@@ -444,40 +450,55 @@ class Tab1Fragment : Fragment() {
         currentVillager?.let { villager ->
             loadImageFromAssets(villager.imagePath, imageVillager)
         }
-        
+
         // 저장된 선택된 아이템들 복원
         val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
         val (selectedBottom, selectedBottomGroup) = SelectedItemsManager.getSelectedBottom()
         val (selectedHat, selectedHatGroup) = SelectedItemsManager.getSelectedHat()
         val (selectedShoes, selectedShoesGroup) = SelectedItemsManager.getSelectedShoes()
-        
-        // 선택된 아이템이 없으면 기본값 설정
-        if (selectedTop == null || selectedTopGroup == null) {
-            setupDefaultTop()
-        } else {
+
+        if (selectedTop != null) {
             loadImageFromAssets(selectedTop.imagePath, imageTop)
             loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
-        }
-        
-        if (selectedBottom == null || selectedBottomGroup == null) {
-            setupDefaultBottom()
+            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
+            imageTop.setImageDrawable(null)
+            equippedTopImage.setImageResource(R.drawable.ic_add)
+            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            equippedTopImage.imageTintList = null
+        }
+
+        if (selectedBottom != null) {
             loadImageFromAssets(selectedBottom.imagePath, imageBottom)
             loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
-        }
-        
-        if (selectedHat == null || selectedHatGroup == null) {
-            setupDefaultHat()
+            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
+            imageBottom.setImageDrawable(null)
+            equippedBottomImage.setImageResource(R.drawable.ic_add)
+            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            equippedBottomImage.imageTintList = null
+        }
+
+        if (selectedHat != null) {
             loadImageFromAssets(selectedHat.imagePath, imageHat)
             loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
-        }
-        
-        if (selectedShoes == null || selectedShoesGroup == null) {
-            setupDefaultShoes()
+            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
+            imageHat.setImageDrawable(null)
+            equippedHatImage.setImageResource(R.drawable.ic_add)
+            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            equippedHatImage.imageTintList = null
+        }
+
+        if (selectedShoes != null) {
             loadImageFromAssets(selectedShoes.imagePath, imageShoes)
             loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
+            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            imageShoes.setImageDrawable(null)
+            equippedShoesImage.setImageResource(R.drawable.ic_add)
+            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            equippedShoesImage.imageTintList = null
         }
     }
     
@@ -713,39 +734,88 @@ class Tab1Fragment : Fragment() {
 
     // 아이템 선택 처리
     private fun onItemSelected(item: Item, group: ItemGroup) {
+        // 현재 착용 중인 아이템인지 확인
+        val (currentlyEquippedItem, _) = when (group.tag) {
+            ItemTag.HAT -> SelectedItemsManager.getSelectedHat()
+            ItemTag.TOP -> SelectedItemsManager.getSelectedTop()
+            ItemTag.BOTTOM -> SelectedItemsManager.getSelectedBottom()
+            ItemTag.SHOES -> SelectedItemsManager.getSelectedShoes()
+        }
+
+        // 이미 착용 중인 아이템을 다시 클릭한 경우, 해제
+        if (currentlyEquippedItem == item) {
+            unequipItem(group.tag)
+            return // 해제 후 함수 종료
+        }
+
+        // 다른 아이템을 선택한 경우, 기존의 장착 로직 수행
         when (group.tag) {
             ItemTag.HAT -> {
                 SelectedItemsManager.setSelectedHat(item, group)
                 loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
+                equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.TOP -> {
                 SelectedItemsManager.setSelectedTop(item, group)
                 loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
+                equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.BOTTOM -> {
                 SelectedItemsManager.setSelectedBottom(item, group)
                 loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
+                equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.SHOES -> {
                 SelectedItemsManager.setSelectedShoes(item, group)
                 loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
+                equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
         }
-        
-        // 선택된 아이템의 인덱스를 adapter에 저장
+
         updateSelectedItemIndex(item, group)
-        
-        // 선택 상태 변경 후 리스트 업데이트
         adapter.notifyDataSetChanged()
-        
-        // 아이템 선택 후 이미지 스타일 다시 적용 (ItemGroup 조정값 반영)
         view?.post {
             setupImageStyles()
         }
+    }
+
+    private fun unequipItem(itemTag: ItemTag) {
+        when (itemTag) {
+            ItemTag.HAT -> {
+                SelectedItemsManager.clearSelectedHat()
+                imageHat.setImageDrawable(null) // 캐릭터 이미지에서 해당 아이템 제거
+                equippedHatImage.setImageResource(R.drawable.ic_add) // 우측 UI 기본 이미지로 변경
+                equippedHatImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                equippedHatImage.imageTintList = null
+            }
+            ItemTag.TOP -> {
+                SelectedItemsManager.clearSelectedTop()
+                imageTop.setImageDrawable(null)
+                equippedTopImage.setImageResource(R.drawable.ic_add)
+                equippedTopImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                equippedTopImage.imageTintList = null
+            }
+            ItemTag.BOTTOM -> {
+                SelectedItemsManager.clearSelectedBottom()
+                imageBottom.setImageDrawable(null)
+                equippedBottomImage.setImageResource(R.drawable.ic_add)
+                equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                equippedBottomImage.imageTintList = null
+            }
+            ItemTag.SHOES -> {
+                SelectedItemsManager.clearSelectedShoes()
+                imageShoes.setImageDrawable(null)
+                equippedShoesImage.setImageResource(R.drawable.ic_add)
+                equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                equippedShoesImage.imageTintList = null
+            }
+        }
+        // UI 갱신이 필요하다면 추가 로직
+        adapter.notifyDataSetChanged()
     }
     
     // 선택된 아이템의 인덱스를 adapter에 저장

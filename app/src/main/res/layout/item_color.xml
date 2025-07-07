@@ -8,12 +8,21 @@
     android:padding="8dp">
 
     <!-- 색상 원형 버튼 -->
-    <View
-        android:id="@+id/colorCircle"
+    <FrameLayout
+        android:id="@+id/colorCircleContainer"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/circle_background_white"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/color_circle_border">
+
+        <View
+            android:id="@+id/colorCircle"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_background_white" />
+
+    </FrameLayout>
 
     <!-- 색상 이름 -->
     <TextView

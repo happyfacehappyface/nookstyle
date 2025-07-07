@@ -18,6 +18,7 @@ class ColorFilterAdapter(
 
     inner class ColorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val colorCircle: View = itemView.findViewById(R.id.colorCircle)
+        private val colorCircleContainer: View = itemView.findViewById(R.id.colorCircleContainer)
         private val colorName: TextView = itemView.findViewById(R.id.colorName)
 
         fun bind(colorItem: ColorItem) {
@@ -29,8 +30,10 @@ class ColorFilterAdapter(
             // 선택된 색상 표시
             if (selectedColor == colorItem) {
                 colorCircle.alpha = 0.7f
+                colorCircleContainer.setBackgroundResource(R.drawable.color_circle_selected)
             } else {
                 colorCircle.alpha = 1.0f
+                colorCircleContainer.setBackgroundResource(R.drawable.color_circle_border)
             }
             
             itemView.setOnClickListener {
@@ -54,6 +57,11 @@ class ColorFilterAdapter(
     override fun getItemCount(): Int = colors.size
 
     fun getSelectedColor(): ColorItem? = selectedColor
+
+    fun setSelectedColor(colorItem: ColorItem) {
+        selectedColor = colorItem
+        notifyDataSetChanged()
+    }
 
     fun clearSelection() {
         selectedColor = null

@@ -365,20 +365,27 @@ class Tab1Fragment : Fragment() {
         // 색상 목록 생성
         val colorList = createColorList()
         
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        
         // RecyclerView 설정
         colorRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 4)
         
         val colorAdapter = ColorFilterAdapter(colorList) { selectedColor ->
             currentColorFilter = selectedColor.colorName
             applyFilters()
+            dialog.dismiss() // 색상 선택 시 다이얼로그 닫기
+        }
+        
+        // 현재 선택된 색상이 있다면 어댑터에 설정
+        if (currentColorFilter != null) {
+            val currentColorItem = colorList.find { it.colorName == currentColorFilter }
+            currentColorItem?.let { colorAdapter.setSelectedColor(it) }
         }
         
         colorRecyclerView.adapter = colorAdapter
-        
-        // 다이얼로그 생성
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
         
         // 버튼 리스너 설정
         btnClearFilter.setOnClickListener {

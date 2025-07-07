@@ -4,10 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingStart="2dp"
-    android:paddingEnd="2dp">
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp">
 
     <!-- 왼쪽 영역 - 겹쳐진 이미지들과 저장 버튼 -->
     <LinearLayout
@@ -52,10 +52,9 @@
             <!-- villager 캡처 전용 영역 -->
             <FrameLayout
                 android:id="@+id/villagerCaptureContainer"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="-20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:background="@android:color/transparent">
 
                 <LinearLayout
@@ -87,8 +86,8 @@
                 <!-- 맨 아래 이미지 - 빌라저 기본 이미지 -->
                 <ImageView
                     android:id="@+id/imageVillager"
-                    android:layout_width="280dp"
-                    android:layout_height="280dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:contentDescription="빌라저 이미지"
@@ -99,8 +98,8 @@
                 <!-- 신발 이미지 -->
                 <ImageView
                     android:id="@+id/imageShoes"
-                    android:layout_width="240dp"
-                    android:layout_height="240dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
@@ -113,8 +112,8 @@
                 <!-- 하의 이미지 -->
                 <ImageView
                     android:id="@+id/imageBottom"
-                    android:layout_width="240dp"
-                    android:layout_height="240dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
@@ -127,8 +126,8 @@
                 <!-- 상의 이미지 -->
                 <ImageView
                     android:id="@+id/imageTop"
-                    android:layout_width="240dp"
-                    android:layout_height="240dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
@@ -141,8 +140,8 @@
                 <!-- 맨 위 이미지 - 모자 이미지 -->
                 <ImageView
                     android:id="@+id/imageHat"
-                    android:layout_width="243dp"
-                    android:layout_height="240dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"

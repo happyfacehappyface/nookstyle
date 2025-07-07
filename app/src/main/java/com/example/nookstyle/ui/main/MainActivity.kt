@@ -9,15 +9,12 @@ import com.example.nookstyle.ui.fragments.Tab1Fragment
 import com.example.nookstyle.ui.fragments.Tab2Fragment
 import com.example.nookstyle.ui.fragments.Tab3Fragment
 import com.example.nookstyle.util.LikeCountManager
-import android.content.Intent
-import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-
+import androidx.core.view.WindowCompat
+import android.os.Build
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,9 +30,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
-        // 시스템 UI 설정 - 상태바는 유지하되 전체화면 모드 사용
-        setupSystemUI()
         
         // 권한 확인 및 요청
         checkAndRequestPermissions()
@@ -55,24 +49,17 @@ class MainActivity : AppCompatActivity() {
         showTab1()
     }
     
-    private fun setupSystemUI() {
-        // 상태바는 유지하되 시스템 UI와 겹치지 않도록 설정
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        )
-        
-        // Android 11+ (API 30+) 에서는 WindowInsetsController 사용
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-        }
-    }
-    
     private fun checkAndRequestPermissions() {
-        val permissions = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        }
         
         val permissionsToRequest = mutableListOf<String>()
         

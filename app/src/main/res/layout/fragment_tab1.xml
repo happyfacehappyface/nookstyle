@@ -338,7 +338,7 @@
                 android:background="@drawable/ds_color_circle_background_ivory"
                 android:src="@drawable/color_icon"
                 android:scaleType="centerInside"
-                android:padding="8dp"
+                android:padding="6dp"
                 android:contentDescription="색상 선택 버튼" />
 
             <!-- 가격 필터 버튼 -->
@@ -347,10 +347,10 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/circle_background_white"
+                android:background="@drawable/ds_color_circle_background_ivory"
                 android:src="@drawable/bells"
                 android:scaleType="centerInside"
-                android:padding="8dp"
+                android:padding="4dp"
                 android:contentDescription="가격 선택 버튼" />
 
         </LinearLayout>

@@ -24,8 +24,9 @@
     "accessoryPosition" :
     {
         "x": 0.47,
-        "y": 0.82,
+        "y": 0.83,
         "scaleX": 0.60,
-        "scaleY": 0.40
+        "scaleY": 0.40,
+        "rotation": -7
     }
 }

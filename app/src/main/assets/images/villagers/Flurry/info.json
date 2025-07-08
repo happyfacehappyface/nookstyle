@@ -26,6 +26,7 @@
         "x": 0.48,
         "y": 0.82,
         "scaleX": 0.84,
-        "scaleY": 0.40
+        "scaleY": 0.40,
+        "rotation": -9
     }
 }

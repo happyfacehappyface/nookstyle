@@ -3,29 +3,29 @@
     "topPosition" : 
     {
         "x": 0.50,
-        "y": 0.66,
-        "scaleX": 2.3,
-        "scaleY": 0.70
+        "y": 0.53,
+        "scaleX": 1.9,
+        "scaleY": 1.4
     },
     "bottomPosition" : 
     {
         "x": 0.5,
-        "y": 0.75,
-        "scaleX": 1.2,
-        "scaleY": 0.36
+        "y": 0.70,
+        "scaleX": 0.83,
+        "scaleY": 0.62
     },
     "hairPosition" : 
     {
         "x": 0.5,
-        "y": 0.22,
-        "scaleX": 2.0,
-        "scaleY": 1.5
+        "y": 0.13,
+        "scaleX": 1.2,
+        "scaleY": 1.2
     },
     "accessoryPosition" : 
     {
-        "x": 0.48,
-        "y": 0.82,
-        "scaleX": 0.84,
+        "x": 0.47,
+        "y": 0.83,
+        "scaleX": 0.63,
         "scaleY": 0.40
     }
 }

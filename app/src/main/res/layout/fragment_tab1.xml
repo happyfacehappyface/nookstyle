@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="4dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:contentDescription="착용 중인 모자" />
 
             </FrameLayout>
@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="4dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:contentDescription="착용 중인 상의" />
 
             </FrameLayout>
@@ -102,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="4dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:contentDescription="착용 중인 하의" />
 
             </FrameLayout>
@@ -121,7 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="4dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:contentDescription="착용 중인 신발" />
 
             </FrameLayout>

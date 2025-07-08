@@ -31,6 +31,7 @@ import com.example.nookstyle.util.SelectedItemsManager
 import com.example.nookstyle.util.ScreenshotUtil
 import com.example.nookstyle.util.VillagerLoader
 import com.example.nookstyle.util.SelectedCharacterManager
+import com.example.nookstyle.util.VirtualCanvas
 import java.io.IOException
 
 
@@ -40,18 +41,11 @@ class Tab1Fragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ItemGroupAdapter
 
-    private lateinit var imageVillager: ImageView
-    private lateinit var imageVillagerHead: ImageView
-    private lateinit var imageShoes: ImageView
-    private lateinit var imageBottom: ImageView
-    private lateinit var imageTop: ImageView
-    private lateinit var imageHat: ImageView
+    // 가상 캔버스로 렌더링된 결과를 표시할 ImageView
+    private lateinit var virtualCanvasImageView: ImageView
     
-    // 기본 의류 이미지들
-    private lateinit var defaultShoes: ImageView
-    private lateinit var defaultBottom: ImageView
-    private lateinit var defaultTop: ImageView
-    private lateinit var defaultHat: ImageView
+    // 가상 캔버스 인스턴스
+    private lateinit var virtualCanvas: VirtualCanvas
 
     // 캐릭터 선택 버튼
     private lateinit var chooseCharacter: ImageButton
@@ -115,18 +109,10 @@ class Tab1Fragment : Fragment() {
         
         // 뷰 초기화
         recyclerView = view.findViewById(R.id.recyclerView)
-        imageVillager = view.findViewById(R.id.imageVillager)
-        imageVillagerHead = view.findViewById(R.id.imageVillagerHead)
-        imageShoes = view.findViewById(R.id.imageShoes)
-        imageBottom = view.findViewById(R.id.imageBottom)
-        imageTop = view.findViewById(R.id.imageTop)
-        imageHat = view.findViewById(R.id.imageHat)
+        virtualCanvasImageView = view.findViewById(R.id.virtualCanvasImageView)
         
-        // 기본 의류 이미지들 초기화
-        defaultShoes = view.findViewById(R.id.defaultShoes)
-        defaultBottom = view.findViewById(R.id.defaultBottom)
-        defaultTop = view.findViewById(R.id.defaultTop)
-        defaultHat = view.findViewById(R.id.defaultHat)
+        // 가상 캔버스 초기화
+        virtualCanvas = VirtualCanvas(requireContext())
 
         // 캐릭터 버튼 초기화
         chooseCharacter = view.findViewById(R.id.chooseCharacter)
@@ -236,17 +222,8 @@ class Tab1Fragment : Fragment() {
         // 빌라저 초기화
         setupVillager()
         
-        // 기본 의류 이미지 로드
-        loadDefaultClothingImages()
-        
-        // 겹쳐진 이미지 설정
-        setupOverlappingImages()
-        
-        // 뷰가 완전히 그려진 후 이미지 스타일 설정
-        view?.post {
-            setupImageStyles()
-            updateDefaultClothingVisibility()
-        }
+        // 가상 캔버스로 캐릭터 렌더링
+        renderCharacterOnVirtualCanvas()
     }
 
     // 캐릭터 선택 버튼 설정
@@ -262,22 +239,8 @@ class Tab1Fragment : Fragment() {
         val adapter = CharacterSelectAdapter(villagerList) { selectedVillager ->
             SelectedCharacterManager.setSelectedVillager(selectedVillager)
             
-            // villager 이미지 변경
-            loadVillagerImages(selectedVillager)
-            
-            // 기본 의류 이미지 로드
-            loadDefaultClothingImages()
-            
-            // 여기에서 rotate 버튼 표시 여부 결정
-            
-            // 선택한 후 재세팅
-            setupOverlappingImages()
-            
-            // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
-            view?.post {
-                setupImageStyles()
-                updateDefaultClothingVisibility()
-            }
+            // 가상 캔버스로 캐릭터 렌더링
+            renderCharacterOnVirtualCanvas()
             
             Toast.makeText(context, "${selectedVillager.name} 캐릭터로 변경되었습니다.", Toast.LENGTH_SHORT).show()
             
@@ -347,18 +310,13 @@ class Tab1Fragment : Fragment() {
     // 파일명으로 스크린샷 캡처 및 저장
     private fun captureAndSaveWithFileName(fileName: String) {
         try {
-            // villager 전용 캡처 컨테이너 스크린샷 (주변 UI 제외)
-            val villagerContainer = view?.findViewById<FrameLayout>(R.id.villagerCaptureContainer)
-            villagerContainer?.let { container ->
-                // 뷰가 완전히 그려진 후 스크린샷 찍기
-                container.post {
-                    val savedPath = ScreenshotUtil.captureAndSaveView(requireContext(), container, fileName)
-                    if (savedPath != null) {
-                        Toast.makeText(context, "스크린샷이 저장되었습니다!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "스크린샷 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            // 가상 캔버스의 현재 비트맵을 직접 저장
+            val currentBitmap = virtualCanvas.getCurrentBitmap()
+            val savedPath = ScreenshotUtil.saveBitmapToFile(requireContext(), currentBitmap, fileName)
+            if (savedPath != null) {
+                Toast.makeText(context, "스크린샷이 저장되었습니다!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "스크린샷 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -751,14 +709,10 @@ class Tab1Fragment : Fragment() {
             // 이전에 선택된 빌라저가 있는지 확인
             val previouslySelectedVillager = SelectedCharacterManager.getSelectedVillager()
 
-            if (previouslySelectedVillager != null) {
-                // 이전에 선택된 빌라저가 있으면 해당 빌라저를 사용
-                loadVillagerImages(previouslySelectedVillager)
-            } else {
+            if (previouslySelectedVillager == null) {
                 // 이전에 선택된 빌라저가 없으면 첫 번째 빌라저를 기본으로 설정하고 저장
                 villagerList.firstOrNull()?.let { 
                     SelectedCharacterManager.setSelectedVillager(it)
-                    loadVillagerImages(it)
                 }
             }
 
@@ -766,329 +720,35 @@ class Tab1Fragment : Fragment() {
             e.printStackTrace()
         }
     }
-
     
-    private fun setupOverlappingImages() {
-        // 빌라저 기본 이미지 로드 (동적으로 로드된 villager 사용)
-        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
-            loadVillagerImages(villager)
-        }
-
-        // 저장된 선택된 아이템들 복원
-        val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
-        val (selectedBottom, selectedBottomGroup) = SelectedItemsManager.getSelectedBottom()
-        val (selectedHat, selectedHatGroup) = SelectedItemsManager.getSelectedHat()
-        val (selectedShoes, selectedShoesGroup) = SelectedItemsManager.getSelectedShoes()
-
-        if (selectedTop != null) {
-            loadImageFromAssets(selectedTop.imagePath, imageTop)
-            loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
-            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            imageTop.setImageDrawable(null)
-            equippedTopImage.setImageResource(R.drawable.ic_add)
-            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            equippedTopImage.imageTintList = null
-        }
-
-        if (selectedBottom != null) {
-            loadImageFromAssets(selectedBottom.imagePath, imageBottom)
-            loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
-            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            imageBottom.setImageDrawable(null)
-            equippedBottomImage.setImageResource(R.drawable.ic_add)
-            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            equippedBottomImage.imageTintList = null
-        }
-
-        if (selectedHat != null) {
-            loadImageFromAssets(selectedHat.imagePath, imageHat)
-            loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
-            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            imageHat.setImageDrawable(null)
-            equippedHatImage.setImageResource(R.drawable.ic_add)
-            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            equippedHatImage.imageTintList = null
-        }
-
-        if (selectedShoes != null) {
-            loadImageFromAssets(selectedShoes.imagePath, imageShoes)
-            loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
-            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            imageShoes.setImageDrawable(null)
-            equippedShoesImage.setImageResource(R.drawable.ic_add)
-            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            equippedShoesImage.imageTintList = null
-        }
-    }
-    
-    // 이미지 스타일 설정
-    private fun setupImageStyles() {
-        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
-            // 빌라저 remain 이미지와 head 이미지를 완전히 동일한 크기로 설정
-            val villagerSize = 200
-            setupImageStyle(imageVillager, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
-            setupImageStyle(imageVillagerHead, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
-            
-            // 기본 신발 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultShoes, 200, 200, 0, 0, android.R.color.transparent)
-            
-            // 신발 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageShoes, villager.shoesPosition, 120, 120)
-            
-            // 기본 하의 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultBottom, 200, 200, 0, 0, android.R.color.transparent)
-            
-            // 하의 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageBottom, villager.bottomPosition, 100, 100)
-            
-            // 기본 상의 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultTop, 200, 200, 0, 0, android.R.color.transparent)
-            
-            // 상의 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageTop, villager.topPosition, 80, 80)
-            
-            // 기본 모자 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultHat, 200, 200, 0, 0, android.R.color.transparent)
-            
-            // 모자 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageHat, villager.hatPosition, 60, 60)
-        }
-    }
-    
-    // 개별 이미지 스타일 설정
-    private fun setupImageStyle(
-        imageView: ImageView, 
-        width: Int, 
-        height: Int, 
-        marginTop: Int, 
-        marginStart: Int, 
-        backgroundColor: Int
-    ) {
-        // 크기 설정
-        val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
-        layoutParams.width = (width * resources.displayMetrics.density).toInt()
-        layoutParams.height = (height * resources.displayMetrics.density).toInt()
+    // 가상 캔버스로 캐릭터 렌더링
+    private fun renderCharacterOnVirtualCanvas() {
+        val selectedVillager = SelectedCharacterManager.getSelectedVillager()
+        val (selectedHat, _) = SelectedItemsManager.getSelectedHat()
+        val (selectedTop, _) = SelectedItemsManager.getSelectedTop()
+        val (selectedBottom, _) = SelectedItemsManager.getSelectedBottom()
+        val (selectedShoes, _) = SelectedItemsManager.getSelectedShoes()
         
-        // 위치 설정
-        layoutParams.topMargin = (marginTop * resources.displayMetrics.density).toInt()
-        layoutParams.leftMargin = (marginStart * resources.displayMetrics.density).toInt()
+        // 가상 캔버스에서 렌더링
+        val renderedBitmap = virtualCanvas.renderCharacter(
+            selectedVillager,
+            selectedHat,
+            selectedTop,
+            selectedBottom,
+            selectedShoes
+        )
         
-        // 배경 설정
-        imageView.setBackgroundColor(ContextCompat.getColor(requireContext(), backgroundColor))
-        
-        // 스케일 타입 설정 - 빌라저와 기본 의류 이미지는 FIT_CENTER로 설정하여 잘리지 않도록
-        if (imageView == imageVillager || imageView == imageVillagerHead || imageView == defaultShoes || imageView == defaultBottom || imageView == defaultTop || imageView == defaultHat) {
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-        } else {
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-        }
-        
-        // 패딩 설정
-        val padding = (8 * resources.displayMetrics.density).toInt()
-        imageView.setPadding(padding, padding, padding, padding)
-        
-        // 레이아웃 파라미터 적용
-        imageView.layoutParams = layoutParams
+        // 렌더링된 결과를 ImageView에 표시
+        virtualCanvasImageView.setImageBitmap(renderedBitmap)
+        virtualCanvasImageView.scaleType = ImageView.ScaleType.FIT_CENTER
     }
+
     
-    // 의류 이미지 스타일 설정 (ClothingPosition과 ItemGroup 값 중복 적용)
-    private fun setupClothingImageStyle(
-        imageView: ImageView,
-        position: ClothingPosition,
-        baseWidth: Int,
-        baseHeight: Int
-    ) {
-        // 현재 선택된 아이템 그룹의 위치/스케일 값 가져오기
-        val itemGroupAdjustment = getCurrentItemGroupAdjustment(imageView)
-        
-        // villager의 기본 위치와 ItemGroup의 조정값을 중복 적용
-        val adjustedScaleX = position.scaleX * itemGroupAdjustment.scaleX
-        val adjustedScaleY = position.scaleY * itemGroupAdjustment.scaleY
-        
-        val scaledWidth = (baseWidth * adjustedScaleX * resources.displayMetrics.density).toInt()
-        val scaledHeight = (baseHeight * adjustedScaleY * resources.displayMetrics.density).toInt()
 
-        val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
-        layoutParams.width = scaledWidth
-        layoutParams.height = scaledHeight
-
-        // 중심 위치로 이동 (부모 FrameLayout 기준) + ItemGroup 조정값 적용
-        val parent = imageView.parent as View
-        val parentWidth = parent.width
-        val parentHeight = parent.height
-        if (parentWidth > 0 && parentHeight > 0) {
-            val adjustedX = position.x + itemGroupAdjustment.x
-            val adjustedY = position.y + itemGroupAdjustment.y
-            layoutParams.leftMargin = (parentWidth * adjustedX - scaledWidth / 2).toInt()
-            layoutParams.topMargin = (parentHeight * adjustedY - scaledHeight / 2).toInt()
-        }
-
-
-        layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
-        imageView.layoutParams = layoutParams
-
-        // 스케일, 회전 적용 (villager의 rotation과 ItemGroup의 rotation 합산)
-        imageView.scaleType = ImageView.ScaleType.FIT_XY
-        val totalRotation = position.rotation + itemGroupAdjustment.rotation
-        imageView.rotation = totalRotation
-        imageView.setPadding(0, 0, 0, 0)
-    }
     
-    // 기본 의류 이미지 스타일 설정 (고정 크기 및 위치)
-    private fun setupDefaultClothingImageStyle(
-        imageView: ImageView,
-        baseWidth: Int,
-        baseHeight: Int
-    ) {
-        val scaledWidth = (baseWidth * resources.displayMetrics.density).toInt()
-        val scaledHeight = (baseHeight * resources.displayMetrics.density).toInt()
 
-        val layoutParams = imageView.layoutParams as FrameLayout.LayoutParams
-        layoutParams.width = scaledWidth
-        layoutParams.height = scaledHeight
+    
 
-        // 부모 FrameLayout의 중심에 고정 배치
-        val parent = imageView.parent as View
-        val parentWidth = parent.width
-        val parentHeight = parent.height
-        if (parentWidth > 0 && parentHeight > 0) {
-            layoutParams.leftMargin = (parentWidth - scaledWidth) / 2
-            layoutParams.topMargin = (parentHeight - scaledHeight) / 2
-        }
-
-        layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
-        imageView.layoutParams = layoutParams
-
-        // 스케일 타입 설정
-        imageView.scaleType = ImageView.ScaleType.FIT_XY
-        imageView.rotation = 0f // 회전 없음
-        imageView.setPadding(0, 0, 0, 0)
-    }
-    
-    // 기본 복장 설정 함수들
-    private fun setupDefaultTop() {
-        // 기본 상의: 2번공 옷 (파랑색)
-        val topGroup = globalItemGroups.find { it.title == "2번공 옷" }
-        val defaultTop = topGroup?.items?.find { it.color == "파랑" }
-        if (defaultTop != null && topGroup != null) {
-            SelectedItemsManager.setSelectedTop(defaultTop, topGroup)
-            loadImageFromAssets(defaultTop.imagePath, imageTop)
-            loadImageFromAssets(defaultTop.imagePath, equippedTopImage)
-        } else {
-            // 2번공 옷이 없으면 첫 번째 상의 사용
-            val fallbackTopGroup = globalItemGroups.find { it.tag == ItemTag.TOP }
-            val fallbackTop = fallbackTopGroup?.items?.firstOrNull()
-            if (fallbackTop != null && fallbackTopGroup != null) {
-                SelectedItemsManager.setSelectedTop(fallbackTop, fallbackTopGroup)
-                loadImageFromAssets(fallbackTop.imagePath, imageTop)
-                loadImageFromAssets(fallbackTop.imagePath, equippedTopImage)
-            }
-        }
-    }
-    
-    private fun setupDefaultBottom() {
-        // 기본 하의: 가죽 바지 (검정색)
-        val bottomGroup = globalItemGroups.find { it.title == "가죽 바지" }
-        val defaultBottom = bottomGroup?.items?.find { it.color == "검정" }
-        if (defaultBottom != null && bottomGroup != null) {
-            SelectedItemsManager.setSelectedBottom(defaultBottom, bottomGroup)
-            loadImageFromAssets(defaultBottom.imagePath, imageBottom)
-            loadImageFromAssets(defaultBottom.imagePath, equippedBottomImage)
-        } else {
-            // 가죽 바지가 없으면 첫 번째 하의 사용
-            val fallbackBottomGroup = globalItemGroups.find { it.tag == ItemTag.BOTTOM }
-            val fallbackBottom = fallbackBottomGroup?.items?.firstOrNull()
-            if (fallbackBottom != null && fallbackBottomGroup != null) {
-                SelectedItemsManager.setSelectedBottom(fallbackBottom, fallbackBottomGroup)
-                loadImageFromAssets(fallbackBottom.imagePath, imageBottom)
-                loadImageFromAssets(fallbackBottom.imagePath, equippedBottomImage)
-            }
-        }
-    }
-    
-    private fun setupDefaultHat() {
-        // 기본 모자: 개구리 모자 (초록색)
-        val hatGroup = globalItemGroups.find { it.title == "마리오 모자" }
-        val defaultHat = hatGroup?.items?.find { it.color == "빨강" }
-        if (defaultHat != null && hatGroup != null) {
-            SelectedItemsManager.setSelectedHat(defaultHat, hatGroup)
-            loadImageFromAssets(defaultHat.imagePath, imageHat)
-            loadImageFromAssets(defaultHat.imagePath, equippedHatImage)
-        } else {
-            // 개구리 모자가 없으면 첫 번째 모자 사용
-            val fallbackHatGroup = globalItemGroups.find { it.tag == ItemTag.HAT }
-            val fallbackHat = fallbackHatGroup?.items?.firstOrNull()
-            if (fallbackHat != null && fallbackHatGroup != null) {
-                SelectedItemsManager.setSelectedHat(fallbackHat, fallbackHatGroup)
-                loadImageFromAssets(fallbackHat.imagePath, imageHat)
-                loadImageFromAssets(fallbackHat.imagePath, equippedHatImage)
-            }
-        }
-    }
-    
-    private fun setupDefaultShoes() {
-        // 기본 신발: 가죽 스니커 (하양색)
-        val shoesGroup = globalItemGroups.find { it.title == "가죽 스니커" }
-        val defaultShoes = shoesGroup?.items?.find { it.color == "하양" }
-        if (defaultShoes != null && shoesGroup != null) {
-            SelectedItemsManager.setSelectedShoes(defaultShoes, shoesGroup)
-            loadImageFromAssets(defaultShoes.imagePath, imageShoes)
-            loadImageFromAssets(defaultShoes.imagePath, equippedShoesImage)
-        } else {
-            // 가죽 스니커가 없으면 첫 번째 신발 사용
-            val fallbackShoesGroup = globalItemGroups.find { it.tag == ItemTag.SHOES }
-            val fallbackShoes = fallbackShoesGroup?.items?.firstOrNull()
-            if (fallbackShoes != null && fallbackShoesGroup != null) {
-                SelectedItemsManager.setSelectedShoes(fallbackShoes, fallbackShoesGroup)
-                loadImageFromAssets(fallbackShoes.imagePath, imageShoes)
-                loadImageFromAssets(fallbackShoes.imagePath, equippedShoesImage)
-            }
-        }
-    }
-    
-    // 현재 선택된 아이템 그룹의 위치/스케일 조정값 가져오기
-    private fun getCurrentItemGroupAdjustment(imageView: ImageView): ItemGroupAdjustment {
-        return when (imageView) {
-            imageHat -> {
-                val (_, selectedGroup) = SelectedItemsManager.getSelectedHat()
-                selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
-            }
-            imageTop -> {
-                val (_, selectedGroup) = SelectedItemsManager.getSelectedTop()
-                selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
-            }
-            imageBottom -> {
-                val (_, selectedGroup) = SelectedItemsManager.getSelectedBottom()
-                selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
-            }
-            imageShoes -> {
-                val (_, selectedGroup) = SelectedItemsManager.getSelectedShoes()
-                selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
-            }
-            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
-        }
-    }
-    
-    // ItemGroup 조정값을 담는 데이터 클래스
-    private data class ItemGroupAdjustment(
-        val x: Float,
-        val y: Float,
-        val scaleX: Float,
-        val scaleY: Float,
-        val rotation: Float
-    )
     
     // assets 폴더에서 이미지 불러오기
     private fun loadImageFromAssets(fileName: String, imageView: ImageView) {
@@ -1102,61 +762,7 @@ class Tab1Fragment : Fragment() {
         }
     }
     
-    // assets 폴더에서 이미지가 존재하는 경우에만 불러오기
-    private fun loadImageFromAssetsIfExists(fileName: String, imageView: ImageView) {
-        try {
-            // 먼저 파일이 존재하는지 확인
-            val inputStream = requireContext().assets.open(fileName)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            imageView.setImageBitmap(bitmap)
-            inputStream.close()
-            
-            // 이미지가 성공적으로 로드되면 태그를 설정하여 존재함을 표시
-            imageView.tag = true
-        } catch (e: IOException) {
-            // 파일이 존재하지 않으면 이미지를 지우고 태그를 false로 설정
-            imageView.setImageDrawable(null)
-            imageView.tag = false
-        }
-    }
-    
-    // villager 이미지들 로드 (remain.png와 head.png)
-    private fun loadVillagerImages(villager: Villager) {
-        val folderPath = villager.imagePath.substringBeforeLast("/")
-        
-        // remain.png 로드 (기본 villager 이미지)
-        loadImageFromAssetsIfExists("$folderPath/remain.png", imageVillager)
-        
-        // head.png 로드 (head 이미지)
-        loadImageFromAssetsIfExists("$folderPath/head.png", imageVillagerHead)
-    }
-    
-    // 기본 의류 이미지 로드
-    private fun loadDefaultClothingImages() {
-        SelectedCharacterManager.getSelectedVillager()?.let { villager ->
-            val folderPath = villager.imagePath.substringBeforeLast("/")
-            
-            // 기본 의류 이미지들 로드 (존재하는 경우에만)
-            loadImageFromAssetsIfExists("$folderPath/shoes.png", defaultShoes)
-            loadImageFromAssetsIfExists("$folderPath/bottom.png", defaultBottom)
-            loadImageFromAssetsIfExists("$folderPath/top.png", defaultTop)
-            loadImageFromAssetsIfExists("$folderPath/hat.png", defaultHat)
-        }
-    }
-    
-    // 기본 의류 이미지 표시/숨김 관리
-    private fun updateDefaultClothingVisibility() {
-        val (selectedTop, _) = SelectedItemsManager.getSelectedTop()
-        val (selectedBottom, _) = SelectedItemsManager.getSelectedBottom()
-        val (selectedHat, _) = SelectedItemsManager.getSelectedHat()
-        val (selectedShoes, _) = SelectedItemsManager.getSelectedShoes()
-        
-        // 착용된 의류가 없고, 기본 이미지가 존재할 때만 기본 의류 이미지 표시
-        defaultTop.visibility = if (selectedTop == null && defaultTop.tag == true) View.VISIBLE else View.GONE
-        defaultBottom.visibility = if (selectedBottom == null && defaultBottom.tag == true) View.VISIBLE else View.GONE
-        defaultHat.visibility = if (selectedHat == null && defaultHat.tag == true) View.VISIBLE else View.GONE
-        defaultShoes.visibility = if (selectedShoes == null && defaultShoes.tag == true) View.VISIBLE else View.GONE
-    }
+
 
     // 아이템 선택 처리
     private fun onItemSelected(item: Item, group: ItemGroup) {
@@ -1178,25 +784,21 @@ class Tab1Fragment : Fragment() {
         when (group.tag) {
             ItemTag.HAT -> {
                 SelectedItemsManager.setSelectedHat(item, group)
-                loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
                 equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.TOP -> {
                 SelectedItemsManager.setSelectedTop(item, group)
-                loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
                 equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.BOTTOM -> {
                 SelectedItemsManager.setSelectedBottom(item, group)
-                loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
                 equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
             ItemTag.SHOES -> {
                 SelectedItemsManager.setSelectedShoes(item, group)
-                loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
                 equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
             }
@@ -1204,38 +806,33 @@ class Tab1Fragment : Fragment() {
 
         updateSelectedItemIndex(item, group)
         adapter.notifyDataSetChanged()
-        view?.post {
-            setupImageStyles()
-            updateDefaultClothingVisibility()
-        }
+        
+        // 가상 캔버스 업데이트
+        renderCharacterOnVirtualCanvas()
     }
 
     private fun unequipItem(itemTag: ItemTag) {
         when (itemTag) {
             ItemTag.HAT -> {
                 SelectedItemsManager.clearSelectedHat()
-                imageHat.setImageDrawable(null) // 캐릭터 이미지에서 해당 아이템 제거
                 equippedHatImage.setImageResource(R.drawable.ic_add) // 우측 UI 기본 이미지로 변경
                 equippedHatImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 equippedHatImage.imageTintList = null
             }
             ItemTag.TOP -> {
                 SelectedItemsManager.clearSelectedTop()
-                imageTop.setImageDrawable(null)
                 equippedTopImage.setImageResource(R.drawable.ic_add)
                 equippedTopImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 equippedTopImage.imageTintList = null
             }
             ItemTag.BOTTOM -> {
                 SelectedItemsManager.clearSelectedBottom()
-                imageBottom.setImageDrawable(null)
                 equippedBottomImage.setImageResource(R.drawable.ic_add)
                 equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 equippedBottomImage.imageTintList = null
             }
             ItemTag.SHOES -> {
                 SelectedItemsManager.clearSelectedShoes()
-                imageShoes.setImageDrawable(null)
                 equippedShoesImage.setImageResource(R.drawable.ic_add)
                 equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 equippedShoesImage.imageTintList = null
@@ -1243,9 +840,9 @@ class Tab1Fragment : Fragment() {
         }
         // UI 갱신이 필요하다면 추가 로직
         adapter.notifyDataSetChanged()
-        view?.post {
-            updateDefaultClothingVisibility()
-        }
+        
+        // 가상 캔버스 업데이트
+        renderCharacterOnVirtualCanvas()
     }
     
     // 선택된 아이템의 인덱스를 adapter에 저장
@@ -1289,5 +886,11 @@ class Tab1Fragment : Fragment() {
             }
             false
         }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // 가상 캔버스 리소스 정리
+        virtualCanvas.cleanup()
     }
 } 

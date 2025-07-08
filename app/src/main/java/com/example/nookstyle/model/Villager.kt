@@ -3,6 +3,12 @@ package com.example.nookstyle.model
 data class Villager(
     val name: String,
     val imagePath: String, // 빌라저 기본 이미지 파일 경로
+    val remainImagePath: String, // 빌라저 remain 이미지 파일 경로
+    val headImagePath: String, // 빌라저 head 이미지 파일 경로
+    val hatImagePath: String, // 기본 모자 이미지 파일 경로
+    val topImagePath: String, // 기본 상의 이미지 파일 경로
+    val bottomImagePath: String, // 기본 하의 이미지 파일 경로
+    val shoesImagePath: String, // 기본 신발 이미지 파일 경로
     val hatPosition: ClothingPosition, // 모자 위치
     val topPosition: ClothingPosition, // 상의 위치
     val bottomPosition: ClothingPosition, // 하의 위치

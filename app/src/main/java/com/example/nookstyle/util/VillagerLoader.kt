@@ -33,6 +33,14 @@ object VillagerLoader {
                     if (remainFile != null) {
                         val imagePath = "$folderPath/$remainFile"
                         
+                        // 기본 이미지 경로들 생성
+                        val remainImagePath = "$folderPath/remain.png"
+                        val headImagePath = "$folderPath/head.png"
+                        val hatImagePath = "$folderPath/hat.png"
+                        val topImagePath = "$folderPath/top.png"
+                        val bottomImagePath = "$folderPath/bottom.png"
+                        val shoesImagePath = "$folderPath/shoes.png"
+                        
                         // info.json 파일이 있으면 읽어서 위치 정보와 이름 로드, 없으면 기본값 사용
                         val (clothingPositions, villagerName) = if (infoFile != null) {
                             loadVillagerInfoFromJson(assetManager, "$folderPath/$infoFile")
@@ -43,6 +51,12 @@ object VillagerLoader {
                         val villager = Villager(
                             name = villagerName,
                             imagePath = imagePath,
+                            remainImagePath = remainImagePath,
+                            headImagePath = headImagePath,
+                            hatImagePath = hatImagePath,
+                            topImagePath = topImagePath,
+                            bottomImagePath = bottomImagePath,
+                            shoesImagePath = shoesImagePath,
                             hatPosition = clothingPositions.hatPosition,
                             topPosition = clothingPositions.topPosition,
                             bottomPosition = clothingPositions.bottomPosition,

@@ -128,7 +128,7 @@
 
         </LinearLayout>
 
-        <!-- villager 캡처 전용 영역 -->
+        <!-- 가상 캔버스 렌더링 결과 표시 영역 -->
         <FrameLayout
             android:id="@+id/villagerCaptureContainer"
             android:layout_width="0dp"
@@ -139,133 +139,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 맨 아래 이미지 - 빌라저 remain 이미지 -->
+            <!-- 가상 캔버스로 렌더링된 캐릭터 이미지 -->
             <ImageView
-                android:id="@+id/imageVillager"
+                android:id="@+id/virtualCanvasImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
-                android:contentDescription="빌라저 remain 이미지"
-                android:elevation="1dp"
+                android:contentDescription="가상 캔버스로 렌더링된 캐릭터"
                 android:padding="8dp"
                 android:scaleType="fitCenter" />
-
-            <!-- 빌라저 head 이미지 -->
-            <ImageView
-                android:id="@+id/imageVillagerHead"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="빌라저 head 이미지"
-                android:elevation="5dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter" />
-
-            <!-- 기본 신발 이미지 (착용된 신발이 없을 때만 표시) -->
-            <ImageView
-                android:id="@+id/defaultShoes"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="기본 신발 이미지"
-                android:elevation="2dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter" />
-
-            <!-- 신발 이미지 -->
-            <ImageView
-                android:id="@+id/imageShoes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="신발 이미지"
-                android:elevation="2dp"
-                android:padding="6dp"
-                android:scaleType="centerCrop" />
-
-            <!-- 기본 하의 이미지 (착용된 하의가 없을 때만 표시) -->
-            <ImageView
-                android:id="@+id/defaultBottom"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="기본 하의 이미지"
-                android:elevation="3dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter" />
-
-            <!-- 하의 이미지 -->
-            <ImageView
-                android:id="@+id/imageBottom"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="하의 이미지"
-                android:elevation="3dp"
-                android:padding="4dp"
-                android:scaleType="centerCrop" />
-
-            <!-- 기본 상의 이미지 (착용된 상의가 없을 때만 표시) -->
-            <ImageView
-                android:id="@+id/defaultTop"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="기본 상의 이미지"
-                android:elevation="4dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter" />
-
-            <!-- 상의 이미지 -->
-            <ImageView
-                android:id="@+id/imageTop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="상의 이미지"
-                android:elevation="4dp"
-                android:padding="2dp"
-                android:scaleType="centerCrop" />
-
-            <!-- 기본 모자 이미지 (착용된 모자가 없을 때만 표시) -->
-            <ImageView
-                android:id="@+id/defaultHat"
-                android:layout_width="280dp"
-                android:layout_height="280dp"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="기본 모자 이미지"
-                android:elevation="6dp"
-                android:padding="8dp"
-                android:scaleType="fitCenter" />
-
-            <!-- 맨 위 이미지 - 모자 이미지 -->
-            <ImageView
-                android:id="@+id/imageHat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="모자 이미지"
-                android:elevation="6dp"
-                android:padding="0dp"
-                android:scaleType="centerCrop" />
 
         </FrameLayout>
 

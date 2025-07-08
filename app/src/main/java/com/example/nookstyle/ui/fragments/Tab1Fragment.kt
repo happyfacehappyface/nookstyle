@@ -762,9 +762,10 @@ class Tab1Fragment : Fragment() {
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
         imageView.layoutParams = layoutParams
 
-        // 스케일, 회전 적용
+        // 스케일, 회전 적용 (villager의 rotation과 ItemGroup의 rotation 합산)
         imageView.scaleType = ImageView.ScaleType.FIT_XY
-        imageView.rotation = position.rotation
+        val totalRotation = position.rotation + itemGroupAdjustment.rotation
+        imageView.rotation = totalRotation
         imageView.setPadding(0, 0, 0, 0)
     }
     
@@ -886,28 +887,28 @@ class Tab1Fragment : Fragment() {
             imageHat -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedHat()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageTop -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedTop()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageBottom -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedBottom()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageShoes -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedShoes()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
-            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
         }
     }
     
@@ -916,7 +917,8 @@ class Tab1Fragment : Fragment() {
         val x: Float,
         val y: Float,
         val scaleX: Float,
-        val scaleY: Float
+        val scaleY: Float,
+        val rotation: Float
     )
     
     // assets 폴더에서 이미지 불러오기

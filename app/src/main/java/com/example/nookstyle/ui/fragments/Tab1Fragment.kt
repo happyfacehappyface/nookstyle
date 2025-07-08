@@ -360,6 +360,7 @@ class Tab1Fragment : Fragment() {
         val colorRecyclerView = dialogView.findViewById<RecyclerView>(R.id.colorRecyclerView)
         val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnClose)
         
         // 색상 목록 생성
         val colorList = createColorList()
@@ -425,6 +426,11 @@ class Tab1Fragment : Fragment() {
         }
         
         btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        // 닫기 버튼 리스너 설정
+        btnClose.setOnClickListener {
             dialog.dismiss()
         }
         

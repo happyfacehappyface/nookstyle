@@ -9,6 +9,8 @@ data class Villager(
     val topImagePath: String, // 기본 상의 이미지 파일 경로
     val bottomImagePath: String, // 기본 하의 이미지 파일 경로
     val shoesImagePath: String, // 기본 신발 이미지 파일 경로
+    val width: Int = 400, // 빌라저 이미지 너비
+    val height: Int = 400, // 빌라저 이미지 높이
     val hatPosition: ClothingPosition, // 모자 위치
     val topPosition: ClothingPosition, // 상의 위치
     val bottomPosition: ClothingPosition, // 하의 위치

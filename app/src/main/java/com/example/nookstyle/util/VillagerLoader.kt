@@ -57,6 +57,8 @@ object VillagerLoader {
                             topImagePath = topImagePath,
                             bottomImagePath = bottomImagePath,
                             shoesImagePath = shoesImagePath,
+                            width = clothingPositions.width,
+                            height = clothingPositions.height,
                             hatPosition = clothingPositions.hatPosition,
                             topPosition = clothingPositions.topPosition,
                             bottomPosition = clothingPositions.bottomPosition,
@@ -86,7 +88,12 @@ object VillagerLoader {
                 val jsonObject = JSONObject(jsonString)
                 
                 val villagerName = jsonObject.optString("name", "Unknown")
+                val width = jsonObject.optInt("width", 400)
+                val height = jsonObject.optInt("height", 400)
+                
                 val clothingPositions = ClothingPositions(
+                    width = width,
+                    height = height,
                     hatPosition = parseClothingPosition(jsonObject, "hairPosition"), // info.json에서는 hairPosition으로 되어있음
                     topPosition = parseClothingPosition(jsonObject, "topPosition"),
                     bottomPosition = parseClothingPosition(jsonObject, "bottomPosition"),
@@ -125,6 +132,8 @@ object VillagerLoader {
      */
     private fun getDefaultClothingPositions(): ClothingPositions {
         return ClothingPositions(
+            width = 400,
+            height = 400,
             hatPosition = ClothingPosition(0.5f, 0.22f, 2.0f, 1.5f, 0f),
             topPosition = ClothingPosition(0.50f, 0.61f, 1.24f, 0.78f, 0f),
             bottomPosition = ClothingPosition(0.5f, 0.75f, 0.9f, 0.41f, 0f),
@@ -136,6 +145,8 @@ object VillagerLoader {
      * ClothingPosition들을 그룹화하는 데이터 클래스
      */
     private data class ClothingPositions(
+        val width: Int,
+        val height: Int,
         val hatPosition: ClothingPosition,
         val topPosition: ClothingPosition,
         val bottomPosition: ClothingPosition,

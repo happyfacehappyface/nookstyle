@@ -1,5 +1,7 @@
 {
     "name" : "여자 주민",
+    "width": 215,
+    "height": 400,
     "topPosition" : 
     {
         "x": 0.50,

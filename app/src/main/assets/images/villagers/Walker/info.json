@@ -1,5 +1,7 @@
 {
     "name" : "벤",
+    "width": 240,
+    "height": 400,
     "topPosition" : 
     {
         "x": 0.50,

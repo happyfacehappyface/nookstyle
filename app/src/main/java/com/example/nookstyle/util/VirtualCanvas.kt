@@ -50,18 +50,18 @@ class VirtualCanvas(private val context: Context) {
         try {
             // 1. 빌라저 기본 이미지 (가장 아래 레이어)
             villager?.let { v ->
-                loadAndDrawImage(v.remainImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                loadAndDrawImage(v.remainImagePath, 0, 0, v.width, v.height)
             }
             
             // 2. 빌라저 헤드 이미지
             villager?.let { v ->
-                loadAndDrawImage(v.headImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                loadAndDrawImage(v.headImagePath, 0, 0, v.width, v.height)
             }
             
             // 3. 기본 신발 (착용된 신발이 없을 때)
             if (selectedShoes?.first == null) {
                 villager?.let { v ->
-                    loadAndDrawImage(v.shoesImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                    loadAndDrawImage(v.shoesImagePath, 0, 0, v.width, v.height)
                 }
             }
             
@@ -70,14 +70,14 @@ class VirtualCanvas(private val context: Context) {
                 if (shoes != null) {
                     val position = villager?.shoesPosition
                     val adjustedPosition = getAdjustedPosition(position, group)
-                    loadAndDrawClothingImage(shoes.imagePath, adjustedPosition, 400, 400)
+                    loadAndDrawClothingImage(shoes.imagePath, adjustedPosition, villager?.width ?: 400, villager?.height ?: 400)
                 }
             }
             
             // 5. 기본 하의 (착용된 하의가 없을 때)
             if (selectedBottom?.first == null) {
                 villager?.let { v ->
-                    loadAndDrawImage(v.bottomImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                    loadAndDrawImage(v.bottomImagePath, 0, 0, v.width, v.height)
                 }
             }
             
@@ -86,14 +86,14 @@ class VirtualCanvas(private val context: Context) {
                 if (bottom != null) {
                     val position = villager?.bottomPosition
                     val adjustedPosition = getAdjustedPosition(position, group)
-                    loadAndDrawClothingImage(bottom.imagePath, adjustedPosition, 400, 400)
+                    loadAndDrawClothingImage(bottom.imagePath, adjustedPosition, villager?.width ?: 400, villager?.height ?: 400)
                 }
             }
             
             // 7. 기본 상의 (착용된 상의가 없을 때)
             if (selectedTop?.first == null) {
                 villager?.let { v ->
-                    loadAndDrawImage(v.topImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                    loadAndDrawImage(v.topImagePath, 0, 0, v.width, v.height)
                 }
             }
             
@@ -102,14 +102,14 @@ class VirtualCanvas(private val context: Context) {
                 if (top != null) {
                     val position = villager?.topPosition
                     val adjustedPosition = getAdjustedPosition(position, group)
-                    loadAndDrawClothingImage(top.imagePath, adjustedPosition, 400, 400)
+                    loadAndDrawClothingImage(top.imagePath, adjustedPosition, villager?.width ?: 400, villager?.height ?: 400)
                 }
             }
             
             // 9. 기본 모자 (착용된 모자가 없을 때)
             if (selectedHat?.first == null) {
                 villager?.let { v ->
-                    loadAndDrawImage(v.hatImagePath, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+                    loadAndDrawImage(v.hatImagePath, 0, 0, v.width, v.height)
                 }
             }
             
@@ -118,7 +118,7 @@ class VirtualCanvas(private val context: Context) {
                 if (hat != null) {
                     val position = villager?.hatPosition
                     val adjustedPosition = getAdjustedPosition(position, group)
-                    loadAndDrawClothingImage(hat.imagePath, adjustedPosition, 400, 400)
+                    loadAndDrawClothingImage(hat.imagePath, adjustedPosition, villager?.width ?: 400, villager?.height ?: 400)
                 }
             }
             
@@ -142,7 +142,12 @@ class VirtualCanvas(private val context: Context) {
             
             if (sourceBitmap != null) {
                 val scaledBitmap = Bitmap.createScaledBitmap(sourceBitmap, width, height, true)
-                canvas.drawBitmap(scaledBitmap, x.toFloat(), y.toFloat(), paint)
+                
+                // 캔버스 중앙에 위치하도록 계산
+                val centerX = (CANVAS_WIDTH - width) / 2
+                val centerY = (CANVAS_HEIGHT - height) / 2
+                
+                canvas.drawBitmap(scaledBitmap, centerX.toFloat(), centerY.toFloat(), paint)
                 scaledBitmap.recycle()
                 sourceBitmap.recycle()
             }

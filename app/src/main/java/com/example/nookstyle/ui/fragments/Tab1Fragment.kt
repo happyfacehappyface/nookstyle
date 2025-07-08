@@ -724,18 +724,18 @@ class Tab1Fragment : Fragment() {
     // 가상 캔버스로 캐릭터 렌더링
     private fun renderCharacterOnVirtualCanvas() {
         val selectedVillager = SelectedCharacterManager.getSelectedVillager()
-        val (selectedHat, _) = SelectedItemsManager.getSelectedHat()
-        val (selectedTop, _) = SelectedItemsManager.getSelectedTop()
-        val (selectedBottom, _) = SelectedItemsManager.getSelectedBottom()
-        val (selectedShoes, _) = SelectedItemsManager.getSelectedShoes()
+        val (selectedHat, selectedHatGroup) = SelectedItemsManager.getSelectedHat()
+        val (selectedTop, selectedTopGroup) = SelectedItemsManager.getSelectedTop()
+        val (selectedBottom, selectedBottomGroup) = SelectedItemsManager.getSelectedBottom()
+        val (selectedShoes, selectedShoesGroup) = SelectedItemsManager.getSelectedShoes()
         
         // 가상 캔버스에서 렌더링
         val renderedBitmap = virtualCanvas.renderCharacter(
             selectedVillager,
-            selectedHat,
-            selectedTop,
-            selectedBottom,
-            selectedShoes
+            selectedHat to selectedHatGroup,
+            selectedTop to selectedTopGroup,
+            selectedBottom to selectedBottomGroup,
+            selectedShoes to selectedShoesGroup
         )
         
         // 렌더링된 결과를 ImageView에 표시

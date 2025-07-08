@@ -12,8 +12,8 @@ import java.io.IOException
 class VirtualCanvas(private val context: Context) {
     
     companion object {
-        private const val CANVAS_WIDTH = 512
-        private const val CANVAS_HEIGHT = 512
+        private const val CANVAS_WIDTH = 550
+        private const val CANVAS_HEIGHT = 550
         private const val TAG = "VirtualCanvas"
     }
     
@@ -53,10 +53,7 @@ class VirtualCanvas(private val context: Context) {
                 loadAndDrawImage(v.remainImagePath, 0, 0, v.width, v.height)
             }
             
-            // 2. 빌라저 헤드 이미지
-            villager?.let { v ->
-                loadAndDrawImage(v.headImagePath, 0, 0, v.width, v.height)
-            }
+            
             
             // 3. 기본 신발 (착용된 신발이 없을 때)
             if (selectedShoes?.first == null) {
@@ -104,6 +101,11 @@ class VirtualCanvas(private val context: Context) {
                     val adjustedPosition = getAdjustedPosition(position, group)
                     loadAndDrawClothingImage(top.imagePath, adjustedPosition, villager?.width ?: 400, villager?.height ?: 400)
                 }
+            }
+
+            // 2. 빌라저 헤드 이미지
+            villager?.let { v ->
+                loadAndDrawImage(v.headImagePath, 0, 0, v.width, v.height)
             }
             
             // 9. 기본 모자 (착용된 모자가 없을 때)

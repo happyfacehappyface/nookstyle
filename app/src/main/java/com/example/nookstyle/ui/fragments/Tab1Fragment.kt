@@ -848,26 +848,26 @@ class Tab1Fragment : Fragment() {
             // 기본 신발 이미지 - villager와 동일한 크기 (해상도 보정 적용)
             setupImageStyle(defaultShoes, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
-            // 신발 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageShoes, villager.shoesPosition, 120, 120)
+            // 신발 이미지 - 기본 의류와 동일한 크기 및 설정
+            setupImageStyle(imageShoes, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 기본 하의 이미지 - villager와 동일한 크기 (해상도 보정 적용)
             setupImageStyle(defaultBottom, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
-            // 하의 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageBottom, villager.bottomPosition, 100, 100)
+            // 하의 이미지 - 기본 의류와 동일한 크기 및 설정
+            setupImageStyle(imageBottom, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 기본 상의 이미지 - villager와 동일한 크기 (해상도 보정 적용)
             setupImageStyle(defaultTop, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
-            // 상의 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageTop, villager.topPosition, 80, 80)
+            // 상의 이미지 - 기본 의류와 동일한 크기 및 설정
+            setupImageStyle(imageTop, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 기본 모자 이미지 - villager와 동일한 크기 (해상도 보정 적용)
             setupImageStyle(defaultHat, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
-            // 모자 이미지 - villager 위치 정보 사용
-            setupClothingImageStyle(imageHat, villager.hatPosition, 60, 60)
+            // 모자 이미지 - 기본 의류와 동일한 크기 및 설정
+            setupImageStyle(imageHat, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
         }
     }
     

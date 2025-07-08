@@ -2,33 +2,33 @@
     "name" : "여자 주민",
     "width": 215,
     "height": 400,
-    "topPosition" : 
+    "topPosition" :
     {
-        "x": 0.50,
-        "y": 0.545,
-        "scaleX": 1.18,
-        "scaleY": 0.94
+        "x": 0.495,
+        "y": 0.54,
+        "scaleX": 0.92,
+        "scaleY": 0.40
     },
-    "bottomPosition" : 
+    "bottomPosition" :
     {
         "x": 0.5,
-        "y": 0.72,
-        "scaleX": 0.81,
-        "scaleY": 0.585
+        "y": 0.71,
+        "scaleX": 0.80,
+        "scaleY": 0.29
     },
-    "hairPosition" : 
+    "hairPosition" :
     {
         "x": 0.50,
-        "y": 0.21,
-        "scaleX": 2.0,
-        "scaleY": 1.4
+        "y": 0.20,
+        "scaleX": 1.25,
+        "scaleY": 0.5
     },
-    "accessoryPosition" : 
+    "accessoryPosition" :
     {
-        "x": 0.48,
-        "y": 0.836,
-        "scaleX": 0.55,
-        "scaleY": 0.4,
-        "rotation" : -9
+        "x": 0.45,
+        "y": 0.833,
+        "scaleX": 0.75,
+        "scaleY": 0.35,
+        "rotation": -9
     }
 } 

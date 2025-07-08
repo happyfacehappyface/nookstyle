@@ -59,12 +59,12 @@ class ScreenshotUtil {
                     picturesDir.mkdirs()
                 }
                 
-                // 파일 생성
-                val imageFile = File(picturesDir, "$imageFileName.jpg")
+                // 파일 생성 (확장자 png로 변경)
+                val imageFile = File(picturesDir, "$imageFileName.png")
                 val outputStream = FileOutputStream(imageFile)
                 
-                // Bitmap을 JPEG로 압축하여 저장
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                // Bitmap을 PNG로 압축하여 저장 (투명도 지원)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 outputStream.flush()
                 outputStream.close()
                 

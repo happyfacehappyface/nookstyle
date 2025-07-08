@@ -1,86 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent">
 
-    <!-- 메인 콘텐츠 영역 -->
+    <!-- 배경 이미지 -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_leaf_pattern"
+        android:contentDescription="@string/app_name" />
+
+    <!-- 기존 레이아웃 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
 
-        <!-- 왼쪽 세로 탭 -->
+        <!-- 메인 콘텐츠 -->
         <LinearLayout
-            android:id="@+id/tabs_container"
-            android:layout_width="60dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@android:color/transparent"
-            android:elevation="4dp">
+            android:orientation="horizontal">
 
-            <!-- 탭 1 -->
-            <TextView
-                android:id="@+id/tab1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="코\n디\n하\n기"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:padding="0dp"
-                android:background="@drawable/tab_left_selector"
-                android:textColor="@color/tab_text_selector"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"/>
+            <!-- 왼쪽 세로 탭 -->
+            <LinearLayout
+                android:id="@+id/tabs_container"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@android:color/transparent"
+                android:elevation="4dp">
 
-            <!-- 탭 2 -->
-            <TextView
-                android:id="@+id/tab2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="룩\n북"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:padding="0dp"
-                android:background="@drawable/tab_left_selector"
-                android:textColor="@color/tab_text_selector"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"/>
+                <!-- 탭 1 -->
+                <TextView
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="코\n디\n하\n기"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:background="@drawable/tab_left_selector"
+                    android:textColor="@color/tab_text_selector"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"/>
 
-            <!-- 탭 3 -->
-            <TextView
-                android:id="@+id/tab3"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                <!-- 탭 2 -->
+                <TextView
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="룩\n북"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:background="@drawable/tab_left_selector"
+                    android:textColor="@color/tab_text_selector"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"/>
+
+                <!-- 탭 3 -->
+                <TextView
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="콘\n테\n스\n트"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:background="@drawable/tab_left_selector"
+                    android:textColor="@color/tab_text_selector"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"/>
+
+            </LinearLayout>
+
+            <!-- 오른쪽 콘텐츠 -->
+            <FrameLayout
+                android:id="@+id/contentArea"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="콘\n테\n스\n트"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:padding="0dp"
-                android:background="@drawable/tab_left_selector"
-                android:textColor="@color/tab_text_selector"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"/>
+                android:background="@android:color/transparent"/>
 
         </LinearLayout>
 
-        <!-- 오른쪽 콘텐츠 영역 (Fragment가 여기에 표시됨) -->
-        <FrameLayout
-            android:id="@+id/contentArea"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:color/white"/>
-
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

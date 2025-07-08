@@ -290,7 +290,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@android:color/white"
+        android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/leftSpace"
@@ -306,7 +306,7 @@
             android:paddingEnd="8dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:background="@android:color/white"
+            android:background="@android:color/transparent"
             android:gravity="center_vertical">
 
             <EditText
@@ -351,7 +351,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:padding="8dp"
-            android:background="@android:color/darker_gray">
+            android:background="@android:color/transparent">
 
                 <!-- 전체 버튼 -->
                 <Button
@@ -421,6 +421,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:paddingEnd="8dp"/>

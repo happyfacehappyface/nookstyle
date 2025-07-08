@@ -17,15 +17,16 @@
     "hairPosition" : 
     {
         "x": 0.5,
-        "y": 0.18,
-        "scaleX": 2.0,
-        "scaleY": 1.5
+        "y": 0.15,
+        "scaleX": 1.7,
+        "scaleY": 1.4
     },
     "accessoryPosition" : 
     {
         "x": 0.48,
-        "y": 0.85,
-        "scaleX": 0.42,
-        "scaleY": 0.41
+        "y": 0.86,
+        "scaleX": 0.50,
+        "scaleY": 0.415,
+        "rotation" : -9
     }
 }

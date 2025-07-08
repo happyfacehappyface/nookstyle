@@ -1,27 +1,27 @@
 {
     "name" : "리처드",
-    "topPosition" : 
+    "topPosition" :
     {
         "x": 0.50,
         "y": 0.61,
-        "scaleX": 1.28,
-        "scaleY": 0.79
+        "scaleX": 1.24,
+        "scaleY": 0.86
     },
-    "bottomPosition" : 
+    "bottomPosition" :
     {
         "x": 0.5,
         "y": 0.73,
         "scaleX": 0.9,
         "scaleY": 0.41
     },
-    "hairPosition" : 
+    "hairPosition" :
     {
         "x": 0.5,
         "y": 0.20,
         "scaleX": 2.3,
         "scaleY": 1.7
     },
-    "accessoryPosition" : 
+    "accessoryPosition" :
     {
         "x": 0.47,
         "y": 0.82,

@@ -216,7 +216,7 @@ class ItemGroupAdapter(
         if (isSelected) {
             holder.itemContainer.setBackgroundResource(R.drawable.selected_item_background)
         } else {
-            holder.itemContainer.setBackgroundResource(android.R.color.white)
+            holder.itemContainer.setBackgroundResource(R.drawable.ds_item_row_ivory)
         }
     }
     

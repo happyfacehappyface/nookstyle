@@ -511,24 +511,15 @@ class Tab1Fragment : Fragment() {
     
     // 버튼 스타일 업데이트
     private fun updateButtonStyles(selectedTag: ItemTag?) {
-        // 모든 버튼을 기본 스타일로 초기화
-        listOf(btnAll, btnTop, btnBottom, btnHat, btnShoes).forEach { button ->
-            button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-        }
-
-        // 선택된 버튼만 강조
-        when (selectedTag) {
-            null -> highlightButton(btnAll)
-            ItemTag.TOP -> highlightButton(btnTop)
-            ItemTag.BOTTOM -> highlightButton(btnBottom)
-            ItemTag.HAT -> highlightButton(btnHat)
-            ItemTag.SHOES -> highlightButton(btnShoes)
-        }
+        btnAll.isSelected = (selectedTag == null)
+        btnTop.isSelected = (selectedTag == ItemTag.TOP)
+        btnBottom.isSelected = (selectedTag == ItemTag.BOTTOM)
+        btnHat.isSelected = (selectedTag == ItemTag.HAT)
+        btnShoes.isSelected = (selectedTag == ItemTag.SHOES)
     }
 
     private fun highlightButton(button: Button) {
-        button.setBackgroundColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_light))
+        button.setBackgroundResource(R.drawable.rounded_top_corners_white)  // 누른 버튼 색깔 나중에 강조하는걸로 바꾸기
         button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
     }
     

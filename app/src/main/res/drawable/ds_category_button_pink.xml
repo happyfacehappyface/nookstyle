@@ -1,0 +1,25 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 선택되었을 때 -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#F2BDB7"
+                android:endColor="#E59E97"
+                android:angle="90" /> <!-- 위 -> 아래 -->
+            <corners android:topLeftRadius="16dp" android:topRightRadius="16dp"/>
+            <stroke android:width="2dp" android:color="#D68780"/>
+        </shape>
+    </item>
+
+    <!-- 기본 상태 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#F5D4CE"
+                android:endColor="#F2BDB7"
+                android:angle="90" /> <!-- 위 -> 아래 -->
+            <corners android:topLeftRadius="16dp" android:topRightRadius="16dp"/>
+            <stroke android:width="2dp" android:color="#E59E97" />
+        </shape>
+    </item>
+</selector>

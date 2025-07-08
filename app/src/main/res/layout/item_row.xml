@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:background="@android:color/white"
+    android:background="@drawable/ds_item_row_ivory"
     android:elevation="2dp"
     android:layout_margin="4dp"
     android:clickable="true"

@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-        <style name="Base.Theme.Nookstyle" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.Nookstyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- 전체 앱 기본 폰트 적용 -->
+        <item name="android:fontFamily">@font/asia_sindinaru_m</item>
+
+        <!-- 예시: 노치 처리 -->
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
     </style>
 

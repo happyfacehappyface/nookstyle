@@ -13,6 +13,8 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -79,10 +81,14 @@ class Tab1Fragment : Fragment() {
     // 색상 필터 버튼
     private lateinit var colorButton: ImageButton
     
+    // 가격 필터 버튼
+    private lateinit var priceButton: ImageButton
+    
     // 필터링 상태
     private var currentFilter: ItemTag? = null
     private var currentSearchQuery: String = ""
     private var currentColorFilter: String? = null
+    private var currentPriceFilter: PriceFilter? = null
 
 
     // 전체 빌라저 리스트
@@ -185,6 +191,12 @@ class Tab1Fragment : Fragment() {
         colorButton = view.findViewById(R.id.colorButton)
         colorButton.setOnClickListener {
             showColorFilterDialog()
+        }
+        
+        // 가격 필터 버튼 초기화
+        priceButton = view.findViewById(R.id.priceButton)
+        priceButton.setOnClickListener {
+            showPriceFilterDialog()
         }
         
 
@@ -437,6 +449,138 @@ class Tab1Fragment : Fragment() {
         dialog.show()
     }
     
+    // 가격 필터 다이얼로그 표시
+    private fun showPriceFilterDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_price_filter, null)
+        val currencyRadioGroup = dialogView.findViewById<RadioGroup>(R.id.currencyRadioGroup)
+        val radioBells = dialogView.findViewById<android.widget.RadioButton>(R.id.radioBells)
+        val radioMiles = dialogView.findViewById<android.widget.RadioButton>(R.id.radioMiles)
+        val minPriceSeekBar = dialogView.findViewById<SeekBar>(R.id.minPriceSeekBar)
+        val maxPriceSeekBar = dialogView.findViewById<SeekBar>(R.id.maxPriceSeekBar)
+        val minPriceText = dialogView.findViewById<android.widget.TextView>(R.id.minPriceText)
+        val maxPriceText = dialogView.findViewById<android.widget.TextView>(R.id.maxPriceText)
+        val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+        val btnCancel = dialogView.findViewById<ImageButton>(R.id.btnCancel)
+        
+        // 현재 가격 필터가 있다면 초기값 설정
+        currentPriceFilter?.let { filter ->
+            when (filter.currencyType) {
+                CurrencyType.BELLS -> radioBells.isChecked = true
+                CurrencyType.MILES -> radioMiles.isChecked = true
+            }
+            minPriceSeekBar.progress = filter.minPrice
+            maxPriceSeekBar.progress = filter.maxPrice
+        }
+        
+        // 슬라이더 리스너 설정
+        minPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                minPriceText.text = "최소값: $progress"
+                // 최소값이 최대값보다 크면 최대값 조정
+                if (progress > maxPriceSeekBar.progress) {
+                    maxPriceSeekBar.progress = progress
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        maxPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                maxPriceText.text = "최대값: $progress"
+                // 최대값이 최소값보다 작으면 최소값 조정
+                if (progress < minPriceSeekBar.progress) {
+                    minPriceSeekBar.progress = progress
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        
+        // 버튼 리스너 설정
+        btnClearFilter.setOnClickListener {
+            currentPriceFilter = null
+            applyFilters()
+            dialog.dismiss()
+        }
+        
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        // 통화 선택 변경 시 필터 적용
+        currencyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val currencyType = when (checkedId) {
+                R.id.radioBells -> CurrencyType.BELLS
+                R.id.radioMiles -> CurrencyType.MILES
+                else -> CurrencyType.BELLS
+            }
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = currencyType,
+                minPrice = minPriceSeekBar.progress,
+                maxPrice = maxPriceSeekBar.progress
+            )
+            applyFilters()
+        }
+        
+        // 슬라이더 변경 시 필터 적용
+        val updatePriceFilter = {
+            val currencyType = when (currencyRadioGroup.checkedRadioButtonId) {
+                R.id.radioBells -> CurrencyType.BELLS
+                R.id.radioMiles -> CurrencyType.MILES
+                else -> CurrencyType.BELLS
+            }
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = currencyType,
+                minPrice = minPriceSeekBar.progress,
+                maxPrice = maxPriceSeekBar.progress
+            )
+            applyFilters()
+        }
+        
+        minPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                minPriceText.text = "최소값: $progress"
+                if (fromUser) {
+                    if (progress > maxPriceSeekBar.progress) {
+                        maxPriceSeekBar.progress = progress
+                    }
+                    updatePriceFilter()
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        maxPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                maxPriceText.text = "최대값: $progress"
+                if (fromUser) {
+                    if (progress < minPriceSeekBar.progress) {
+                        minPriceSeekBar.progress = progress
+                    }
+                    updatePriceFilter()
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        dialog.show()
+    }
+    
     // 색상 목록 생성
     private fun createColorList(): List<ColorItem> {
         return listOf(
@@ -508,11 +652,45 @@ class Tab1Fragment : Fragment() {
             android.util.Log.d("Tab1Fragment", "색상 필터링 후 아이템 그룹 수: ${filteredGroups.size}")
         }
 
+        // 가격 필터 적용
+        if (currentPriceFilter != null) {
+            android.util.Log.d("Tab1Fragment", "가격 필터 적용: ${currentPriceFilter}")
+            filteredGroups = filteredGroups.filter { group ->
+                group.items.any { item ->
+                    val price = when (currentPriceFilter!!.currencyType) {
+                        CurrencyType.BELLS -> {
+                            try {
+                                group.price_bell.replace(",", "").replace("벨", "").trim().toIntOrNull() ?: 0
+                            } catch (e: Exception) {
+                                0
+                            }
+                        }
+                        CurrencyType.MILES -> {
+                            try {
+                                group.price_mile.replace(",", "").replace("마일", "").trim().toIntOrNull() ?: 0
+                            } catch (e: Exception) {
+                                0
+                            }
+                        }
+                    }
+                    
+                    val matches = price >= currentPriceFilter!!.minPrice && price <= currentPriceFilter!!.maxPrice
+                    
+                    if (matches) {
+                        android.util.Log.d("Tab1Fragment", "가격 매칭: $price (${currentPriceFilter!!.minPrice}-${currentPriceFilter!!.maxPrice})")
+                    }
+                    matches
+                }
+            }
+            android.util.Log.d("Tab1Fragment", "가격 필터링 후 아이템 그룹 수: ${filteredGroups.size}")
+        }
+
         // 어댑터 데이터만 업데이트 (재생성하지 않음)
         adapter.updateData(filteredGroups)
         adapter.setColorFilter(currentColorFilter)
         updateButtonStyles(currentFilter)
         updateColorButtonStyle()
+        updatePriceButtonStyle()
     }
     
     // 버튼 스타일 업데이트
@@ -548,6 +726,19 @@ class Tab1Fragment : Fragment() {
             // 색상 필터가 없는 경우 기본 스타일
             colorButton.alpha = 1.0f
             colorButton.setBackgroundResource(R.drawable.circle_background_white)
+        }
+    }
+    
+    // 가격 버튼 스타일 업데이트
+    private fun updatePriceButtonStyle() {
+        if (currentPriceFilter != null) {
+            // 가격 필터가 적용된 경우 버튼을 강조
+            priceButton.alpha = 0.7f
+            priceButton.setBackgroundResource(R.drawable.circle_background_green)
+        } else {
+            // 가격 필터가 없는 경우 기본 스타일
+            priceButton.alpha = 1.0f
+            priceButton.setBackgroundResource(R.drawable.circle_background_white)
         }
     }
     

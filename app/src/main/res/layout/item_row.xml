@@ -54,6 +54,7 @@
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#30251D"
             android:textSize="15sp"
             android:textStyle="bold"/>
         <HorizontalScrollView
@@ -89,7 +90,8 @@
                 android:id="@+id/textViewPrice_b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:textColor="#30251D" />
         </LinearLayout>
         
         <LinearLayout
@@ -110,7 +112,8 @@
                 android:id="@+id/textViewPrice_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:textColor="#30251D" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

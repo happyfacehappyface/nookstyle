@@ -273,7 +273,7 @@ class Tab1Fragment : Fragment() {
             // 선택한 후 재세팅
             setupOverlappingImages()
             
-            // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정
+            // 뷰가 완전히 업데이트된 후 의류 위치와 스케일 조정 (해상도 보정 포함)
             view?.post {
                 setupImageStyles()
                 updateDefaultClothingVisibility()
@@ -792,7 +792,7 @@ class Tab1Fragment : Fragment() {
         if (selectedTop != null) {
             loadImageFromAssets(selectedTop.imagePath, imageTop)
             loadImageFromAssets(selectedTop.imagePath, equippedTopImage)
-            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            equippedTopImage.scaleType = ImageView.ScaleType.FIT_XY
         } else {
             imageTop.setImageDrawable(null)
             equippedTopImage.setImageResource(R.drawable.ic_add)
@@ -803,7 +803,7 @@ class Tab1Fragment : Fragment() {
         if (selectedBottom != null) {
             loadImageFromAssets(selectedBottom.imagePath, imageBottom)
             loadImageFromAssets(selectedBottom.imagePath, equippedBottomImage)
-            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            equippedBottomImage.scaleType = ImageView.ScaleType.FIT_XY
         } else {
             imageBottom.setImageDrawable(null)
             equippedBottomImage.setImageResource(R.drawable.ic_add)
@@ -814,7 +814,7 @@ class Tab1Fragment : Fragment() {
         if (selectedHat != null) {
             loadImageFromAssets(selectedHat.imagePath, imageHat)
             loadImageFromAssets(selectedHat.imagePath, equippedHatImage)
-            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            equippedHatImage.scaleType = ImageView.ScaleType.FIT_XY
         } else {
             imageHat.setImageDrawable(null)
             equippedHatImage.setImageResource(R.drawable.ic_add)
@@ -825,7 +825,7 @@ class Tab1Fragment : Fragment() {
         if (selectedShoes != null) {
             loadImageFromAssets(selectedShoes.imagePath, imageShoes)
             loadImageFromAssets(selectedShoes.imagePath, equippedShoesImage)
-            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
+            equippedShoesImage.scaleType = ImageView.ScaleType.FIT_XY
         } else {
             imageShoes.setImageDrawable(null)
             equippedShoesImage.setImageResource(R.drawable.ic_add)
@@ -837,31 +837,34 @@ class Tab1Fragment : Fragment() {
     // 이미지 스타일 설정
     private fun setupImageStyles() {
         SelectedCharacterManager.getSelectedVillager()?.let { villager ->
-            // 빌라저 remain 이미지와 head 이미지를 완전히 동일한 크기로 설정
-            val villagerSize = 200
+            // 해상도 보정 비율 계산
+            val resolutionRatio = calculateResolutionRatio()
+            
+            // 빌라저 remain 이미지와 head 이미지를 완전히 동일한 크기로 설정 (해상도 보정 적용)
+            val villagerSize = (200 * resolutionRatio.scaleX).toInt()
             setupImageStyle(imageVillager, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             setupImageStyle(imageVillagerHead, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
-            // 기본 신발 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultShoes, 200, 200, 0, 0, android.R.color.transparent)
+            // 기본 신발 이미지 - villager와 동일한 크기 (해상도 보정 적용)
+            setupImageStyle(defaultShoes, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 신발 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageShoes, villager.shoesPosition, 120, 120)
             
-            // 기본 하의 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultBottom, 200, 200, 0, 0, android.R.color.transparent)
+            // 기본 하의 이미지 - villager와 동일한 크기 (해상도 보정 적용)
+            setupImageStyle(defaultBottom, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 하의 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageBottom, villager.bottomPosition, 100, 100)
             
-            // 기본 상의 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultTop, 200, 200, 0, 0, android.R.color.transparent)
+            // 기본 상의 이미지 - villager와 동일한 크기 (해상도 보정 적용)
+            setupImageStyle(defaultTop, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 상의 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageTop, villager.topPosition, 80, 80)
             
-            // 기본 모자 이미지 - villager와 동일한 크기
-            setupImageStyle(defaultHat, 200, 200, 0, 0, android.R.color.transparent)
+            // 기본 모자 이미지 - villager와 동일한 크기 (해상도 보정 적용)
+            setupImageStyle(defaultHat, villagerSize, villagerSize, 0, 0, android.R.color.transparent)
             
             // 모자 이미지 - villager 위치 정보 사용
             setupClothingImageStyle(imageHat, villager.hatPosition, 60, 60)
@@ -889,12 +892,8 @@ class Tab1Fragment : Fragment() {
         // 배경 설정
         imageView.setBackgroundColor(ContextCompat.getColor(requireContext(), backgroundColor))
         
-        // 스케일 타입 설정 - 빌라저와 기본 의류 이미지는 FIT_CENTER로 설정하여 잘리지 않도록
-        if (imageView == imageVillager || imageView == imageVillagerHead || imageView == defaultShoes || imageView == defaultBottom || imageView == defaultTop || imageView == defaultHat) {
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-        } else {
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-        }
+        // 스케일 타입 설정 - 모든 이미지를 FIT_XY로 설정하여 레이아웃에 꽉 차게 표시
+        imageView.scaleType = ImageView.ScaleType.FIT_XY
         
         // 패딩 설정
         val padding = (8 * resources.displayMetrics.density).toInt()
@@ -914,9 +913,12 @@ class Tab1Fragment : Fragment() {
         // 현재 선택된 아이템 그룹의 위치/스케일 값 가져오기
         val itemGroupAdjustment = getCurrentItemGroupAdjustment(imageView)
         
-        // villager의 기본 위치와 ItemGroup의 조정값을 중복 적용
-        val adjustedScaleX = position.scaleX * itemGroupAdjustment.scaleX
-        val adjustedScaleY = position.scaleY * itemGroupAdjustment.scaleY
+        // 해상도 보정 비율 계산
+        val resolutionRatio = calculateResolutionRatio()
+        
+        // villager의 기본 위치와 ItemGroup의 조정값을 중복 적용 (해상도 보정 포함)
+        val adjustedScaleX = position.scaleX * itemGroupAdjustment.scaleX * resolutionRatio.scaleX
+        val adjustedScaleY = position.scaleY * itemGroupAdjustment.scaleY * resolutionRatio.scaleY
         
         val scaledWidth = (baseWidth * adjustedScaleX * resources.displayMetrics.density).toInt()
         val scaledHeight = (baseHeight * adjustedScaleY * resources.displayMetrics.density).toInt()
@@ -925,17 +927,17 @@ class Tab1Fragment : Fragment() {
         layoutParams.width = scaledWidth
         layoutParams.height = scaledHeight
 
-        // 중심 위치로 이동 (부모 FrameLayout 기준) + ItemGroup 조정값 적용
+        // 중심 위치로 이동 (부모 FrameLayout 기준) + ItemGroup 조정값 적용 (해상도 보정 포함)
         val parent = imageView.parent as View
         val parentWidth = parent.width
         val parentHeight = parent.height
         if (parentWidth > 0 && parentHeight > 0) {
-            val adjustedX = position.x + itemGroupAdjustment.x
-            val adjustedY = position.y + itemGroupAdjustment.y
+            // villager의 x, y 값을 중앙 기준으로 보정: scaledX = (scale - 0.5) * resolutionScaleX + 0.5
+            val adjustedX = ((position.x + itemGroupAdjustment.x - 0.5f) * resolutionRatio.x) + 0.5f
+            val adjustedY = ((position.y + itemGroupAdjustment.y - 0.5f) * resolutionRatio.y) + 0.5f
             layoutParams.leftMargin = (parentWidth * adjustedX - scaledWidth / 2).toInt()
             layoutParams.topMargin = (parentHeight * adjustedY - scaledHeight / 2).toInt()
         }
-
 
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
         imageView.layoutParams = layoutParams
@@ -946,6 +948,39 @@ class Tab1Fragment : Fragment() {
         imageView.rotation = totalRotation
         imageView.setPadding(0, 0, 0, 0)
     }
+    
+    // 해상도 보정 비율 계산
+    private fun calculateResolutionRatio(): ResolutionRatio {
+        val displayMetrics = resources.displayMetrics
+        val currentWidth = displayMetrics.widthPixels
+        val currentHeight = displayMetrics.heightPixels
+        
+        // 기준 해상도 (2400 * 1080)
+        val baseWidth = 2400
+        val baseHeight = 1080
+        
+        // 현재 해상도와 기준 해상도의 비율 계산
+        val xRatio = currentWidth.toFloat() / baseWidth.toFloat()
+        val yRatio = currentHeight.toFloat() / baseHeight.toFloat()
+        
+        // 이미지 비율 왜곡 허용: 각 축별로 독립적으로 스케일링
+        val scaleX = xRatio
+        val scaleY = yRatio
+        
+        // 디버깅을 위한 로그 출력
+        android.util.Log.d("Tab1Fragment", "해상도 보정 - 현재: ${currentWidth}x${currentHeight}, 기준: ${baseWidth}x${baseHeight}")
+        android.util.Log.d("Tab1Fragment", "해상도 보정 비율 - X: $xRatio, Y: $yRatio, ScaleX: $scaleX, ScaleY: $scaleY")
+        
+        return ResolutionRatio(xRatio, yRatio, scaleX, scaleY)
+    }
+    
+    // 해상도 보정 비율을 담는 데이터 클래스
+    private data class ResolutionRatio(
+        val x: Float,
+        val y: Float,
+        val scaleX: Float,
+        val scaleY: Float
+    )
     
     // 기본 의류 이미지 스타일 설정 (고정 크기 및 위치)
     private fun setupDefaultClothingImageStyle(
@@ -1189,25 +1224,25 @@ class Tab1Fragment : Fragment() {
                 SelectedItemsManager.setSelectedHat(item, group)
                 loadImageFromAssets(item.imagePath, imageHat)
                 loadImageFromAssets(item.imagePath, equippedHatImage)
-                equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                equippedHatImage.scaleType = ImageView.ScaleType.FIT_XY
             }
             ItemTag.TOP -> {
                 SelectedItemsManager.setSelectedTop(item, group)
                 loadImageFromAssets(item.imagePath, imageTop)
                 loadImageFromAssets(item.imagePath, equippedTopImage)
-                equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                equippedTopImage.scaleType = ImageView.ScaleType.FIT_XY
             }
             ItemTag.BOTTOM -> {
                 SelectedItemsManager.setSelectedBottom(item, group)
                 loadImageFromAssets(item.imagePath, imageBottom)
                 loadImageFromAssets(item.imagePath, equippedBottomImage)
-                equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                equippedBottomImage.scaleType = ImageView.ScaleType.FIT_XY
             }
             ItemTag.SHOES -> {
                 SelectedItemsManager.setSelectedShoes(item, group)
                 loadImageFromAssets(item.imagePath, imageShoes)
                 loadImageFromAssets(item.imagePath, equippedShoesImage)
-                equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                equippedShoesImage.scaleType = ImageView.ScaleType.FIT_XY
             }
         }
 
@@ -1253,6 +1288,7 @@ class Tab1Fragment : Fragment() {
         // UI 갱신이 필요하다면 추가 로직
         adapter.notifyDataSetChanged()
         view?.post {
+            setupImageStyles()
             updateDefaultClothingVisibility()
         }
     }

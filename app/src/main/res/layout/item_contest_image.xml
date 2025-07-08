@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="#FAF1E1"
         android:padding="8dp">
 
         <!-- 이미지 컨테이너 -->
@@ -26,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:background="#FCE9D2"
+                android:background="#F8E2BB"
                 android:contentDescription="콘테스트 이미지" />
 
             <!-- 출품 표시 배지 (출품된 작품에만 표시) -->
@@ -53,7 +54,7 @@
                 android:background="@drawable/circle_background_gray"
                 android:layout_gravity="top|end"
                 android:layout_margin="8dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:contentDescription="메뉴" />
 
         </FrameLayout>
@@ -64,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="파일명"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textColor="@android:color/black"
             android:gravity="center"
             android:maxLines="1"
@@ -82,8 +83,8 @@
             <!-- 좋아요 버튼 (하트 아이콘) -->
             <ImageView
                 android:id="@+id/btnLike"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_heart_outline"
                 android:scaleType="centerInside"
                 android:background="?android:attr/selectableItemBackgroundBorderless"

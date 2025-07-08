@@ -452,9 +452,8 @@ class Tab1Fragment : Fragment() {
     // 가격 필터 다이얼로그 표시
     private fun showPriceFilterDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_price_filter, null)
-        val currencyRadioGroup = dialogView.findViewById<RadioGroup>(R.id.currencyRadioGroup)
-        val radioBells = dialogView.findViewById<android.widget.RadioButton>(R.id.radioBells)
-        val radioMiles = dialogView.findViewById<android.widget.RadioButton>(R.id.radioMiles)
+        val btnBells = dialogView.findViewById<ImageButton>(R.id.btnBells)
+        val btnMiles = dialogView.findViewById<ImageButton>(R.id.btnMiles)
         val priceRangeSlider = dialogView.findViewById<com.google.android.material.slider.RangeSlider>(R.id.priceRangeSlider)
         val priceRangeText = dialogView.findViewById<android.widget.TextView>(R.id.priceRangeText)
         val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
@@ -465,13 +464,28 @@ class Tab1Fragment : Fragment() {
         if (currentPriceFilter != null) {
             // 현재 가격 필터가 있다면 초기값 설정
             when (currentPriceFilter!!.currencyType) {
-                CurrencyType.BELLS -> radioBells.isChecked = true
-                CurrencyType.MILES -> radioMiles.isChecked = true
+                CurrencyType.BELLS -> {
+                    btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+                    btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+                    priceRangeSlider.valueTo = 5000f
+                    priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
+                    priceRangeText.text = "가격 범위: ${currentPriceFilter!!.minPrice} - ${currentPriceFilter!!.maxPrice}"
+                }
+                CurrencyType.MILES -> {
+                    btnMiles.setBackgroundResource(R.drawable.rounded_button_selected)
+                    btnBells.setBackgroundResource(R.drawable.rounded_button_background)
+                    priceRangeSlider.valueTo = 1000f
+                    priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
+                    priceRangeText.text = "가격 범위: ${currentPriceFilter!!.minPrice} - ${currentPriceFilter!!.maxPrice}"
+                }
             }
-            priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
         } else {
-            // 기본값 설정
-            priceRangeSlider.setValues(0f, 1000f)
+            // 기본값 설정 (벨이 기본 선택)
+            btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+            priceRangeSlider.valueTo = 5000f
+            priceRangeSlider.setValues(0f, 5000f)
+            priceRangeText.text = "가격 범위: 0 - 5000"
         }
         
         // RangeSlider 리스너 설정
@@ -481,10 +495,10 @@ class Tab1Fragment : Fragment() {
                 val maxValue = slider.values[1].toInt()
                 priceRangeText.text = "가격 범위: $minValue - $maxValue"
                 
-                // 가격 필터 업데이트
-                val currencyType = when (currencyRadioGroup.checkedRadioButtonId) {
-                    R.id.radioBells -> CurrencyType.BELLS
-                    R.id.radioMiles -> CurrencyType.MILES
+                // 현재 선택된 통화 타입 확인
+                val currencyType = when {
+                    btnBells.background.constantState == ContextCompat.getDrawable(requireContext(), R.drawable.rounded_button_selected)?.constantState -> CurrencyType.BELLS
+                    btnMiles.background.constantState == ContextCompat.getDrawable(requireContext(), R.drawable.rounded_button_selected)?.constantState -> CurrencyType.MILES
                     else -> CurrencyType.BELLS
                 }
                 
@@ -517,22 +531,39 @@ class Tab1Fragment : Fragment() {
             dialog.dismiss()
         }
         
-        // 통화 선택 변경 시 필터 적용
-        currencyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            if (priceRangeSlider.values.size >= 2) {
-                val currencyType = when (checkedId) {
-                    R.id.radioBells -> CurrencyType.BELLS
-                    R.id.radioMiles -> CurrencyType.MILES
-                    else -> CurrencyType.BELLS
-                }
-                
-                currentPriceFilter = PriceFilter(
-                    currencyType = currencyType,
-                    minPrice = priceRangeSlider.values[0].toInt(),
-                    maxPrice = priceRangeSlider.values[1].toInt()
-                )
-                applyFilters()
-            }
+        // 통화 선택 버튼 클릭 리스너
+        btnBells.setOnClickListener {
+            btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+            
+            // 벨 선택 시 범위를 0~5000으로 변경
+            priceRangeSlider.valueTo = 5000f
+            priceRangeSlider.setValues(0f, 5000f)
+            priceRangeText.text = "가격 범위: 0 - 5000"
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = CurrencyType.BELLS,
+                minPrice = 0,
+                maxPrice = 5000
+            )
+            applyFilters()
+        }
+        
+        btnMiles.setOnClickListener {
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnBells.setBackgroundResource(R.drawable.rounded_button_background)
+            
+            // 마일 선택 시 범위를 0~1000으로 변경
+            priceRangeSlider.valueTo = 1000f
+            priceRangeSlider.setValues(0f, 1000f)
+            priceRangeText.text = "가격 범위: 0 - 1000"
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = CurrencyType.MILES,
+                minPrice = 0,
+                maxPrice = 1000
+            )
+            applyFilters()
         }
         
         dialog.show()

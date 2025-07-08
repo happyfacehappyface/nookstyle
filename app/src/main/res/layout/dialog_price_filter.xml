@@ -57,32 +57,38 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/black" />
 
-        <RadioGroup
-            android:id="@+id/currencyRadioGroup"
+        <LinearLayout
+            android:id="@+id/currencyButtonContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
-            <RadioButton
-                android:id="@+id/radioBells"
+            <ImageButton
+                android:id="@+id/btnBells"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="벨"
-                android:textSize="14sp"
-                android:checked="true"
-                android:padding="8dp" />
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/rounded_button_selected"
+                android:src="@drawable/bells"
+                android:scaleType="centerInside"
+                android:padding="12dp"
+                android:contentDescription="벨 선택" />
 
-            <RadioButton
-                android:id="@+id/radioMiles"
+            <ImageButton
+                android:id="@+id/btnMiles"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="마일"
-                android:textSize="14sp"
-                android:padding="8dp" />
+                android:layout_marginStart="8dp"
+                android:background="@drawable/rounded_button_background"
+                android:src="@drawable/nook"
+                android:scaleType="centerInside"
+                android:padding="12dp"
+                android:contentDescription="마일 선택" />
 
-        </RadioGroup>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- 가격 범위 슬라이더 -->
@@ -123,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:valueFrom="0"
-                android:valueTo="1000"
+                android:valueTo="5000"
                 android:stepSize="10"
                 app:tickVisible="false"
                 app:tickColor="@android:color/transparent" />

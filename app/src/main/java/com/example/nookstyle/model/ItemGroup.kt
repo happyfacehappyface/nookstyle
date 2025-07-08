@@ -9,5 +9,6 @@ data class ItemGroup (
     val x: Float = 0f,
     val y: Float = 0f,
     val scaleX: Float = 1.0f,
-    val scaleY: Float = 1.0f
+    val scaleY: Float = 1.0f,
+    val rotation: Float = 0.0f
 )

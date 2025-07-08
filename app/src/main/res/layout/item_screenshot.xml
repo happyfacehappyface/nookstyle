@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-            <ImageView
+        <ImageView
         android:id="@+id/imageViewScreenshot"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray"
+        android:background="#FCE9D2"
         android:contentDescription="스크린샷 이미지" />
 
         <!-- 파일명 표시 -->

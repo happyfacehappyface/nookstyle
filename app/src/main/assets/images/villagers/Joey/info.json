@@ -4,7 +4,7 @@
     {
         "x": 0.50,
         "y": 0.61,
-        "scaleX": 1.24,
+        "scaleX": 1.26,
         "scaleY": 0.86
     },
     "bottomPosition" :
@@ -18,14 +18,15 @@
     {
         "x": 0.5,
         "y": 0.20,
-        "scaleX": 2.3,
+        "scaleX": 2.5,
         "scaleY": 1.7
     },
     "accessoryPosition" :
     {
         "x": 0.47,
-        "y": 0.82,
+        "y": 0.83,
         "scaleX": 0.60,
-        "scaleY": 0.40
+        "scaleY": 0.40,
+        "rotation": -7
     }
 }

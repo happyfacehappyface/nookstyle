@@ -92,6 +92,7 @@ object AssetItemLoader {
             val y = infoJson.optDouble("y", 0.0).toFloat()
             val scaleX = infoJson.optDouble("scaleX", 1.0).toFloat()
             val scaleY = infoJson.optDouble("scaleY", 1.0).toFloat()
+            val rotation = infoJson.optDouble("rotation", 0.0).toFloat()
             
             return ItemGroup(
                 title = title,
@@ -102,7 +103,8 @@ object AssetItemLoader {
                 x = x,
                 y = y,
                 scaleX = scaleX,
-                scaleY = scaleY
+                scaleY = scaleY,
+                rotation = rotation
             )
             
         } catch (e: Exception) {

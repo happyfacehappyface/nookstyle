@@ -13,6 +13,8 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -79,10 +81,14 @@ class Tab1Fragment : Fragment() {
     // 색상 필터 버튼
     private lateinit var colorButton: ImageButton
     
+    // 가격 필터 버튼
+    private lateinit var priceButton: ImageButton
+    
     // 필터링 상태
     private var currentFilter: ItemTag? = null
     private var currentSearchQuery: String = ""
     private var currentColorFilter: String? = null
+    private var currentPriceFilter: PriceFilter? = null
 
 
     // 전체 빌라저 리스트
@@ -185,6 +191,12 @@ class Tab1Fragment : Fragment() {
         colorButton = view.findViewById(R.id.colorButton)
         colorButton.setOnClickListener {
             showColorFilterDialog()
+        }
+        
+        // 가격 필터 버튼 초기화
+        priceButton = view.findViewById(R.id.priceButton)
+        priceButton.setOnClickListener {
+            showPriceFilterDialog()
         }
         
 
@@ -360,6 +372,7 @@ class Tab1Fragment : Fragment() {
         val colorRecyclerView = dialogView.findViewById<RecyclerView>(R.id.colorRecyclerView)
         val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnClose)
         
         // 색상 목록 생성
         val colorList = createColorList()
@@ -428,6 +441,131 @@ class Tab1Fragment : Fragment() {
             dialog.dismiss()
         }
         
+        // 닫기 버튼 리스너 설정
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
+    }
+    
+    // 가격 필터 다이얼로그 표시
+    private fun showPriceFilterDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_price_filter, null)
+        val btnBells = dialogView.findViewById<ImageButton>(R.id.btnBells)
+        val btnMiles = dialogView.findViewById<ImageButton>(R.id.btnMiles)
+        val priceRangeSlider = dialogView.findViewById<com.google.android.material.slider.RangeSlider>(R.id.priceRangeSlider)
+        val priceRangeText = dialogView.findViewById<android.widget.TextView>(R.id.priceRangeText)
+        val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+        val btnCancel = dialogView.findViewById<ImageButton>(R.id.btnCancel)
+        
+        // RangeSlider 초기값 설정
+        if (currentPriceFilter != null) {
+            // 현재 가격 필터가 있다면 초기값 설정
+            when (currentPriceFilter!!.currencyType) {
+                CurrencyType.BELLS -> {
+                    btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+                    btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+                    priceRangeSlider.valueTo = 5000f
+                    priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
+                    priceRangeText.text = "가격 범위: ${currentPriceFilter!!.minPrice} - ${currentPriceFilter!!.maxPrice}"
+                }
+                CurrencyType.MILES -> {
+                    btnMiles.setBackgroundResource(R.drawable.rounded_button_selected)
+                    btnBells.setBackgroundResource(R.drawable.rounded_button_background)
+                    priceRangeSlider.valueTo = 1000f
+                    priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
+                    priceRangeText.text = "가격 범위: ${currentPriceFilter!!.minPrice} - ${currentPriceFilter!!.maxPrice}"
+                }
+            }
+        } else {
+            // 기본값 설정 (벨이 기본 선택)
+            btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+            priceRangeSlider.valueTo = 5000f
+            priceRangeSlider.setValues(0f, 5000f)
+            priceRangeText.text = "가격 범위: 0 - 5000"
+        }
+        
+        // RangeSlider 리스너 설정
+        priceRangeSlider.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser && slider.values.size >= 2) {
+                val minValue = slider.values[0].toInt()
+                val maxValue = slider.values[1].toInt()
+                priceRangeText.text = "가격 범위: $minValue - $maxValue"
+                
+                // 현재 선택된 통화 타입 확인
+                val currencyType = when {
+                    btnBells.background.constantState == ContextCompat.getDrawable(requireContext(), R.drawable.rounded_button_selected)?.constantState -> CurrencyType.BELLS
+                    btnMiles.background.constantState == ContextCompat.getDrawable(requireContext(), R.drawable.rounded_button_selected)?.constantState -> CurrencyType.MILES
+                    else -> CurrencyType.BELLS
+                }
+                
+                currentPriceFilter = PriceFilter(
+                    currencyType = currencyType,
+                    minPrice = minValue,
+                    maxPrice = maxValue
+                )
+                applyFilters()
+            }
+        }
+        
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        
+        // 버튼 리스너 설정
+        btnClearFilter.setOnClickListener {
+            currentPriceFilter = null
+            applyFilters()
+            dialog.dismiss()
+        }
+        
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        // 통화 선택 버튼 클릭 리스너
+        btnBells.setOnClickListener {
+            btnBells.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_background)
+            
+            // 벨 선택 시 범위를 0~5000으로 변경
+            priceRangeSlider.valueTo = 5000f
+            priceRangeSlider.setValues(0f, 5000f)
+            priceRangeText.text = "가격 범위: 0 - 5000"
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = CurrencyType.BELLS,
+                minPrice = 0,
+                maxPrice = 5000
+            )
+            applyFilters()
+        }
+        
+        btnMiles.setOnClickListener {
+            btnMiles.setBackgroundResource(R.drawable.rounded_button_selected)
+            btnBells.setBackgroundResource(R.drawable.rounded_button_background)
+            
+            // 마일 선택 시 범위를 0~1000으로 변경
+            priceRangeSlider.valueTo = 1000f
+            priceRangeSlider.setValues(0f, 1000f)
+            priceRangeText.text = "가격 범위: 0 - 1000"
+            
+            currentPriceFilter = PriceFilter(
+                currencyType = CurrencyType.MILES,
+                minPrice = 0,
+                maxPrice = 1000
+            )
+            applyFilters()
+        }
+        
         dialog.show()
     }
     
@@ -473,12 +611,7 @@ class Tab1Fragment : Fragment() {
         // 검색어 필터 적용
         if (currentSearchQuery.isNotEmpty()) {
             filteredGroups = filteredGroups.filter { group ->
-                group.title.contains(currentSearchQuery, ignoreCase = true) ||
-                group.items.any { item ->
-                    item.color.contains(currentSearchQuery, ignoreCase = true)
-                } ||
-                group.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
-                group.price_mile.contains(currentSearchQuery, ignoreCase = true)
+                group.title.contains(currentSearchQuery, ignoreCase = true)
             }
         }
 
@@ -502,11 +635,43 @@ class Tab1Fragment : Fragment() {
             android.util.Log.d("Tab1Fragment", "색상 필터링 후 아이템 그룹 수: ${filteredGroups.size}")
         }
 
+        // 가격 필터 적용
+        if (currentPriceFilter != null) {
+            android.util.Log.d("Tab1Fragment", "가격 필터 적용: ${currentPriceFilter}")
+            filteredGroups = filteredGroups.filter { group ->
+                group.items.any { item ->
+                    val priceString = when (currentPriceFilter!!.currencyType) {
+                        CurrencyType.BELLS -> group.price_bell
+                        CurrencyType.MILES -> group.price_mile
+                    }
+                    
+                    // 숫자가 아닌 경우 (예: "비매품") 필터링에서 제외
+                    val cleanPriceString = priceString.replace(",", "").replace("벨", "").replace("마일", "").trim()
+                    val price = cleanPriceString.toIntOrNull()
+                    
+                    if (price == null) {
+                        // 숫자가 아닌 경우 (비매품 등) 필터링에서 제외
+                        android.util.Log.d("Tab1Fragment", "숫자가 아닌 가격 제외: $priceString")
+                        false
+                    } else {
+                        val matches = price >= currentPriceFilter!!.minPrice && price <= currentPriceFilter!!.maxPrice
+                        
+                        if (matches) {
+                            android.util.Log.d("Tab1Fragment", "가격 매칭: $price (${currentPriceFilter!!.minPrice}-${currentPriceFilter!!.maxPrice})")
+                        }
+                        matches
+                    }
+                }
+            }
+            android.util.Log.d("Tab1Fragment", "가격 필터링 후 아이템 그룹 수: ${filteredGroups.size}")
+        }
+
         // 어댑터 데이터만 업데이트 (재생성하지 않음)
         adapter.updateData(filteredGroups)
         adapter.setColorFilter(currentColorFilter)
         updateButtonStyles(currentFilter)
         updateColorButtonStyle()
+        updatePriceButtonStyle()
     }
     
     // 버튼 스타일 업데이트
@@ -533,6 +698,19 @@ class Tab1Fragment : Fragment() {
             // 색상 필터가 없는 경우 기본 스타일
             colorButton.alpha = 1.0f
             colorButton.setBackgroundResource(R.drawable.circle_background_white)
+        }
+    }
+    
+    // 가격 버튼 스타일 업데이트
+    private fun updatePriceButtonStyle() {
+        if (currentPriceFilter != null) {
+            // 가격 필터가 적용된 경우 버튼을 강조
+            priceButton.alpha = 0.7f
+            priceButton.setBackgroundResource(R.drawable.circle_background_green)
+        } else {
+            // 가격 필터가 없는 경우 기본 스타일
+            priceButton.alpha = 1.0f
+            priceButton.setBackgroundResource(R.drawable.circle_background_white)
         }
     }
     
@@ -753,9 +931,10 @@ class Tab1Fragment : Fragment() {
         layoutParams.gravity = android.view.Gravity.TOP or android.view.Gravity.START
         imageView.layoutParams = layoutParams
 
-        // 스케일, 회전 적용
+        // 스케일, 회전 적용 (villager의 rotation과 ItemGroup의 rotation 합산)
         imageView.scaleType = ImageView.ScaleType.FIT_XY
-        imageView.rotation = position.rotation
+        val totalRotation = position.rotation + itemGroupAdjustment.rotation
+        imageView.rotation = totalRotation
         imageView.setPadding(0, 0, 0, 0)
     }
     
@@ -877,28 +1056,28 @@ class Tab1Fragment : Fragment() {
             imageHat -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedHat()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageTop -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedTop()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageBottom -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedBottom()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
             imageShoes -> {
                 val (_, selectedGroup) = SelectedItemsManager.getSelectedShoes()
                 selectedGroup?.let { group ->
-                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY)
-                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+                    ItemGroupAdjustment(group.x, group.y, group.scaleX, group.scaleY, group.rotation)
+                } ?: ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
             }
-            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f)
+            else -> ItemGroupAdjustment(0f, 0f, 1.0f, 1.0f, 0f)
         }
     }
     
@@ -907,7 +1086,8 @@ class Tab1Fragment : Fragment() {
         val x: Float,
         val y: Float,
         val scaleX: Float,
-        val scaleY: Float
+        val scaleY: Float,
+        val rotation: Float
     )
     
     // assets 폴더에서 이미지 불러오기

@@ -455,48 +455,47 @@ class Tab1Fragment : Fragment() {
         val currencyRadioGroup = dialogView.findViewById<RadioGroup>(R.id.currencyRadioGroup)
         val radioBells = dialogView.findViewById<android.widget.RadioButton>(R.id.radioBells)
         val radioMiles = dialogView.findViewById<android.widget.RadioButton>(R.id.radioMiles)
-        val minPriceSeekBar = dialogView.findViewById<SeekBar>(R.id.minPriceSeekBar)
-        val maxPriceSeekBar = dialogView.findViewById<SeekBar>(R.id.maxPriceSeekBar)
-        val minPriceText = dialogView.findViewById<android.widget.TextView>(R.id.minPriceText)
-        val maxPriceText = dialogView.findViewById<android.widget.TextView>(R.id.maxPriceText)
+        val priceRangeSlider = dialogView.findViewById<com.google.android.material.slider.RangeSlider>(R.id.priceRangeSlider)
+        val priceRangeText = dialogView.findViewById<android.widget.TextView>(R.id.priceRangeText)
         val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
         val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
         val btnCancel = dialogView.findViewById<ImageButton>(R.id.btnCancel)
         
-        // 현재 가격 필터가 있다면 초기값 설정
-        currentPriceFilter?.let { filter ->
-            when (filter.currencyType) {
+        // RangeSlider 초기값 설정
+        if (currentPriceFilter != null) {
+            // 현재 가격 필터가 있다면 초기값 설정
+            when (currentPriceFilter!!.currencyType) {
                 CurrencyType.BELLS -> radioBells.isChecked = true
                 CurrencyType.MILES -> radioMiles.isChecked = true
             }
-            minPriceSeekBar.progress = filter.minPrice
-            maxPriceSeekBar.progress = filter.maxPrice
+            priceRangeSlider.setValues(currentPriceFilter!!.minPrice.toFloat(), currentPriceFilter!!.maxPrice.toFloat())
+        } else {
+            // 기본값 설정
+            priceRangeSlider.setValues(0f, 1000f)
         }
         
-        // 슬라이더 리스너 설정
-        minPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                minPriceText.text = "최소값: $progress"
-                // 최소값이 최대값보다 크면 최대값 조정
-                if (progress > maxPriceSeekBar.progress) {
-                    maxPriceSeekBar.progress = progress
+        // RangeSlider 리스너 설정
+        priceRangeSlider.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser && slider.values.size >= 2) {
+                val minValue = slider.values[0].toInt()
+                val maxValue = slider.values[1].toInt()
+                priceRangeText.text = "가격 범위: $minValue - $maxValue"
+                
+                // 가격 필터 업데이트
+                val currencyType = when (currencyRadioGroup.checkedRadioButtonId) {
+                    R.id.radioBells -> CurrencyType.BELLS
+                    R.id.radioMiles -> CurrencyType.MILES
+                    else -> CurrencyType.BELLS
                 }
+                
+                currentPriceFilter = PriceFilter(
+                    currencyType = currencyType,
+                    minPrice = minValue,
+                    maxPrice = maxValue
+                )
+                applyFilters()
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-        
-        maxPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                maxPriceText.text = "최대값: $progress"
-                // 최대값이 최소값보다 작으면 최소값 조정
-                if (progress < minPriceSeekBar.progress) {
-                    minPriceSeekBar.progress = progress
-                }
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
         
         // 다이얼로그 생성
         val dialog = AlertDialog.Builder(requireContext())
@@ -520,63 +519,21 @@ class Tab1Fragment : Fragment() {
         
         // 통화 선택 변경 시 필터 적용
         currencyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val currencyType = when (checkedId) {
-                R.id.radioBells -> CurrencyType.BELLS
-                R.id.radioMiles -> CurrencyType.MILES
-                else -> CurrencyType.BELLS
-            }
-            
-            currentPriceFilter = PriceFilter(
-                currencyType = currencyType,
-                minPrice = minPriceSeekBar.progress,
-                maxPrice = maxPriceSeekBar.progress
-            )
-            applyFilters()
-        }
-        
-        // 슬라이더 변경 시 필터 적용
-        val updatePriceFilter = {
-            val currencyType = when (currencyRadioGroup.checkedRadioButtonId) {
-                R.id.radioBells -> CurrencyType.BELLS
-                R.id.radioMiles -> CurrencyType.MILES
-                else -> CurrencyType.BELLS
-            }
-            
-            currentPriceFilter = PriceFilter(
-                currencyType = currencyType,
-                minPrice = minPriceSeekBar.progress,
-                maxPrice = maxPriceSeekBar.progress
-            )
-            applyFilters()
-        }
-        
-        minPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                minPriceText.text = "최소값: $progress"
-                if (fromUser) {
-                    if (progress > maxPriceSeekBar.progress) {
-                        maxPriceSeekBar.progress = progress
-                    }
-                    updatePriceFilter()
+            if (priceRangeSlider.values.size >= 2) {
+                val currencyType = when (checkedId) {
+                    R.id.radioBells -> CurrencyType.BELLS
+                    R.id.radioMiles -> CurrencyType.MILES
+                    else -> CurrencyType.BELLS
                 }
+                
+                currentPriceFilter = PriceFilter(
+                    currencyType = currencyType,
+                    minPrice = priceRangeSlider.values[0].toInt(),
+                    maxPrice = priceRangeSlider.values[1].toInt()
+                )
+                applyFilters()
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-        
-        maxPriceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                maxPriceText.text = "최대값: $progress"
-                if (fromUser) {
-                    if (progress < minPriceSeekBar.progress) {
-                        minPriceSeekBar.progress = progress
-                    }
-                    updatePriceFilter()
-                }
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
         
         dialog.show()
     }

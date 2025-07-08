@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
@@ -102,52 +103,30 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/black" />
 
-        <!-- 최소값 슬라이더 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/minPriceText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="최소값: 0"
-                android:textSize="14sp"
-                android:textColor="@android:color/black" />
-
-            <SeekBar
-                android:id="@+id/minPriceSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="1000"
-                android:progress="0"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-        <!-- 최대값 슬라이더 -->
+        <!-- 가격 범위 슬라이더 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/maxPriceText"
+                android:id="@+id/priceRangeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="최대값: 1000"
+                android:text="가격 범위: 0 - 1000"
                 android:textSize="14sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp" />
 
-            <SeekBar
-                android:id="@+id/maxPriceSeekBar"
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/priceRangeSlider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="1000"
-                android:progress="1000"
-                android:layout_marginTop="4dp" />
+                android:valueFrom="0"
+                android:valueTo="1000"
+                android:stepSize="10"
+                app:tickVisible="false"
+                app:tickColor="@android:color/transparent" />
 
         </LinearLayout>
     </LinearLayout>

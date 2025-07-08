@@ -6,41 +6,44 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#FAF1E1"
+        android:padding="8dp">
 
+        <!-- 이미지 -->
         <ImageView
-        android:id="@+id/imageViewScreenshot"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop"
-        android:background="#FCE9D2"
-        android:contentDescription="스크린샷 이미지" />
+            android:id="@+id/imageViewScreenshot"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:background="#F8E2BB"
+            android:contentDescription="스크린샷 이미지" />
 
-        <!-- 파일명 표시 -->
+        <!-- 파일명 -->
         <TextView
             android:id="@+id/tvFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="파일명"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:textColor="@android:color/black"
             android:gravity="center"
-            android:padding="2dp"
-            android:background="@android:color/white"
             android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:layout_marginTop="4dp" />
 
-        <!-- 버튼 컨테이너 -->
+        <!-- 버튼 3개 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:weightSum="3">
 
@@ -121,4 +124,4 @@
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView> 
+</androidx.cardview.widget.CardView>

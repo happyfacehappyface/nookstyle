@@ -611,12 +611,7 @@ class Tab1Fragment : Fragment() {
         // 검색어 필터 적용
         if (currentSearchQuery.isNotEmpty()) {
             filteredGroups = filteredGroups.filter { group ->
-                group.title.contains(currentSearchQuery, ignoreCase = true) ||
-                group.items.any { item ->
-                    item.color.contains(currentSearchQuery, ignoreCase = true)
-                } ||
-                group.price_bell.contains(currentSearchQuery, ignoreCase = true) ||
-                group.price_mile.contains(currentSearchQuery, ignoreCase = true)
+                group.title.contains(currentSearchQuery, ignoreCase = true)
             }
         }
 
@@ -645,29 +640,27 @@ class Tab1Fragment : Fragment() {
             android.util.Log.d("Tab1Fragment", "가격 필터 적용: ${currentPriceFilter}")
             filteredGroups = filteredGroups.filter { group ->
                 group.items.any { item ->
-                    val price = when (currentPriceFilter!!.currencyType) {
-                        CurrencyType.BELLS -> {
-                            try {
-                                group.price_bell.replace(",", "").replace("벨", "").trim().toIntOrNull() ?: 0
-                            } catch (e: Exception) {
-                                0
-                            }
-                        }
-                        CurrencyType.MILES -> {
-                            try {
-                                group.price_mile.replace(",", "").replace("마일", "").trim().toIntOrNull() ?: 0
-                            } catch (e: Exception) {
-                                0
-                            }
-                        }
+                    val priceString = when (currentPriceFilter!!.currencyType) {
+                        CurrencyType.BELLS -> group.price_bell
+                        CurrencyType.MILES -> group.price_mile
                     }
                     
-                    val matches = price >= currentPriceFilter!!.minPrice && price <= currentPriceFilter!!.maxPrice
+                    // 숫자가 아닌 경우 (예: "비매품") 필터링에서 제외
+                    val cleanPriceString = priceString.replace(",", "").replace("벨", "").replace("마일", "").trim()
+                    val price = cleanPriceString.toIntOrNull()
                     
-                    if (matches) {
-                        android.util.Log.d("Tab1Fragment", "가격 매칭: $price (${currentPriceFilter!!.minPrice}-${currentPriceFilter!!.maxPrice})")
+                    if (price == null) {
+                        // 숫자가 아닌 경우 (비매품 등) 필터링에서 제외
+                        android.util.Log.d("Tab1Fragment", "숫자가 아닌 가격 제외: $priceString")
+                        false
+                    } else {
+                        val matches = price >= currentPriceFilter!!.minPrice && price <= currentPriceFilter!!.maxPrice
+                        
+                        if (matches) {
+                            android.util.Log.d("Tab1Fragment", "가격 매칭: $price (${currentPriceFilter!!.minPrice}-${currentPriceFilter!!.maxPrice})")
+                        }
+                        matches
                     }
-                    matches
                 }
             }
             android.util.Log.d("Tab1Fragment", "가격 필터링 후 아이템 그룹 수: ${filteredGroups.size}")

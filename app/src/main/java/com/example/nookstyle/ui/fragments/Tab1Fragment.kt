@@ -121,10 +121,10 @@ class Tab1Fragment : Fragment() {
         }
 
         // 착용 중인 아이템 표시 이미지들 초기화
-        equippedHatImage = view.findViewById(R.id.equippedHatImage)
-        equippedTopImage = view.findViewById(R.id.equippedTopImage)
-        equippedBottomImage = view.findViewById(R.id.equippedBottomImage)
-        equippedShoesImage = view.findViewById(R.id.equippedShoesImage)
+        equippedHatImage = view.findViewById<ImageView?>(R.id.equippedHatImage).apply { setImageResource(R.drawable.ic_add) }
+        equippedTopImage = view.findViewById<ImageView?>(R.id.equippedTopImage).apply { setImageResource(R.drawable.ic_add) }
+        equippedBottomImage = view.findViewById<ImageView?>(R.id.equippedBottomImage).apply { setImageResource(R.drawable.ic_add) }
+        equippedShoesImage = view.findViewById<ImageView?>(R.id.equippedShoesImage).apply { setImageResource(R.drawable.ic_add) }
 
         // 착용 아이템 클릭 리스너 설정
         equippedHatImage.setOnClickListener {

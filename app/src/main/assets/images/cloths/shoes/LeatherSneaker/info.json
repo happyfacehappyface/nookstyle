@@ -3,8 +3,9 @@
     "tag": "shoes",
     "price_bell": "700",
     "price_mile": "175",
-    "x": 0,
+    "x": 0.01,
     "y": -0.01,
-    "scaleX": 1.0,
+    "rotation": 3,
+    "scaleX": 0.95,
     "scaleY": 1.0
 } 

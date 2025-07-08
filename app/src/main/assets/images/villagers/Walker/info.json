@@ -11,10 +11,10 @@
     },
     "bottomPosition" : 
     {
-        "x": 0.5,
-        "y": 0.77,
+        "x": 0.497,
+        "y": 0.76,
         "scaleX": 0.75,
-        "scaleY": 0.28
+        "scaleY": 0.25
     },
     "hairPosition" : 
     {
@@ -25,8 +25,8 @@
     },
     "accessoryPosition" : 
     {
-        "x": 0.47,
-        "y": 0.86,
+        "x": 0.46,
+        "y": 0.85,
         "scaleX": 0.64,
         "scaleY": 0.28,
         "rotation" : -9

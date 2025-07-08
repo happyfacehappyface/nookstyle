@@ -4,7 +4,7 @@
     "price_bell": "2600",
     "price_mile": "650",
     "x": 0,
-    "y": 0,
-    "scaleX": 1.15,
+    "y": 0.02,
+    "scaleX": 1.2,
     "scaleY": 1.0
 }

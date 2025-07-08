@@ -3,8 +3,9 @@
     "tag": "hat",
     "price_bell": "2100",
     "price_mile": "525",
-    "x": 0,
-    "y": 0,
-    "scaleX": 1.0,
+    "x": -0.01,
+    "y": -0.04,
+    "rotation": 10,
+    "scaleX": 0.9,
     "scaleY": 1.0
 } 

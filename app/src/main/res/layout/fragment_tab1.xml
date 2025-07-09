@@ -262,6 +262,18 @@
 
                 <!-- 상의 버튼 -->
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnHat"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:paddingTop="4dp"
+                    android:text="모자"
+                    android:textSize="20sp"
+                    android:background="@drawable/ds_category_button_pink"
+                    android:textColor="@color/tab_text_selector" />
+
+                <!-- 하의 버튼 -->
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnTop"
                     android:layout_width="0dp"
                     android:layout_height="36dp"
@@ -269,10 +281,10 @@
                     android:paddingTop="4dp"
                     android:text="상의"
                     android:textSize="20sp"
-                    android:background="@drawable/ds_category_button_pink"
+                    android:background="@drawable/ds_category_button_green"
                     android:textColor="@color/tab_text_selector" />
 
-                <!-- 하의 버튼 -->
+                <!-- 모자 버튼 -->
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnBottom"
                     android:layout_width="0dp"
@@ -280,18 +292,6 @@
                     android:layout_weight="1"
                     android:paddingTop="4dp"
                     android:text="하의"
-                    android:textSize="20sp"
-                    android:background="@drawable/ds_category_button_green"
-                    android:textColor="@color/tab_text_selector" />
-
-                <!-- 모자 버튼 -->
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnHat"
-                    android:layout_width="0dp"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
-                    android:paddingTop="4dp"
-                    android:text="모자"
                     android:textSize="20sp"
                     android:background="@drawable/ds_category_button_pink"
                     android:textColor="@color/tab_text_selector" />

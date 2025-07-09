@@ -260,7 +260,7 @@ class ContestImageAdapter(
                     true
                 }
                 R.id.action_delete -> {
-                    showDeleteDialog(context, contestImage)
+                    onCancelSubmission(contestImage)
                     true
                 }
                 else -> false
@@ -341,20 +341,7 @@ class ContestImageAdapter(
         dialog.show()
     }
     
-    /**
-     * 삭제 다이얼로그 표시
-     */
-    private fun showDeleteDialog(context: Context, contestImage: ContestImage) {
-        android.app.AlertDialog.Builder(context)
-            .setTitle("출품 취소")
-            .setMessage("이 작품의 출품을 취소하시겠습니까?\n\n취소하면 이미지가 완전히 삭제됩니다.")
-            .setPositiveButton("삭제") { _, _ ->
-                // 출품 취소 콜백 호출
-                onCancelSubmission(contestImage)
-            }
-            .setNegativeButton("취소", null)
-            .show()
-    }
+
     
     /**
      * 이미지를 갤러리에 저장

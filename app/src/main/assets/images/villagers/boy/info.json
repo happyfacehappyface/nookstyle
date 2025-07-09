@@ -19,14 +19,14 @@
     "hairPosition" : 
     {
         "x": 0.50,
-        "y": 0.19,
-        "scaleX": 1.3,
+        "y": 0.17,
+        "scaleX": 1.2,
         "scaleY": 0.5
     },
     "accessoryPosition" : 
     {
-        "x": 0.46,
-        "y": 0.83,
+        "x": 0.455,
+        "y": 0.815,
         "scaleX": 0.68,
         "scaleY": 0.35,
         "rotation": -9

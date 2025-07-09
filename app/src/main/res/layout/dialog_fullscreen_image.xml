@@ -1,26 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/black">
 
-    <ImageView
-        android:id="@+id/fullscreenImageView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FCE9D2"
-        android:scaleType="fitCenter"
-        android:contentDescription="전체화면 이미지" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_background_gray"
-        android:src="@drawable/ic_cancel_circled"
-        android:contentDescription="닫기" />
+        <ImageView
+            android:id="@+id/fullscreenImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCE9D2"
+            android:scaleType="fitCenter"
+            android:contentDescription="전체화면 이미지" />
 
-</FrameLayout> 
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_background_gray"
+            android:src="@drawable/ic_cancel_circled"
+            android:contentDescription="닫기" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvImageTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FAF1E1"
+        android:padding="12dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:text="이미지 제목" />
+
+</LinearLayout> 

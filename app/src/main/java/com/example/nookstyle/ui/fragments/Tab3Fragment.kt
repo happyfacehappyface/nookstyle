@@ -130,6 +130,7 @@ class Tab3Fragment : Fragment() {
             val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_fullscreen_image, null)
             val fullscreenImageView = dialogView.findViewById<ImageView>(R.id.fullscreenImageView)
             val btnClose = dialogView.findViewById<View>(R.id.btnClose)
+            val tvImageTitle = dialogView.findViewById<TextView>(R.id.tvImageTitle)
             
             // 이미지 로드 (assets 또는 외부 파일)
             val bitmap = if (imageName.startsWith("assets/")) {
@@ -145,6 +146,14 @@ class Tab3Fragment : Fragment() {
             }
             
             fullscreenImageView.setImageBitmap(bitmap)
+            
+            // 이미지 제목 설정 (파일명에서 확장자 제거)
+            val fileName = if (imageName.startsWith("assets/")) {
+                imageName.substringAfter("assets/").substringBeforeLast(".")
+            } else {
+                imageName.substringAfter("external/").substringBeforeLast(".")
+            }
+            tvImageTitle.text = fileName
             
             // 다이얼로그 생성
             val dialog = AlertDialog.Builder(requireContext())

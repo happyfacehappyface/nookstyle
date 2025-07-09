@@ -655,7 +655,7 @@ class Tab1Fragment : Fragment() {
         } else {
             // 색상 필터가 없는 경우 기본 스타일
             colorButton.alpha = 1.0f
-            colorButton.setBackgroundResource(R.drawable.circle_background_white)
+            colorButton.setBackgroundResource(R.drawable.ds_color_circle_background_ivory)
         }
     }
     
@@ -668,7 +668,7 @@ class Tab1Fragment : Fragment() {
         } else {
             // 가격 필터가 없는 경우 기본 스타일
             priceButton.alpha = 1.0f
-            priceButton.setBackgroundResource(R.drawable.circle_background_white)
+            priceButton.setBackgroundResource(R.drawable.ds_color_circle_background_ivory)
         }
     }
     

@@ -710,9 +710,15 @@ class Tab1Fragment : Fragment() {
             val previouslySelectedVillager = SelectedCharacterManager.getSelectedVillager()
 
             if (previouslySelectedVillager == null) {
-                // 이전에 선택된 빌라저가 없으면 첫 번째 빌라저를 기본으로 설정하고 저장
-                villagerList.firstOrNull()?.let { 
-                    SelectedCharacterManager.setSelectedVillager(it)
+                // 이전에 선택된 빌라저가 없으면 Joey를 기본으로 설정하고 저장
+                val joeyVillager = villagerList.find { it.name == "리처드" } // Joey의 한국어 이름
+                if (joeyVillager != null) {
+                    SelectedCharacterManager.setSelectedVillager(joeyVillager)
+                } else {
+                    // Joey를 찾을 수 없는 경우 첫 번째 빌라저를 기본으로 설정
+                    villagerList.firstOrNull()?.let { 
+                        SelectedCharacterManager.setSelectedVillager(it)
+                    }
                 }
             }
 

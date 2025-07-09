@@ -548,7 +548,7 @@ class Tab1Fragment : Fragment() {
             ColorItem("하늘색", android.graphics.Color.rgb(135, 206, 235), "하늘색"),
             ColorItem("남색", android.graphics.Color.rgb(0, 0, 128), "남색"),
             ColorItem("베이지", android.graphics.Color.rgb(245, 245, 220), "베이지"),
-            ColorItem("와인 레드", android.graphics.Color.rgb(139, 0, 0), "와인 레드"),
+            ColorItem("와인 레드", android.graphics.Color.rgb(185, 52, 98), "와인 레드"),
             ColorItem("코랄", android.graphics.Color.rgb(255, 127, 80), "코랄"),
             ColorItem("아이보리", android.graphics.Color.rgb(255, 255, 240), "아이보리")
         )
@@ -713,9 +713,15 @@ class Tab1Fragment : Fragment() {
             val previouslySelectedVillager = SelectedCharacterManager.getSelectedVillager()
 
             if (previouslySelectedVillager == null) {
-                // 이전에 선택된 빌라저가 없으면 첫 번째 빌라저를 기본으로 설정하고 저장
-                villagerList.firstOrNull()?.let { 
-                    SelectedCharacterManager.setSelectedVillager(it)
+                // 이전에 선택된 빌라저가 없으면 Joey를 기본으로 설정하고 저장
+                val joeyVillager = villagerList.find { it.name == "리처드" } // Joey의 한국어 이름
+                if (joeyVillager != null) {
+                    SelectedCharacterManager.setSelectedVillager(joeyVillager)
+                } else {
+                    // Joey를 찾을 수 없는 경우 첫 번째 빌라저를 기본으로 설정
+                    villagerList.firstOrNull()?.let { 
+                        SelectedCharacterManager.setSelectedVillager(it)
+                    }
                 }
             }
 

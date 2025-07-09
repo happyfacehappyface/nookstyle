@@ -34,10 +34,10 @@
 
 | 시연 영상 | 기능 |
 |-------------|------|
-| <img src="screenshots/p1.gif" width="400" alt="Tab1"> | 캐릭터 및 의상 선택, 의상 필터링 기능 |
-| <img src="screenshots/p2.gif" width="400" alt="Tab2"> | 의상 선택 해제, 이미지 저장 |
-| <img src="screenshots/p3.gif" width="400" alt="Tab3"> | 저장된 룩북 확인, 콘테스트 출품 |
-| <img src="screenshots/p4.gif" width="400" alt="Tab4"> | 콘테스트에 출품된 룩북 확인, 좋아요 및 신고 기능 |
+| <img src="screenshots/p1.gif" width="650" alt="Tab1"> | 캐릭터 및 의상 선택, 의상 필터링 기능 |
+| <img src="screenshots/p2.gif" width="650" alt="Tab2"> | 의상 선택 해제, 이미지 저장 |
+| <img src="screenshots/p3.gif" width="650" alt="Tab3"> | 저장된 룩북 확인, 콘테스트 출품 |
+| <img src="screenshots/p4.gif" width="650" alt="Tab4"> | 콘테스트에 출품된 룩북 확인, 좋아요 및 신고 기능 |
 
 ---
 

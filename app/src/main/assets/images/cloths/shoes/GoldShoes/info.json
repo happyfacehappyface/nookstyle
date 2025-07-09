@@ -3,8 +3,8 @@
     "tag": "shoes",
     "price_bell": "비매품",
     "price_mile": "40000",
-    "x": 0,
-    "y": 0,
-    "scaleX": 1.0,
-    "scaleY": 1.0
+    "x": 0.02,
+    "y": 0.015,
+    "scaleX": 0.95,
+    "scaleY": 0.85
 } 

@@ -135,7 +135,7 @@ class Tab3Fragment : Fragment() {
             val bitmap = if (imageName.startsWith("assets/")) {
                 // assets에서 로드
                 val assetPath = imageName.substringAfter("assets/")
-                val inputStream = requireContext().assets.open(assetPath)
+                val inputStream = requireContext().assets.open("contest/$assetPath")
                 BitmapFactory.decodeStream(inputStream).also { inputStream.close() }
             } else {
                 // 외부 파일에서 로드

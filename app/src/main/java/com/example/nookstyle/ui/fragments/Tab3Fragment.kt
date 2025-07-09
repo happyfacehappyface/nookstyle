@@ -135,7 +135,7 @@ class Tab3Fragment : Fragment() {
             val bitmap = if (imageName.startsWith("assets/")) {
                 // assets에서 로드
                 val assetPath = imageName.substringAfter("assets/")
-                val inputStream = requireContext().assets.open(assetPath)
+                val inputStream = requireContext().assets.open("contest/$assetPath")
                 BitmapFactory.decodeStream(inputStream).also { inputStream.close() }
             } else {
                 // 외부 파일에서 로드
@@ -196,7 +196,8 @@ class Tab3Fragment : Fragment() {
             android.app.AlertDialog.Builder(requireContext())
                 .setTitle("출품 취소")
                 .setMessage("이 작품의 출품을 취소하시겠습니까?")
-                .setPositiveButton("취소") { _, _ ->
+                .setNegativeButton("아니오", null)
+                .setPositiveButton("예") { _, _ ->
                     // 파일 삭제
                     contestImage.file?.let { file ->
                         if (file.exists() && file.delete()) {
@@ -213,7 +214,6 @@ class Tab3Fragment : Fragment() {
                         }
                     }
                 }
-                .setNegativeButton("아니오", null)
                 .show()
         } catch (e: Exception) {
             e.printStackTrace()

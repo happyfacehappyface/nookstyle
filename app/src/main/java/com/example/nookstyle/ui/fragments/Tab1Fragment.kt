@@ -224,6 +224,9 @@ class Tab1Fragment : Fragment() {
         
         // 가상 캔버스로 캐릭터 렌더링
         renderCharacterOnVirtualCanvas()
+
+        // 착용 중인 아이템 UI 업데이트
+        updateEquippedItemsUI()
     }
 
     // 캐릭터 선택 버튼 설정
@@ -888,6 +891,45 @@ class Tab1Fragment : Fragment() {
         }
     }
     
+    // 착용 중인 아이템 UI 업데이트
+    private fun updateEquippedItemsUI() {
+        val (hatItem, hatGroup) = SelectedItemsManager.getSelectedHat()
+        if (hatItem != null) {
+            loadImageFromAssets(hatItem.imagePath, equippedHatImage)
+            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            equippedHatImage.setImageResource(R.drawable.ic_add)
+            equippedHatImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+
+        val (topItem, topGroup) = SelectedItemsManager.getSelectedTop()
+        if (topItem != null) {
+            loadImageFromAssets(topItem.imagePath, equippedTopImage)
+            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            equippedTopImage.setImageResource(R.drawable.ic_add)
+            equippedTopImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+
+        val (bottomItem, bottomGroup) = SelectedItemsManager.getSelectedBottom()
+        if (bottomItem != null) {
+            loadImageFromAssets(bottomItem.imagePath, equippedBottomImage)
+            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            equippedBottomImage.setImageResource(R.drawable.ic_add)
+            equippedBottomImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+
+        val (shoesItem, shoesGroup) = SelectedItemsManager.getSelectedShoes()
+        if (shoesItem != null) {
+            loadImageFromAssets(shoesItem.imagePath, equippedShoesImage)
+            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            equippedShoesImage.setImageResource(R.drawable.ic_add)
+            equippedShoesImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // 가상 캔버스 리소스 정리

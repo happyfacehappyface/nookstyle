@@ -310,9 +310,9 @@ class ItemGroupAdapter(
             "분홍", "pink" -> android.graphics.Color.rgb(255, 192, 203)
             "갈색", "brown" -> android.graphics.Color.rgb(139, 69, 19)
             "하늘색", "skyblue" -> android.graphics.Color.rgb(135, 206, 235)
-            "네이비", "navy" -> android.graphics.Color.rgb(0, 0, 128)
+            "네이비", "navy", "남색" -> android.graphics.Color.rgb(0, 0, 128)
             "베이지", "beige" -> android.graphics.Color.rgb(245, 245, 220)
-            "와인레드", "winered" -> android.graphics.Color.rgb(128, 0, 0)
+            "와인레드", "winered", "와인 레드" -> android.graphics.Color.rgb(185, 52, 98)
             "코랄", "coral" -> android.graphics.Color.rgb(255, 127, 80)
             "아이보리", "ivory" -> android.graphics.Color.rgb(255, 255, 240)
             else -> android.graphics.Color.GRAY // 기본값

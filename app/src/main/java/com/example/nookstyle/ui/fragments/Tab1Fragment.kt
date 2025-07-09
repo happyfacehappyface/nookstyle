@@ -545,7 +545,7 @@ class Tab1Fragment : Fragment() {
             ColorItem("하늘색", android.graphics.Color.rgb(135, 206, 235), "하늘색"),
             ColorItem("남색", android.graphics.Color.rgb(0, 0, 128), "남색"),
             ColorItem("베이지", android.graphics.Color.rgb(245, 245, 220), "베이지"),
-            ColorItem("와인 레드", android.graphics.Color.rgb(139, 0, 0), "와인 레드"),
+            ColorItem("와인 레드", android.graphics.Color.rgb(185, 52, 98), "와인 레드"),
             ColorItem("코랄", android.graphics.Color.rgb(255, 127, 80), "코랄"),
             ColorItem("아이보리", android.graphics.Color.rgb(255, 255, 240), "아이보리")
         )

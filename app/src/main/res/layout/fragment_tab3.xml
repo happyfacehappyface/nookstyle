@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[2025년 7월 첫째주 콘테스트]\n억울해 보이는 코디"
+                android:text="[2025년 7월 둘째주 콘테스트]\n~ 시선강탈! 이목을 이끄는 나만의 파티룩 ~"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
